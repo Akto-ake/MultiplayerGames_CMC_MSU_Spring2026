@@ -5,8 +5,13 @@ _STATUS_ = ("СОЗДАТЬ ЛОББИ С ИГРОЙ 1", ...)
 class Menager():
     """Класс связывающий фронт- и бэк-енд части локальной программы.
 
-    Подразумевается, что у всех объектов этого класса будет 2 единных стека,
+    Подразумевается, что у всех объектов этого класса будет 2 единных очереди,
     через которые будут передаваться сообщения"""
+
+    from collections import deque
+
+    queue_status = deque()
+    queue_messange = deque()
 
     def push_status(self, status: object, error: int = None):
         """Функция для отправки бэкенд частью изменений игры
@@ -16,7 +21,7 @@ class Menager():
             error (int, optional): Номер ошибки из _ERROR_ => переход к \
                           стандартному набору действий. Defaults to None:int.
         """
-        pass
+        self.queue_status.append((status, error))
 
     def pop_status(self,):
         """Получение фронтендом статуса игры
@@ -28,7 +33,7 @@ class Menager():
                     если игра завершилась - str с ником победителя.\
                     В error код глобальной ошибки.
         """
-        pass
+        return self.queue_status.pop() if len(self.queue_status) else (None, None)
 
     # Для меню и игр нужно согласовать необходимые сообщения.
     # Например для крестиков-ноликов это может быть в виде:
@@ -44,7 +49,7 @@ class Menager():
                 (зависит от состояния приложения,\
                 например в меню может быть int из _STATUS_)
         """
-        pass
+        self.queue_messange.append(messange)
 
     def pop_messange(self, ):
         """Функция для получения бэкенд частью команд управления игрой/меню
@@ -52,8 +57,8 @@ class Menager():
         Returns:
             object: сообщение управления.\
                 (зависит от состояния приложения,\
-                например в меню может быть int из _STATUS_)
+                например в меню может быть int из _STATUS_)\
+                При пустой очереди возращает None
 
         """
-
-        pass
+        return self.queue_messange.pop() if len(self.queue_messange) else None
