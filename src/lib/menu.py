@@ -8,6 +8,11 @@ import arcade.gui
 from arcade.gui.widgets.buttons import UIFlatButtonStyle
 from arcade.gui.widgets.text import UIInputTextStyle
 
+try:
+    from .frontend import Menager
+except ImportError:
+    from frontend import Menager
+
 
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
@@ -482,6 +487,7 @@ class RegistrationView(NeonBaseView):
             self.error_text = "Имя слишком длинное (максимум 18 символов)."
             return
 
+        Menager().push_message(("login", name))
         self.window.show_view(MainMenuView(player_name=name))
 
 
@@ -624,6 +630,22 @@ class MainMenuView(NeonBaseView):
     def _handle_action(self, action: str, caption: str) -> None:
         if action == "exit":
             arcade.exit()
+            return
+
+        if action == "create_lobby":
+            try:
+                from .x_o_frontend import TicTacToeView
+            except ImportError:
+                from x_o_frontend import TicTacToeView
+
+            Menager().push_message(("create_game", "X_O"))
+
+            def back_to_menu() -> None:
+                self.window.show_view(MainMenuView(self.player_name, self.on_action))
+
+            self.window.show_view(
+                TicTacToeView(player_name=self.player_name, on_back=back_to_menu)
+            )
             return
 
         self.status_text = f"{self.player_name}: выбрано '{caption}'"

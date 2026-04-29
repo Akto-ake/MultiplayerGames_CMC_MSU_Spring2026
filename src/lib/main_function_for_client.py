@@ -76,7 +76,7 @@ async def x_o_run(game):
         while True:
             await asyncio.sleep(0.01)
 
-            user_message = menager.pop_messange()
+            user_message = menager.pop_message()
 
             if user_message == "start":
                 await game.push_message({"status": "start"})

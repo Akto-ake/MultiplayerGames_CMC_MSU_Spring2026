@@ -40,7 +40,7 @@ async def run():
         while True:
             await asyncio.sleep(0.01)
 
-            message = menager.pop_messange()
+            message = menager.pop_message()
 
             if message is None:
                 continue
@@ -55,6 +55,14 @@ async def run():
             match message[0]:
                 case 0:
                     break
+
+                case "login":
+                    await client.login(message[1])
+                    continue
+
+                case "create_game":
+                    game = await client.init_game(message[1])
+                    game.set_run(CLIENT_GAMES[message[1]])
 
                 case 1:
                     game = await client.connect_game(message[1])
