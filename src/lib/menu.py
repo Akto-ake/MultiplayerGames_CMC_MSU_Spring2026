@@ -1,4 +1,4 @@
-from __future__ import annotations
+﻿from __future__ import annotations
 
 import asyncio
 import random
@@ -970,6 +970,80 @@ class GamesCatalogView(NeonBaseView):
                 font_name=("Calibri", "Arial"),
             )
             y -= line_step
+
+
+class ErrorView(NeonBaseView):
+    """Простой экран ошибки с затемненным фоном."""
+
+    def __init__(self, message: str, on_close: Callable[[], None], title: str = "ОШИБКА"):
+        super().__init__()
+        self.message = (message or "Неизвестная ошибка").strip()
+        self.title = title
+        self.on_close = on_close
+        self._build_ui()
+
+    def _build_ui(self) -> None:
+        close_button = arcade.gui.UIFlatButton(
+            text="НАЗАД",
+            width=220,
+            height=64,
+            style=build_menu_button_style(exit_button=True),
+        )
+
+        @close_button.event("on_click")
+        def on_click(_event):
+            self.on_close()
+
+        self._add_centered_widget(close_button, align_y=-160)
+
+    def on_key_press(self, key: int, modifiers: int) -> None:
+        if key in (arcade.key.ESCAPE, arcade.key.ENTER, arcade.key.NUM_ENTER):
+            self.on_close()
+            return
+        super().on_key_press(key, modifiers)
+
+    def on_draw(self) -> None:
+        self.clear()
+        self._draw_neon_background()
+        self._draw_filled_rect(0, self.window.width, 0, self.window.height, (0, 0, 0, 190))
+
+        width = self.window.width
+        height = self.window.height
+        box_w = width * 0.68
+        box_h = height * 0.42
+        left = (width - box_w) / 2
+        right = left + box_w
+        bottom = (height - box_h) / 2
+        top = bottom + box_h
+
+        self._draw_filled_rect(left, right, bottom, top, (24, 10, 24, 236))
+        self._draw_outlined_rect(left, right, bottom, top, (255, 112, 172, 220), border_width=3)
+
+        arcade.draw_text(
+            self.title,
+            width / 2,
+            top - box_h * 0.18,
+            (255, 186, 219),
+            42,
+            anchor_x="center",
+            anchor_y="center",
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            bold=True,
+        )
+        arcade.draw_text(
+            self.message,
+            width / 2,
+            bottom + box_h * 0.52,
+            (252, 232, 243),
+            22,
+            width=box_w * 0.82,
+            align="center",
+            anchor_x="center",
+            anchor_y="center",
+            multiline=True,
+            font_name=("Calibri", "Arial"),
+        )
+        self.ui.draw()
 
 
 async def run() -> None:

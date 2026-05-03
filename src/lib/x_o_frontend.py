@@ -1,4 +1,4 @@
-"""Фронтенд для игры X and O."""
+﻿"""Фронтенд для игры X and O."""
 
 from __future__ import annotations
 
@@ -11,6 +11,7 @@ try:
     from .frontend import Menager
     from .menu import (
         CYAN,
+        ErrorView,
         PURPLE,
         NeonBaseView,
         build_menu_button_style,
@@ -20,6 +21,7 @@ except ImportError:
     from frontend import Menager
     from menu import (
         CYAN,
+        ErrorView,
         PURPLE,
         NeonBaseView,
         build_menu_button_style,
@@ -219,6 +221,8 @@ class TicTacToeView(NeonBaseView):
 
         if latest_error is not None:
             self.error_text = str(latest_error)
+            self._show_error_screen(self.error_text)
+            return
 
         if latest_status is None:
             return
@@ -432,3 +436,16 @@ class TicTacToeView(NeonBaseView):
             return "Состав лобби появится после подключения к серверу"
 
         return "Лобби: " + "  /  ".join(self.nicks)
+
+    def _show_error_screen(self, message: str) -> None:
+        if not self.window:
+            return
+
+        on_close = self.on_back or (lambda: arcade.exit())
+        self.window.show_view(
+            ErrorView(
+                message=message,
+                on_close=on_close,
+                title="ОШИБКА ИГРЫ",
+            )
+        )
