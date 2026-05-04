@@ -8,7 +8,7 @@ import arcade
 import arcade.gui
 
 try:
-    from .frontend import Menager
+    from .frontend import Manager
     from .menu import (
         CYAN,
         PURPLE,
@@ -17,7 +17,7 @@ try:
         build_primary_button_style,
     )
 except ImportError:
-    from frontend import Menager
+    from frontend import Manager
     from menu import (
         CYAN,
         PURPLE,
@@ -57,7 +57,7 @@ class TicTacToeView(NeonBaseView):
         super().__init__()
         self.player_name = player_name
         self.on_back = on_back
-        self.menager = Menager()
+        self.manager = Manager()
 
         self.board = [[EMPTY_CELL] * CELL_COUNT for _ in range(CELL_COUNT)]
         self.nicks: list[str] = []
@@ -135,7 +135,7 @@ class TicTacToeView(NeonBaseView):
 
         @start_button.event("on_click")
         def on_start(_event):
-            self.menager.push_message("start")
+            self.manager.push_message("start")
             self.status = "waiting"
 
         controls.add(start_button)
@@ -196,14 +196,14 @@ class TicTacToeView(NeonBaseView):
             self.status = "not your turn"
             return
 
-        self.menager.push_message({"row": row, "col": col})
+        self.manager.push_message({"row": row, "col": col})
 
     def _consume_statuses(self) -> None:
         latest_status = None
         latest_error = None
 
         while True:
-            status, error = self.menager.pop_status()
+            status, error = self.manager.pop_status()
 
             if status is None and error is None:
                 break

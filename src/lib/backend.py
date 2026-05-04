@@ -3,7 +3,7 @@
 import asyncio
 
 import status_client_support
-from frontend import Menager
+from frontend import Manager
 from main_function_for_client import CLIENT_GAMES
 from server import Client, ClientServerError
 
@@ -15,16 +15,16 @@ async def play_game(game: Client.Game):
         game (Client.Game): игра клиента.
     """
 
-    menager = Menager()
+    manager = Manager()
 
     try:
         await game.run()
-    except status_client_support.Errors_game as error:
-        menager.push_status(None, error=error)
+    except status_client_support.Error_game as error:
+        manager.push_status(None, error=error)
     except ClientServerError as error:
-        menager.push_status(
+        manager.push_status(
             None,
-            error=status_client_support.Errors_game(str(error), 1),
+            error=status_client_support.Error_game(str(error), 1),
         )
 
 
@@ -32,7 +32,7 @@ async def run():
     """Основной цикл бэкенда."""
 
     client = Client()
-    menager = Menager()
+    manager = Manager()
 
     try:
         await client.connect()
@@ -40,15 +40,15 @@ async def run():
         while True:
             await asyncio.sleep(0.01)
 
-            message = menager.pop_message()
+            message = manager.pop_message()
 
             if message is None:
                 continue
 
             if not isinstance(message, tuple):
-                menager.push_status(
+                manager.push_status(
                     None,
-                    error=status_client_support.Errors_game("", 1),
+                    error=status_client_support.Error_game("", 1),
                 )
                 continue
 
@@ -74,9 +74,9 @@ async def run():
                     game.set_run(CLIENT_GAMES[game_name])
 
                 case _:
-                    menager.push_status(
+                    manager.push_status(
                         None,
-                        error=status_client_support.Errors_game("", 1),
+                        error=status_client_support.Error_game("", 1),
                     )
                     continue
 

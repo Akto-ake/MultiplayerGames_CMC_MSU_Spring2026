@@ -3,7 +3,7 @@
 import asyncio
 import json
 
-from main_function_for_strver import GAMES
+from main_function_for_server import GAMES
 
 
 SERVER_HOST = "0.0.0.0"
@@ -68,19 +68,19 @@ class Server():
 
             return await self.messages.get()
 
-        def push_message(self, message: object, groop: list = None):
-            """Отправляет сообщение message всем или только groop
+        def push_message(self, message: object, group: list = None):
+            """Отправляет сообщение message всем или только group
 
             Args:
                 message (object): сообщение.
-                groop (list, optional): список ников (str) кому необходимо \
+                group (list, optional): список ников (str) кому необходимо \
                     отправить сообщение. По умолчанию None = отправить всем.
             """
 
-            if groop is None:
-                groop = list(self.nicks.keys())
+            if group is None:
+                group = list(self.nicks.keys())
 
-            for nick in groop:
+            for nick in group:
                 if nick in self.nicks:
                     self.nicks[nick].put_nowait(message)
 

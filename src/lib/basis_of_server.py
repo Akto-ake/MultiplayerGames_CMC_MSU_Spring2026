@@ -13,12 +13,12 @@ class Server():
             """
             pass
 
-        def push_message(self, message: object, groop: list = None):
-            """Отправляет сообщение message всем или только groop
+        def push_message(self, message: object, group: list = None):
+            """Отправляет сообщение message всем или только group
 
             Args:
                 message (object): сообщение
-                groop (List, optional): список ников (str) кому необходимо \
+                group (List, optional): список ников (str) кому необходимо \
                     отправить сообщение. По умолчанию None = отправить всем.
             """
             pass
@@ -49,12 +49,12 @@ class Client():
             """
             pass
 
-        def push_message(self, message: object, groop: list = None):
-            """Отправляет сообщение message всем или только groop
+        def push_message(self, message: object, group: list = None):
+            """Отправляет сообщение message всем или только group
 
             Args:
                 message (object): сообщение
-                groop (List, optional): список ников (str) кому необходимо \
+                group (List, optional): список ников (str) кому необходимо \
                     отправить сообщение. По умолчанию None = отправить всем.
             """
             pass

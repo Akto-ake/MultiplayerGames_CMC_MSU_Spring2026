@@ -2,7 +2,7 @@
 
 import asyncio
 
-from frontend import Menager
+from frontend import Manager
 from server import ClientServerError
 
 
@@ -42,10 +42,10 @@ def x_o_parse_move(message):
     return None
 
 
-def x_o_push(menager, game, board, symbol, turn, status):
+def x_o_push(manager, game, board, symbol, turn, status):
     """Отправляет состояние крестиков-ноликов во фронтенд."""
 
-    menager.push_status(
+    manager.push_status(
         {
             "game": "X_O",
             "board": board,
@@ -60,7 +60,7 @@ def x_o_push(menager, game, board, symbol, turn, status):
 async def x_o_run(game):
     """Локальная логика крестиков-ноликов."""
 
-    menager = Menager()
+    manager = Manager()
 
     board = [[X_O_EMPTY] * 3 for _ in range(3)]
     symbols = {}
@@ -68,7 +68,7 @@ async def x_o_run(game):
     symbol = None
 
     await game.get_nicks()
-    x_o_push(menager, game, board, symbol, turn, "waiting")
+    x_o_push(manager, game, board, symbol, turn, "waiting")
 
     task = asyncio.create_task(game.pop_message())
 
@@ -76,7 +76,7 @@ async def x_o_run(game):
         while True:
             await asyncio.sleep(0.01)
 
-            user_message = menager.pop_message()
+            user_message = manager.pop_message()
 
             if user_message == "start":
                 await game.push_message({"status": "start"})
@@ -87,15 +87,15 @@ async def x_o_run(game):
                 row, col = move
 
                 if turn != game.client.nick:
-                    x_o_push(menager, game, board, symbol, turn, "not your turn")
+                    x_o_push(manager, game, board, symbol, turn, "not your turn")
                     continue
 
                 if row not in range(3) or col not in range(3):
-                    x_o_push(menager, game, board, symbol, turn, "bad move")
+                    x_o_push(manager, game, board, symbol, turn, "bad move")
                     continue
 
                 if board[row][col] != X_O_EMPTY:
-                    x_o_push(menager, game, board, symbol, turn, "busy")
+                    x_o_push(manager, game, board, symbol, turn, "busy")
                     continue
 
                 await game.push_message(
@@ -118,10 +118,10 @@ async def x_o_run(game):
 
             match message.get("status"):
                 case "joined":
-                    x_o_push(menager, game, board, symbol, turn, "joined")
+                    x_o_push(manager, game, board, symbol, turn, "joined")
 
                 case "leave":
-                    x_o_push(menager, game, board, symbol, turn, "leave")
+                    x_o_push(manager, game, board, symbol, turn, "leave")
                     return
 
                 case "start":
@@ -136,7 +136,7 @@ async def x_o_run(game):
                     turn = first
                     symbol = symbols[game.client.nick]
 
-                    x_o_push(menager, game, board, symbol, turn, "start")
+                    x_o_push(manager, game, board, symbol, turn, "start")
 
                 case "move":
                     data = message["message"]
@@ -153,15 +153,15 @@ async def x_o_run(game):
                     board[row][col] = data["symbol"]
 
                     if x_o_win(board):
-                        x_o_push(menager, game, board, symbol, turn, "win")
+                        x_o_push(manager, game, board, symbol, turn, "win")
                         return
 
                     if all(X_O_EMPTY not in row for row in board):
-                        x_o_push(menager, game, board, symbol, turn, "draw")
+                        x_o_push(manager, game, board, symbol, turn, "draw")
                         return
 
                     turn = [nick for nick in game.nicks if nick != turn][0]
-                    x_o_push(menager, game, board, symbol, turn, "move")
+                    x_o_push(manager, game, board, symbol, turn, "move")
 
                 case "error":
                     raise ClientServerError(message.get("message"))

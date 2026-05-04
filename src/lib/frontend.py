@@ -4,16 +4,16 @@ except ImportError:
     from status_client_support import Error_game
 
 
-class Menager():
+class Manager():
     """Класс связывающий фронт- и бэк-енд части локальной программы.
 
-    Подразумевается, что у всех объектов этого класса будет 2 единных очереди,
+    Подразумевается, что у всех объектов этого класса будет 2 единых очереди,
     через которые будут передаваться сообщения"""
 
     from collections import deque
 
     queue_status = deque()
-    queue_messange = deque()
+    queue_message = deque()
 
     def push_status(self, status: object, error: Error_game = None):
         """Функция для отправки бэкенд частью изменений игры
@@ -43,15 +43,15 @@ class Menager():
     # для всякого рода ввода "введите ник" возвращать нужно tuple (int, str),
     # где int из _STATUS_
 
-    def push_message(self, messange: object):
+    def push_message(self, message: object):
         """Функция для отправки фронтенд частью команд управления
 
         Args:
-            messange (object): сообщение управления.\
+            message (object): сообщение управления.\
                 (зависит от состояния приложения,\
                 например в меню может быть int из _STATUS_)
         """
-        self.queue_messange.append(messange)
+        self.queue_message.append(message)
 
     def pop_message(self, ):
         """Функция для получения бэкенд частью команд управления игрой/меню
@@ -60,12 +60,7 @@ class Menager():
             object: сообщение управления.\
                 (зависит от состояния приложения,\
                 например в меню может быть int из _STATUS_)\
-                При пустой очереди возращает None
+                При пустой очереди возвращает None
 
         """
-        return self.queue_messange.popleft() if len(self.queue_messange) else None
-
-    def pop_messange(self, ):
-        """Обратная совместимость со старым именем метода."""
-
-        return self.pop_message()
+        return self.queue_message.popleft() if len(self.queue_message) else None
