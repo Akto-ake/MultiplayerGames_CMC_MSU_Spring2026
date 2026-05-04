@@ -1,4 +1,4 @@
-﻿"""Бэкенд клиента."""
+"""Бэкенд клиента."""
 
 import asyncio
 
@@ -19,12 +19,12 @@ async def play_game(game: Client.Game):
 
     try:
         await game.run()
-    except status_client_support.Error_game as error:
+    except status_client_support.Errors_game as error:
         menager.push_status(None, error=error)
     except ClientServerError as error:
         menager.push_status(
             None,
-            error=status_client_support.Error_game(str(error), 1),
+            error=status_client_support.Errors_game(str(error), 1),
         )
 
 
@@ -48,7 +48,7 @@ async def run():
             if not isinstance(message, tuple):
                 menager.push_status(
                     None,
-                    error=status_client_support.Error_game("", 1),
+                    error=status_client_support.Errors_game("", 1),
                 )
                 continue
 
@@ -76,7 +76,7 @@ async def run():
                 case _:
                     menager.push_status(
                         None,
-                        error=status_client_support.Error_game("", 1),
+                        error=status_client_support.Errors_game("", 1),
                     )
                     continue
 
