@@ -3,7 +3,7 @@
 import asyncio
 import json
 
-from main_function_for_server import GAMES
+from .main_function_for_server import GAMES
 
 
 SERVER_HOST = "0.0.0.0"

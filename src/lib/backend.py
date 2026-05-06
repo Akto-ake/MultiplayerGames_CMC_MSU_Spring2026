@@ -2,10 +2,10 @@
 
 import asyncio
 
-import status_client_support
-from frontend import Manager
-from main_function_for_client import CLIENT_GAMES
-from server import Client, ClientServerError
+from . import status_client_support
+from .frontend import Manager
+from .main_function_for_client import CLIENT_GAMES
+from .server import Client, ClientServerError
 
 
 async def play_game(game: Client.Game):

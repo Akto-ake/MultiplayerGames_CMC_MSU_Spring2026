@@ -1,7 +1,4 @@
-try:
-    from .status_client_support import Error_game
-except ImportError:
-    from status_client_support import Error_game
+from .status_client_support import Error_game
 
 
 class Manager():
