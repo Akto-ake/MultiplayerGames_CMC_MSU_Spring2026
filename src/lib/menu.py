@@ -398,6 +398,176 @@ class VerticalCenteredInputText(arcade.gui.UIInputText):
         self.trigger_full_render()
 
 
+class StartupView(NeonBaseView):
+    """Стартовый экран ожидания подключения к серверу."""
+
+    def __init__(self):
+        super().__init__()
+        self.title_label = arcade.Text(
+            "ПОДКЛЮЧЕНИЕ К СЕРВЕРУ",
+            x=0,
+            y=0,
+            color=(228, 243, 255),
+            font_size=48,
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+            bold=True,
+        )
+        self.message_label = arcade.Text(
+            "Пожалуйста, подождите...",
+            x=0,
+            y=0,
+            color=(165, 188, 214),
+            font_size=22,
+            font_name=("Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+        )
+
+    def on_update(self, _delta_time: float) -> None:
+        manager = Manager()
+
+        while True:
+            status, error = manager.pop_status()
+
+            if status is None and error is None:
+                return
+
+            if (
+                isinstance(status, dict)
+                and status.get("view") == "startup_connected"
+            ):
+                self.window.show_view(RegistrationView())
+                return
+
+            if (
+                isinstance(status, dict)
+                and status.get("view") == "server_unavailable"
+            ):
+                self.window.show_view(
+                    ServerUnavailableView(
+                        status.get("message", "Сервер недоступен.")
+                    )
+                )
+                return
+
+    def on_draw(self) -> None:
+        self.clear()
+        self._draw_neon_background()
+        self._draw_registration_shell()
+        self._draw_text_layer()
+
+    def _draw_registration_shell(self) -> None:
+        width = self.window.width
+        height = self.window.height
+        self._draw_filled_rect(width * 0.20, width * 0.80,
+                               height * 0.22, height * 0.78, (5, 12, 30, 120))
+        self._draw_outlined_rect(
+            width * 0.20, width * 0.80, height * 0.22,
+            height * 0.78, (66, 188, 255, 90), 2)
+
+    def _draw_text_layer(self) -> None:
+        self.title_label.x = self.window.width / 2
+        self.title_label.y = self.window.height * 0.64
+        self.title_label.draw()
+
+        self.message_label.x = self.window.width / 2
+        self.message_label.y = self.window.height * 0.48
+        self.message_label.draw()
+
+
+class ServerUnavailableView(NeonBaseView):
+    """Стартовый экран отсутствия подключения к серверу."""
+
+    def __init__(self, message: str = "Сервер недоступен."):
+        super().__init__()
+        self.message = message
+        self.title_label = arcade.Text(
+            "СЕРВЕР НЕДОСТУПЕН",
+            x=0,
+            y=0,
+            color=(228, 243, 255),
+            font_size=48,
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+            bold=True,
+        )
+        self.message_label = arcade.Text(
+            self.message,
+            x=0,
+            y=0,
+            color=(165, 188, 214),
+            font_size=22,
+            font_name=("Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+            width=680,
+            multiline=True,
+            align="center",
+        )
+
+        self._build_ui()
+
+    def _build_ui(self) -> None:
+        button_box = arcade.gui.UIBoxLayout(space_between=14)
+
+        retry_button = arcade.gui.UIFlatButton(
+            text="ПЕРЕПОДКЛЮЧИТЬСЯ",
+            width=380,
+            height=78,
+            style=build_primary_button_style(),
+        )
+
+        @retry_button.event("on_click")
+        def on_click(_event):
+            Manager().push_message(("retry_connect",))
+            self.window.show_view(StartupView())
+
+        exit_button = arcade.gui.UIFlatButton(
+            text="ВЫХОД",
+            width=380,
+            height=78,
+            style=build_menu_button_style(exit_button=True),
+        )
+
+        @exit_button.event("on_click")
+        def on_exit(_event):
+            Manager().push_message((0,))
+            arcade.exit()
+
+        button_box.add(retry_button)
+        button_box.add(exit_button)
+        self._add_centered_widget(button_box, align_y=-120)
+
+    def on_draw(self) -> None:
+        self.clear()
+        self._draw_neon_background()
+        self._draw_registration_shell()
+        self._draw_text_layer()
+        self.ui.draw()
+
+    def _draw_registration_shell(self) -> None:
+        width = self.window.width
+        height = self.window.height
+        self._draw_filled_rect(width * 0.20, width * 0.80,
+                               height * 0.18, height * 0.78, (5, 12, 30, 120))
+        self._draw_outlined_rect(
+            width * 0.20, width * 0.80, height * 0.18,
+            height * 0.78, (66, 188, 255, 90), 2)
+
+    def _draw_text_layer(self) -> None:
+        self.title_label.x = self.window.width / 2
+        self.title_label.y = self.window.height * 0.70
+        self.title_label.draw()
+
+        self.message_label.text = self.message
+        self.message_label.x = self.window.width / 2
+        self.message_label.y = self.window.height * 0.52
+        self.message_label.draw()
+
+
 class RegistrationView(NeonBaseView):
     """Экран регистрации перед входом в меню."""
 
@@ -1191,7 +1361,7 @@ async def run() -> None:
     )
     setattr(window, "_windowed_size", (WINDOW_WIDTH, WINDOW_HEIGHT))
     enter_soft_fullscreen(window)
-    window.show_view(RegistrationView())
+    window.show_view(StartupView())
     arcade.run()
 
 

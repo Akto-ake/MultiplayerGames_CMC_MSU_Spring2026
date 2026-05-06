@@ -6,12 +6,12 @@ try:
     from . import status_client_support
     from .frontend import Manager
     from .main_function_for_client import CLIENT_GAMES
-    from .server import Client, ClientServerError, run_with_client
+    from .server import Client, ClientServerError
 except ImportError:
     import status_client_support
     from frontend import Manager
     from main_function_for_client import CLIENT_GAMES
-    from server import Client, ClientServerError, run_with_client
+    from server import Client, ClientServerError
 
 
 async def play_game(game: Client.Game):
@@ -34,10 +34,68 @@ async def play_game(game: Client.Game):
         )
 
 
+def push_startup_connected(manager: Manager):
+    """Сообщает фронтенду об успешном стартовом подключении."""
+
+    manager.push_status(
+        {
+            "view": "startup_connected",
+        }
+    )
+
+
+def push_server_unavailable(manager: Manager):
+    """Сообщает фронтенду об отсутствии сервера на старте."""
+
+    manager.push_status(
+        {
+            "view": "server_unavailable",
+            "message": "Сервер недоступен.",
+        }
+    )
+
+
+async def check_server_protocol(client: Client):
+    """Проверяет, что на порту отвечает именно игровой сервер."""
+
+    try:
+        await asyncio.wait_for(
+            client.request(
+                {
+                    "target": "server",
+                    "message": "__startup_probe__",
+                }
+            ),
+            timeout=0.5,
+        )
+    except ClientServerError as error:
+        return str(error) == "unknown message"
+    except Exception:
+        return False
+
+    return False
+
+
+async def try_connect_client(client: Client, manager: Manager):
+    """Пытается подключить клиента к серверу на старте."""
+
+    try:
+        await client.connect()
+        if not await check_server_protocol(client):
+            raise ClientServerError("server unavailable")
+        push_startup_connected(manager)
+        return True
+    except (ClientServerError, OSError):
+        await client.close()
+        push_server_unavailable(manager)
+        return False
+
+
 async def _run_client_loop(client: Client):
     """Основной цикл бэкенда с уже подключённым клиентом."""
 
     manager = Manager()
+    is_connected = await try_connect_client(client, manager)
 
     while True:
         await asyncio.sleep(0.01)
@@ -58,19 +116,32 @@ async def _run_client_loop(client: Client):
             case 0:
                 break
 
+            case "retry_connect":
+                if not is_connected:
+                    is_connected = await try_connect_client(client, manager)
+                continue
+
             case "login":
+                if not is_connected:
+                    continue
                 await client.login(message[1])
                 continue
 
             case "create_game":
+                if not is_connected:
+                    continue
                 game = await client.init_game(message[1])
                 game.set_run(CLIENT_GAMES[message[1]])
 
             case 1:
+                if not is_connected:
+                    continue
                 game = await client.connect_game(message[1])
                 game.set_run(CLIENT_GAMES["X_O"])
 
             case code if 1 < code < len(status_client_support._STATUS_):
+                if not is_connected:
+                    continue
                 game_name = message[1][22:]
                 game = await client.init_game(game_name)
                 game.set_run(CLIENT_GAMES[game_name])
@@ -88,4 +159,9 @@ async def _run_client_loop(client: Client):
 async def run():
     """Основной цикл бэкенда."""
 
-    await run_with_client(_run_client_loop)
+    client = Client()
+
+    try:
+        await _run_client_loop(client)
+    finally:
+        await client.close()
