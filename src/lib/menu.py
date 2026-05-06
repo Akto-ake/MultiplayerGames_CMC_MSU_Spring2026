@@ -856,6 +856,7 @@ class MainMenuView(NeonBaseView):
 
     def _handle_action(self, action: str, caption: str) -> None:
         if action == "exit":
+            Manager().push_message((0,))
             arcade.exit()
             return
 

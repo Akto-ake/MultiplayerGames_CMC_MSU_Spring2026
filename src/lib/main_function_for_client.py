@@ -83,6 +83,14 @@ async def x_o_run(game):
 
             user_message = manager.pop_message()
 
+            if (
+                isinstance(user_message, tuple)
+                and len(user_message) > 0
+                and user_message[0] == 0
+            ):
+                manager.push_message(user_message)
+                return
+
             if user_message == "start":
                 await game.push_message({"status": "start"})
 
