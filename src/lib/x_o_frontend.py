@@ -61,6 +61,7 @@ class TicTacToeView(NeonBaseView):
 
         self.board = [[EMPTY_CELL] * CELL_COUNT for _ in range(CELL_COUNT)]
         self.nicks: list[str] = []
+        self.lobby_id: int | None = None
         self.symbol: str | None = None
         self.turn: str | None = None
         self.status = "idle"
@@ -119,6 +120,16 @@ class TicTacToeView(NeonBaseView):
             anchor_x="center",
             anchor_y="center",
             bold=True,
+        )
+        self.lobby_label = arcade.Text(
+            "",
+            x=0,
+            y=0,
+            color=(165, 188, 214),
+            font_size=14,
+            font_name=("Calibri", "Arial"),
+            anchor_x="right",
+            anchor_y="top",
         )
 
         self._build_ui()
@@ -225,6 +236,7 @@ class TicTacToeView(NeonBaseView):
 
         self.board = latest_status.get("board", self.board)
         self.nicks = latest_status.get("nicks", self.nicks)
+        self.lobby_id = latest_status.get("lobby_id", self.lobby_id)
         self.symbol = latest_status.get("symbol")
         self.turn = latest_status.get("turn")
         self.status = latest_status.get("status", self.status)
@@ -302,6 +314,12 @@ class TicTacToeView(NeonBaseView):
         self.meta_label.x = self.window.width / 2
         self.meta_label.y = self.window.height * 0.185
         self.meta_label.draw()
+
+        if self.lobby_id is not None:
+            self.lobby_label.text = f"ID ЛОББИ: {self.lobby_id}"
+            self.lobby_label.x = self.window.width - 18
+            self.lobby_label.y = self.window.height - 10
+            self.lobby_label.draw()
 
     def _draw_board(self) -> None:
         left, right, bottom, top, cell_size = self._board_bounds()

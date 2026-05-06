@@ -54,6 +54,7 @@ def x_o_push(manager, game, board, symbol, turn, status):
             "game": "X_O",
             "board": board,
             "nicks": game.nicks,
+            "lobby_id": game.get_id(),
             "symbol": symbol,
             "turn": turn,
             "status": status,
