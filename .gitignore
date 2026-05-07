@@ -1,14 +1,18 @@
+# Byte-compiled
 __pycache__/
 *.pyc
 
+# Environments
 .venv/
 venv/
+.venv_arcade3/
+.env
 
+# Tooling
 .pytest_cache/
 .coverage
 
-.env
-
+# IDEs
 .idea/
 .vscode/
 .DS_Store
