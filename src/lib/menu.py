@@ -1,3 +1,5 @@
+"""Экраны меню и UI-утилиты клиентского приложения."""
+
 from __future__ import annotations
 
 import asyncio
@@ -34,31 +36,48 @@ MENU_ACTIONS = [
 GAME_CARDS = [
     {
         "title": "Tanks 1990",
-        "rules": "Два игрока управляют танками на арене. Цель: первым уничтожить соперника нужное число раз.",
+        "rules": (
+            "Два игрока управляют танками на арене. Цель: первым уничтожить соперника "
+            "нужное число раз."
+        ),
         "colors": ((39, 94, 62), (87, 190, 122)),
         "image": "tanks_1990.jpg",
     },
     {
         "title": "Pong",
-        "rules": "Классический пинг-понг: двигайте ракетку и отбивайте мяч. Очко получает тот, кто отправил мяч за край соперника.",
+        "rules": (
+            "Классический пинг-понг: двигайте ракетку и "
+            "отбивайте мяч. Очко получает тот, "
+            "кто отправил мяч за край соперника."
+        ),
         "colors": ((26, 72, 116), (95, 186, 255)),
         "image": "pong.jpg",
     },
     {
         "title": "X and O",
-        "rules": "Крестики-нолики для двух игроков. Побеждает тот, кто первым соберет линию из трех своих символов.",
+        "rules": (
+            "Крестики-нолики для двух игроков. Побеждает тот, "
+            "кто первым соберет линию из "
+            "трех своих символов."
+        ),
         "colors": ((81, 46, 126), (184, 128, 255)),
         "image": "x_0.jpg",
     },
     {
         "title": "Морской бой",
-        "rules": "Разместите флот на поле и по очереди стреляйте по клеткам противника. Побеждает уничтоживший все корабли.",
+        "rules": (
+            "Разместите флот на поле и по очереди стреляйте по клеткам противника. "
+            "Побеждает уничтоживший все корабли."
+        ),
         "colors": ((36, 66, 121), (106, 161, 255)),
         "image": "sea_battle.jpg",
     },
     {
         "title": "Викторина",
-        "rules": "Игроки отвечают на одинаковые вопросы. Побеждает тот, кто набрал больше правильных ответов за раунд.",
+        "rules": (
+            "Игроки отвечают на одинаковые вопросы. Побеждает тот, кто набрал больше "
+            "правильных ответов за раунд."
+        ),
         "colors": ((103, 65, 26), (242, 186, 96)),
         "image": "quiz.jpg",
     },
@@ -99,10 +118,15 @@ def is_window_full_like(window: arcade.Window) -> bool:
     win_w, win_h = window.get_size()
     screen = window.get_window_screen()
     tolerance = 2
-    return abs(win_w - screen.width) <= tolerance and abs(win_h - screen.height) <= tolerance
+    return (
+        abs(win_w - screen.width) <= tolerance
+        and abs(win_h - screen.height) <= tolerance
+    )
 
 
 def build_menu_button_style(exit_button: bool = False) -> dict:
+    """Возвращает стиль кнопки меню с неоновым оформлением."""
+
     accent = PURPLE if exit_button else CYAN
     accent_hover = (203, 143, 255) if exit_button else (115, 233, 255)
     bg_normal = (20, 14, 42, 205) if exit_button else (8, 18, 44, 205)
@@ -145,6 +169,8 @@ def build_menu_button_style(exit_button: bool = False) -> dict:
 
 
 def build_primary_button_style() -> dict:
+    """Возвращает стиль основной action-кнопки."""
+
     return {
         "normal": UIFlatButtonStyle(
             font_name=("Bahnschrift", "Calibri", "Arial"),
@@ -182,6 +208,8 @@ def build_primary_button_style() -> dict:
 
 
 def build_input_style() -> dict:
+    """Возвращает стили для поля ввода."""
+
     return {
         "normal": UIInputTextStyle(bg=(8, 16, 42, 220), border=CYAN, border_width=2),
         "hover": UIInputTextStyle(bg=(10, 20, 56, 230),
@@ -204,12 +232,18 @@ class NeonBaseView(arcade.View):
         self._stars = self._generate_stars(count=140)
 
     def on_show_view(self) -> None:
+        """Активирует UI-менеджер при показе экрана."""
+
         self.ui.enable()
 
     def on_hide_view(self) -> None:
+        """Отключает UI-менеджер при скрытии экрана."""
+
         self.ui.disable()
 
     def on_key_press(self, key: int, _modifiers: int) -> None:
+        """Обрабатывает Esc для выхода из fullscreen-режима."""
+
         if key == arcade.key.ESCAPE:
             if not self.window:
                 return
@@ -219,7 +253,10 @@ class NeonBaseView(arcade.View):
                 setattr(self.window, "_soft_fullscreen", False)
                 return
 
-            if getattr(self.window, "_soft_fullscreen", False) or is_window_full_like(self.window):
+            if (
+                getattr(self.window, "_soft_fullscreen", False)
+                or is_window_full_like(self.window)
+            ):
                 exit_soft_fullscreen(self.window)
             return
 
@@ -392,6 +429,8 @@ class VerticalCenteredInputText(arcade.gui.UIInputText):
         self.caret.on_layout_update()
 
     def on_click(self, event: arcade.gui.UIOnClickEvent):
+        """Активирует каретку при клике по полю ввода."""
+
         super().on_click(event)
         # Ensure caret becomes visible on every click, even if already active.
         self.caret.on_activate()
@@ -426,6 +465,8 @@ class StartupView(NeonBaseView):
         )
 
     def on_update(self, _delta_time: float) -> None:
+        """Проверяет статусы подключения и переключает экран."""
+
         manager = Manager()
 
         while True:
@@ -453,6 +494,8 @@ class StartupView(NeonBaseView):
                 return
 
     def on_draw(self) -> None:
+        """Отрисовывает стартовый экран подключения."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_registration_shell()
@@ -542,6 +585,8 @@ class ServerUnavailableView(NeonBaseView):
         self._add_centered_widget(button_box, align_y=-120)
 
     def on_draw(self) -> None:
+        """Отрисовывает экран недоступности сервера."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_registration_shell()
@@ -655,11 +700,15 @@ class RegistrationView(NeonBaseView):
         self._add_centered_widget(form_box, align_y=-20)
 
     def on_show_view(self) -> None:
+        """Фокусирует поле имени при открытии экрана."""
+
         super().on_show_view()
         if hasattr(self.ui, "_set_active_widget"):
             self.ui._set_active_widget(self.name_input)
 
     def on_draw(self) -> None:
+        """Отрисовывает экран регистрации."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_registration_shell()
@@ -668,6 +717,8 @@ class RegistrationView(NeonBaseView):
         self._draw_input_focus_glow()
 
     def on_key_press(self, key: int, modifiers: int) -> None:
+        """Обрабатывает Enter для отправки введенного имени."""
+
         if key in (arcade.key.ENTER, arcade.key.NUM_ENTER):
             self._submit_name()
             return
@@ -844,11 +895,15 @@ class JoinLobbyView(NeonBaseView):
         self._add_centered_widget(form_box, align_y=-20)
 
     def on_show_view(self) -> None:
+        """Фокусирует поле ID лобби при открытии экрана."""
+
         super().on_show_view()
         if hasattr(self.ui, "_set_active_widget"):
             self.ui._set_active_widget(self.lobby_input)
 
     def on_update(self, _delta_time: float) -> None:
+        """Считывает статусы и открывает экран игры при готовности."""
+
         while True:
             status, error = Manager().pop_status()
 
@@ -870,6 +925,8 @@ class JoinLobbyView(NeonBaseView):
                 return
 
     def on_draw(self) -> None:
+        """Отрисовывает экран подключения к лобби."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_registration_shell()
@@ -878,6 +935,8 @@ class JoinLobbyView(NeonBaseView):
         self._draw_input_focus_glow()
 
     def on_key_press(self, key: int, modifiers: int) -> None:
+        """Обрабатывает Enter для отправки ID лобби."""
+
         if key in (arcade.key.ENTER, arcade.key.NUM_ENTER):
             self._submit_lobby_id()
             return
@@ -958,7 +1017,8 @@ class MainMenuView(NeonBaseView):
                  on_action: Optional[Callable[[str], None]] = None):
         super().__init__()
         self.player_name = player_name
-        # Не используем имя с префиксом "on_", чтобы pyglet не принял это за event handler.
+        # Не используем имя с префиксом "on_", чтобы pyglet
+        # не принял это за event handler.
         self.action_callback = on_action
         self.status_text = f"Игрок: {player_name}"
 
@@ -1004,6 +1064,8 @@ class MainMenuView(NeonBaseView):
         self._add_centered_widget(button_box, align_y=-30)
 
     def on_draw(self) -> None:
+        """Отрисовывает главный экран меню."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_menu_shell()
@@ -1011,6 +1073,8 @@ class MainMenuView(NeonBaseView):
         self.ui.draw()
 
     def on_update(self, _delta_time: float) -> None:
+        """Обрабатывает обновления статусов и переходы в игру."""
+
         while True:
             status, error = Manager().pop_status()
 
@@ -1086,9 +1150,12 @@ class MainMenuView(NeonBaseView):
 
         if action == "games":
             self.window.show_view(
-                GamesCatalogView(player_name=self.player_name, on_back=lambda: self.window.show_view(
-                    MainMenuView(self.player_name, self.action_callback)
-                ))
+                GamesCatalogView(
+                    player_name=self.player_name,
+                    on_back=lambda: self.window.show_view(
+                        MainMenuView(self.player_name, self.action_callback)
+                    ),
+                )
             )
             return
 
@@ -1154,6 +1221,8 @@ class GamesCatalogView(NeonBaseView):
         self.ui.add(anchor_layout)
 
     def on_draw(self) -> None:
+        """Отрисовывает каталог доступных игр."""
+
         self.clear()
         self._draw_games_background()
         self._draw_shell()
@@ -1220,9 +1289,18 @@ class GamesCatalogView(NeonBaseView):
             bottom = top - card_h
             self._draw_single_card(left, right, bottom, top, game)
 
-    def _draw_single_card(self, left: float, right: float, bottom: float, top: float, game: dict) -> None:
+    def _draw_single_card(
+        self,
+        left: float,
+        right: float,
+        bottom: float,
+        top: float,
+        game: dict,
+    ) -> None:
         self._draw_filled_rect(left, right, bottom, top, (8, 20, 48, 225))
-        self._draw_outlined_rect(left, right, bottom, top, (104, 219, 255, 135), border_width=2)
+        self._draw_outlined_rect(
+            left, right, bottom, top, (104, 219, 255, 135), border_width=2
+        )
 
         card_h = top - bottom
         card_w = right - left
@@ -1259,7 +1337,9 @@ class GamesCatalogView(NeonBaseView):
             top=img_top,
             fallback_color=img_col_1,
         )
-        self._draw_outlined_rect(img_left, img_right, img_bottom, img_top, img_col_2, border_width=2)
+        self._draw_outlined_rect(
+            img_left, img_right, img_bottom, img_top, img_col_2, border_width=2
+        )
 
         rules_top = img_bottom - 10
         rules_bottom = bottom + pad_y
@@ -1379,6 +1459,8 @@ class GamesCatalogView(NeonBaseView):
 
 
 async def run() -> None:
+    """Создает окно меню и запускает цикл `arcade`."""
+
     window = arcade.Window(
         width=WINDOW_WIDTH,
         height=WINDOW_HEIGHT,

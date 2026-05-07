@@ -3,15 +3,13 @@
 import asyncio
 import sys
 from pathlib import Path
-
+from server import run_with_server
 
 CURRENT_DIR = Path(__file__).resolve().parent
 LIB_DIR = CURRENT_DIR / "lib"
 
 if str(LIB_DIR) not in sys.path:
     sys.path.insert(0, str(LIB_DIR))
-
-from server import run_with_server
 
 
 async def _run_server(server):

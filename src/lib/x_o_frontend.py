@@ -168,9 +168,13 @@ class TicTacToeView(NeonBaseView):
         self._add_centered_widget(controls, align_y=-300)
 
     def on_update(self, _delta_time: float) -> None:
+        """Считывает новые статусы игры от менеджера."""
+
         self._consume_statuses()
 
     def on_draw(self) -> None:
+        """Отрисовывает экран игры и элементы интерфейса."""
+
         self.clear()
         self._draw_neon_background()
         self._draw_game_shell()
@@ -185,6 +189,8 @@ class TicTacToeView(NeonBaseView):
         _button: int,
         _modifiers: int,
     ) -> None:
+        """Обрабатывает клик по клетке и отправляет ход."""
+
         cell = self._cell_at_point(x, y)
 
         if cell is None:
@@ -305,7 +311,11 @@ class TicTacToeView(NeonBaseView):
         self._draw_filled_rect(left, right, bottom, top, (5, 20, 46, 195))
         self._draw_outlined_rect(left, right, bottom, top, color + (185,), 2)
 
-        label = self.left_label if caption in ("ИГРОК", "ID ЛОББИ") else self.right_label
+        label = (
+            self.left_label
+            if caption in ("ИГРОК", "ID ЛОББИ")
+            else self.right_label
+        )
         label.text = f"{caption}: {value}"
         label.x = (left + right) / 2
         label.y = (bottom + top) / 2

@@ -1,3 +1,5 @@
+"""Точка входа клиентского приложения."""
+
 import asyncio
 import threading
 
