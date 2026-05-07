@@ -24,8 +24,14 @@ async def main():
     await run_with_server(_run_server)
 
 
+def cli() -> None:
+    """Console entry point for server app."""
+
+    asyncio.run(main())
+
+
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        cli()
     except KeyboardInterrupt:
         pass

@@ -25,9 +25,15 @@ async def main():
         if backend_thread.is_alive():
             backend_thread.join()
 
+
+def cli() -> None:
+    """Console entry point for client app."""
+
+    asyncio.run(main())
+
 if __name__ == "__main__":
     try:
-        asyncio.run(main())
+        cli()
     except KeyboardInterrupt:
         # Чтобы не вылетало ошибок при нажатии Ctrl+C
         pass
