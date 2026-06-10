@@ -16,8 +16,10 @@ from arcade.gui.widgets.text import UIInputTextStyle
 
 try:
     from .frontend import Manager
+    from .localization import tr, toggle_locale
 except ImportError:
     from frontend import Manager
+    from localization import tr, toggle_locale
 
 
 WINDOW_WIDTH = 1280
@@ -27,57 +29,40 @@ PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GAMES_MEDIA_DIR = PROJECT_ROOT / "media" / "games"
 
 MENU_ACTIONS = [
-    ("create_lobby", "СОЗДАТЬ ЛОББИ"),
-    ("lobbies", "ДОСТУПНЫЕ ЛОББИ"),
-    ("games", "ИГРЫ"),
-    ("exit", "ВЫХОД"),
+    ("create_lobby", "menu.create_lobby"),
+    ("lobbies", "menu.lobbies"),
+    ("games", "menu.games"),
+    ("exit", "menu.exit"),
 ]
 
 GAME_CARDS = [
     {
-        "title": "Tanks 1990",
-        "rules": (
-            "Два игрока управляют танками на арене. Цель: первым уничтожить соперника "
-            "нужное число раз."
-        ),
+        "title_key": "game.tanks.title",
+        "rules_key": "game.tanks.rules",
         "colors": ((39, 94, 62), (87, 190, 122)),
         "image": "tanks_1990.jpg",
     },
     {
-        "title": "Pong",
-        "rules": (
-            "Классический пинг-понг: двигайте ракетку и "
-            "отбивайте мяч. Очко получает тот, "
-            "кто отправил мяч за край соперника."
-        ),
+        "title_key": "game.pong.title",
+        "rules_key": "game.pong.rules",
         "colors": ((26, 72, 116), (95, 186, 255)),
         "image": "pong.jpg",
     },
     {
-        "title": "X and O",
-        "rules": (
-            "Крестики-нолики для двух игроков. Побеждает тот, "
-            "кто первым соберет линию из "
-            "трех своих символов."
-        ),
+        "title_key": "game.x_o.title",
+        "rules_key": "game.x_o.rules",
         "colors": ((81, 46, 126), (184, 128, 255)),
         "image": "x_0.jpg",
     },
     {
-        "title": "Морской бой",
-        "rules": (
-            "Разместите флот на поле и по очереди стреляйте по клеткам противника. "
-            "Побеждает уничтоживший все корабли."
-        ),
+        "title_key": "game.sea_battle.title",
+        "rules_key": "game.sea_battle.rules",
         "colors": ((36, 66, 121), (106, 161, 255)),
         "image": "sea_battle.jpg",
     },
     {
-        "title": "Викторина",
-        "rules": (
-            "Игроки отвечают на одинаковые вопросы. Побеждает тот, кто набрал больше "
-            "правильных ответов за раунд."
-        ),
+        "title_key": "game.quiz.title",
+        "rules_key": "game.quiz.rules",
         "colors": ((103, 65, 26), (242, 186, 96)),
         "image": "quiz.jpg",
     },
@@ -230,6 +215,7 @@ class NeonBaseView(arcade.View):
         super().__init__()
         self.ui = arcade.gui.UIManager()
         self._stars = self._generate_stars(count=140)
+        self.locale_button = None
 
     def on_show_view(self) -> None:
         """Активирует UI-менеджер при показе экрана."""
@@ -281,6 +267,46 @@ class NeonBaseView(arcade.View):
             align_y=align_y,
         )
         self.ui.add(anchor_layout)
+
+    def _add_locale_toggle(self) -> None:
+        self.locale_button = arcade.gui.UIFlatButton(
+            text=tr("lang.switch"),
+            width=74,
+            height=46,
+            style=build_primary_button_style(),
+        )
+
+        @self.locale_button.event("on_click")
+        def on_click(_event):
+            toggle_locale()
+            self._refresh_texts()
+
+        anchor_widget_cls = getattr(arcade.gui, "UIAnchorWidget", None)
+        if anchor_widget_cls is not None:
+            self.ui.add(
+                anchor_widget_cls(
+                    anchor_x="left",
+                    anchor_y="top",
+                    align_x=14,
+                    align_y=-12,
+                    child=self.locale_button,
+                )
+            )
+            return
+
+        anchor_layout = arcade.gui.UIAnchorLayout()
+        anchor_layout.add(
+            child=self.locale_button,
+            anchor_x="left",
+            anchor_y="top",
+            align_x=14,
+            align_y=-12,
+        )
+        self.ui.add(anchor_layout)
+
+    def _refresh_texts(self) -> None:
+        if self.locale_button is not None:
+            self.locale_button.text = tr("lang.switch")
 
     def _draw_neon_background(self) -> None:
         self._draw_vertical_gradient(
@@ -443,7 +469,7 @@ class StartupView(NeonBaseView):
     def __init__(self):
         super().__init__()
         self.title_label = arcade.Text(
-            "ПОДКЛЮЧЕНИЕ К СЕРВЕРУ",
+            tr("startup.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -454,7 +480,7 @@ class StartupView(NeonBaseView):
             bold=True,
         )
         self.message_label = arcade.Text(
-            "Пожалуйста, подождите...",
+            tr("startup.wait"),
             x=0,
             y=0,
             color=(165, 188, 214),
@@ -463,6 +489,7 @@ class StartupView(NeonBaseView):
             anchor_x="center",
             anchor_y="center",
         )
+        self._add_locale_toggle()
 
     def on_update(self, _delta_time: float) -> None:
         """Проверяет статусы подключения и переключает экран."""
@@ -488,7 +515,7 @@ class StartupView(NeonBaseView):
             ):
                 self.window.show_view(
                     ServerUnavailableView(
-                        status.get("message", "Сервер недоступен.")
+                        status.get("message", tr("server_unavailable.message"))
                     )
                 )
                 return
@@ -500,6 +527,7 @@ class StartupView(NeonBaseView):
         self._draw_neon_background()
         self._draw_registration_shell()
         self._draw_text_layer()
+        self.ui.draw()
 
     def _draw_registration_shell(self) -> None:
         width = self.window.width
@@ -511,6 +539,7 @@ class StartupView(NeonBaseView):
             height * 0.78, (66, 188, 255, 90), 2)
 
     def _draw_text_layer(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.64
         self.title_label.draw()
@@ -519,15 +548,20 @@ class StartupView(NeonBaseView):
         self.message_label.y = self.window.height * 0.48
         self.message_label.draw()
 
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("startup.title")
+        self.message_label.text = tr("startup.wait")
+
 
 class ServerUnavailableView(NeonBaseView):
     """Стартовый экран отсутствия подключения к серверу."""
 
-    def __init__(self, message: str = "Сервер недоступен."):
+    def __init__(self, message: str = ""):
         super().__init__()
-        self.message = message
+        self.message = message or tr("server_unavailable.message")
         self.title_label = arcade.Text(
-            "СЕРВЕР НЕДОСТУПЕН",
+            tr("server_unavailable.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -538,7 +572,7 @@ class ServerUnavailableView(NeonBaseView):
             bold=True,
         )
         self.message_label = arcade.Text(
-            self.message,
+            self._message_text(),
             x=0,
             y=0,
             color=(165, 188, 214),
@@ -556,33 +590,34 @@ class ServerUnavailableView(NeonBaseView):
     def _build_ui(self) -> None:
         button_box = arcade.gui.UIBoxLayout(space_between=14)
 
-        retry_button = arcade.gui.UIFlatButton(
-            text="ПЕРЕПОДКЛЮЧИТЬСЯ",
+        self.retry_button = arcade.gui.UIFlatButton(
+            text=tr("server_unavailable.retry"),
             width=380,
             height=78,
             style=build_primary_button_style(),
         )
 
-        @retry_button.event("on_click")
+        @self.retry_button.event("on_click")
         def on_click(_event):
             Manager().push_message(("retry_connect",))
             self.window.show_view(StartupView())
 
-        exit_button = arcade.gui.UIFlatButton(
-            text="ВЫХОД",
+        self.exit_button = arcade.gui.UIFlatButton(
+            text=tr("menu.exit"),
             width=380,
             height=78,
             style=build_menu_button_style(exit_button=True),
         )
 
-        @exit_button.event("on_click")
+        @self.exit_button.event("on_click")
         def on_exit(_event):
             Manager().push_message((0,))
             arcade.exit()
 
-        button_box.add(retry_button)
-        button_box.add(exit_button)
+        button_box.add(self.retry_button)
+        button_box.add(self.exit_button)
         self._add_centered_widget(button_box, align_y=-120)
+        self._add_locale_toggle()
 
     def on_draw(self) -> None:
         """Отрисовывает экран недоступности сервера."""
@@ -603,14 +638,27 @@ class ServerUnavailableView(NeonBaseView):
             height * 0.78, (66, 188, 255, 90), 2)
 
     def _draw_text_layer(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.70
         self.title_label.draw()
 
-        self.message_label.text = self.message
         self.message_label.x = self.window.width / 2
         self.message_label.y = self.window.height * 0.52
         self.message_label.draw()
+
+    def _message_text(self) -> str:
+        if self.message == "Сервер недоступен.":
+            return tr("server_unavailable.message")
+
+        return self.message
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("server_unavailable.title")
+        self.message_label.text = self._message_text()
+        self.retry_button.text = tr("server_unavailable.retry")
+        self.exit_button.text = tr("menu.exit")
 
 
 class RegistrationView(NeonBaseView):
@@ -620,7 +668,7 @@ class RegistrationView(NeonBaseView):
         super().__init__()
         self.error_text = ""
         self.title_label = arcade.Text(
-            "ДОБРО ПОЖАЛОВАТЬ",
+            tr("registration.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -631,7 +679,7 @@ class RegistrationView(NeonBaseView):
             bold=True,
         )
         self.prompt_label = arcade.Text(
-            "ВВЕДИТЕ ИМЯ",
+            tr("registration.prompt"),
             x=0,
             y=0,
             color=(128, 219, 255),
@@ -642,7 +690,7 @@ class RegistrationView(NeonBaseView):
             bold=True,
         )
         self.hint_label = arcade.Text(
-            "Нажмите Enter или кнопку ПРОДОЛЖИТЬ",
+            tr("registration.hint"),
             x=0,
             y=0,
             color=(165, 188, 214),
@@ -684,20 +732,21 @@ class RegistrationView(NeonBaseView):
         def on_change(_event):
             self.error_text = ""
 
-        continue_button = arcade.gui.UIFlatButton(
-            text="ПРОДОЛЖИТЬ",
+        self.continue_button = arcade.gui.UIFlatButton(
+            text=tr("registration.continue"),
             width=360,
             height=78,
             style=build_primary_button_style(),
         )
 
-        @continue_button.event("on_click")
+        @self.continue_button.event("on_click")
         def on_click(_event):
             self._submit_name()
 
         form_box.add(self.name_input)
-        form_box.add(continue_button)
+        form_box.add(self.continue_button)
         self._add_centered_widget(form_box, align_y=-20)
+        self._add_locale_toggle()
 
     def on_show_view(self) -> None:
         """Фокусирует поле имени при открытии экрана."""
@@ -736,6 +785,7 @@ class RegistrationView(NeonBaseView):
                                height * 0.60, height * 0.66, (20, 52, 110, 80))
 
     def _draw_text_layer(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.84
         self.title_label.draw()
@@ -752,6 +802,13 @@ class RegistrationView(NeonBaseView):
         self.error_label.x = self.window.width / 2
         self.error_label.y = self.window.height * 0.28
         self.error_label.draw()
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("registration.title")
+        self.prompt_label.text = tr("registration.prompt")
+        self.hint_label.text = tr("registration.hint")
+        self.continue_button.text = tr("registration.continue")
 
     def _draw_input_focus_glow(self) -> None:
         if not self.name_input.active:
@@ -781,11 +838,11 @@ class RegistrationView(NeonBaseView):
         name = " ".join(raw_name.split())
 
         if not name:
-            self.error_text = "Имя не может быть пустым."
+            self.error_text = tr("registration.empty_name")
             return
 
         if len(name) > 18:
-            self.error_text = "Имя слишком длинное (максимум 18 символов)."
+            self.error_text = tr("registration.long_name")
             return
 
         Manager().push_message(("login", name))
@@ -801,7 +858,7 @@ class JoinLobbyView(NeonBaseView):
         self.on_back = on_back
         self.error_text = ""
         self.title_label = arcade.Text(
-            "ПОДКЛЮЧЕНИЕ К ЛОББИ",
+            tr("join.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -812,7 +869,7 @@ class JoinLobbyView(NeonBaseView):
             bold=True,
         )
         self.prompt_label = arcade.Text(
-            "ВВЕДИТЕ ID ЛОББИ",
+            tr("join.prompt"),
             x=0,
             y=0,
             color=(128, 219, 255),
@@ -823,7 +880,7 @@ class JoinLobbyView(NeonBaseView):
             bold=True,
         )
         self.hint_label = arcade.Text(
-            "Введите число и нажмите Enter",
+            tr("join.hint"),
             x=0,
             y=0,
             color=(165, 188, 214),
@@ -866,33 +923,34 @@ class JoinLobbyView(NeonBaseView):
         def on_change(_event):
             self.error_text = ""
 
-        connect_button = arcade.gui.UIFlatButton(
-            text="ПОДКЛЮЧИТЬСЯ",
+        self.connect_button = arcade.gui.UIFlatButton(
+            text=tr("join.connect"),
             width=280,
             height=78,
             style=build_primary_button_style(),
         )
 
-        @connect_button.event("on_click")
+        @self.connect_button.event("on_click")
         def on_click(_event):
             self._submit_lobby_id()
 
-        back_button = arcade.gui.UIFlatButton(
-            text="НАЗАД",
+        self.back_button = arcade.gui.UIFlatButton(
+            text=tr("join.back"),
             width=220,
             height=78,
             style=build_menu_button_style(exit_button=True),
         )
 
-        @back_button.event("on_click")
+        @self.back_button.event("on_click")
         def on_back(_event):
             self.on_back()
 
-        buttons_box.add(connect_button)
-        buttons_box.add(back_button)
+        buttons_box.add(self.connect_button)
+        buttons_box.add(self.back_button)
         form_box.add(self.lobby_input)
         form_box.add(buttons_box)
         self._add_centered_widget(form_box, align_y=-20)
+        self._add_locale_toggle()
 
     def on_show_view(self) -> None:
         """Фокусирует поле ID лобби при открытии экрана."""
@@ -954,6 +1012,7 @@ class JoinLobbyView(NeonBaseView):
                                height * 0.60, height * 0.66, (20, 52, 110, 80))
 
     def _draw_text_layer(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.84
         self.title_label.draw()
@@ -970,6 +1029,14 @@ class JoinLobbyView(NeonBaseView):
         self.error_label.x = self.window.width / 2
         self.error_label.y = self.window.height * 0.28
         self.error_label.draw()
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("join.title")
+        self.prompt_label.text = tr("join.prompt")
+        self.hint_label.text = tr("join.hint")
+        self.connect_button.text = tr("join.connect")
+        self.back_button.text = tr("join.back")
 
     def _draw_input_focus_glow(self) -> None:
         if not self.lobby_input.active:
@@ -998,11 +1065,11 @@ class JoinLobbyView(NeonBaseView):
         raw_lobby_id = self.lobby_input.text.strip()
 
         if not raw_lobby_id:
-            self.error_text = "ID лобби не может быть пустым."
+            self.error_text = tr("join.empty_id")
             return
 
         if not raw_lobby_id.isdigit():
-            self.error_text = "ID лобби должен быть числом."
+            self.error_text = tr("join.bad_id")
             return
 
         lobby_id = int(raw_lobby_id)
@@ -1020,10 +1087,11 @@ class MainMenuView(NeonBaseView):
         # Не используем имя с префиксом "on_", чтобы pyglet
         # не принял это за event handler.
         self.action_callback = on_action
-        self.status_text = f"Игрок: {player_name}"
+        self.status_text = tr("main.player", player=player_name)
+        self.menu_buttons = {}
 
         self.title_label = arcade.Text(
-            "ГЛАВНОЕ МЕНЮ",
+            tr("main.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -1047,21 +1115,23 @@ class MainMenuView(NeonBaseView):
 
     def _build_ui(self) -> None:
         button_box = arcade.gui.UIBoxLayout(space_between=12)
-        for action, title in MENU_ACTIONS:
+        for action, title_key in MENU_ACTIONS:
             button = arcade.gui.UIFlatButton(
-                text=title,
+                text=tr(title_key),
                 width=620,
                 height=82,
                 style=build_menu_button_style(exit_button=(action == "exit")),
             )
 
             @button.event("on_click")
-            def on_click(_event, menu_action=action, caption=title):
-                self._handle_action(menu_action, caption)
+            def on_click(_event, menu_action=action, caption_key=title_key):
+                self._handle_action(menu_action, tr(caption_key))
 
+            self.menu_buttons[action] = (button, title_key)
             button_box.add(button)
 
         self._add_centered_widget(button_box, align_y=-30)
+        self._add_locale_toggle()
 
     def on_draw(self) -> None:
         """Отрисовывает главный экран меню."""
@@ -1118,6 +1188,7 @@ class MainMenuView(NeonBaseView):
         )
 
     def _draw_text_layer(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
@@ -1126,6 +1197,18 @@ class MainMenuView(NeonBaseView):
         self.status_label.x = self.window.width / 2
         self.status_label.y = self.window.height * 0.045
         self.status_label.draw()
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("main.title")
+        is_player_status = (
+            self.status_text.startswith("Игрок: ")
+            or self.status_text.startswith("Player: ")
+        )
+        if is_player_status:
+            self.status_text = tr("main.player", player=self.player_name)
+        for button, title_key in self.menu_buttons.values():
+            button.text = tr(title_key)
 
     def _handle_action(self, action: str, caption: str) -> None:
         if action == "exit":
@@ -1159,7 +1242,7 @@ class MainMenuView(NeonBaseView):
             )
             return
 
-        self.status_text = f"{self.player_name}: выбрано '{caption}'"
+        self.status_text = tr("main.selected", player=self.player_name, caption=caption)
         if self.action_callback:
             self.action_callback(action)
 
@@ -1173,7 +1256,7 @@ class GamesCatalogView(NeonBaseView):
         self.on_back = on_back
         self._texture_cache: dict[str, arcade.Texture | None] = {}
         self.title_label = arcade.Text(
-            "ДОСТУПНЫЕ ИГРЫ",
+            tr("games.title"),
             x=0,
             y=0,
             color=(228, 243, 255),
@@ -1186,14 +1269,14 @@ class GamesCatalogView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        back_button = arcade.gui.UIFlatButton(
-            text="НАЗАД В МЕНЮ",
+        self.back_button = arcade.gui.UIFlatButton(
+            text=tr("games.back"),
             width=250,
             height=56,
             style=build_primary_button_style(),
         )
 
-        @back_button.event("on_click")
+        @self.back_button.event("on_click")
         def on_click(_event):
             self.on_back()
 
@@ -1205,20 +1288,22 @@ class GamesCatalogView(NeonBaseView):
                     anchor_y="top",
                     align_x=-14,
                     align_y=-12,
-                    child=back_button,
+                    child=self.back_button,
                 )
             )
+            self._add_locale_toggle()
             return
 
         anchor_layout = arcade.gui.UIAnchorLayout()
         anchor_layout.add(
-            child=back_button,
+            child=self.back_button,
             anchor_x="right",
             anchor_y="top",
             align_x=-14,
             align_y=-12,
         )
         self.ui.add(anchor_layout)
+        self._add_locale_toggle()
 
     def on_draw(self) -> None:
         """Отрисовывает каталог доступных игр."""
@@ -1253,9 +1338,15 @@ class GamesCatalogView(NeonBaseView):
         )
 
     def _draw_titles(self) -> None:
+        self._refresh_texts()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.94
         self.title_label.draw()
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("games.title")
+        self.back_button.text = tr("games.back")
 
     def _draw_game_cards(self) -> None:
         screen_w = self.window.width
@@ -1311,7 +1402,7 @@ class GamesCatalogView(NeonBaseView):
 
         title_y = top - pad_y - 8
         arcade.draw_text(
-            game["title"],
+            tr(game["title_key"]),
             (left + right) / 2,
             title_y,
             (233, 246, 255),
@@ -1345,7 +1436,7 @@ class GamesCatalogView(NeonBaseView):
         rules_bottom = bottom + pad_y
         rules_height = max(42, rules_top - rules_bottom)
         wrapped, rules_size = self._fit_rules_text(
-            text=game["rules"],
+            text=tr(game["rules_key"]),
             text_width=(img_right - img_left),
             text_height=rules_height,
             initial_size=rules_size,

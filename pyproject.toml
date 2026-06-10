@@ -14,6 +14,7 @@ dependencies = [
 
 [project.optional-dependencies]
 dev = [
+  "babel>=2.15.0",
   "build>=1.2.2",
   "flake8>=7.0.0",
   "pydocstyle>=6.3.0",
@@ -33,3 +34,6 @@ py-modules = ["main_client", "main_server"]
 [tool.setuptools.packages.find]
 where = ["src"]
 include = ["lib*"]
+
+[tool.setuptools.package-data]
+lib = ["locale/*/LC_MESSAGES/*.po", "locale/*/LC_MESSAGES/*.mo"]

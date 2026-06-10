@@ -1,4 +1,4 @@
-"""Minimal automation commands: lint, docs, build."""
+"""Minimal automation commands: lint, docs, build, i18n."""
 
 from __future__ import annotations
 
@@ -22,7 +22,59 @@ def lint() -> int:
 
 
 def docs() -> int:
-    return _run([sys.executable, "-m", "sphinx", "-b", "html", "docs", "docs/_build/html"])
+    return _run([
+        sys.executable,
+        "-m",
+        "sphinx",
+        "-b",
+        "html",
+        "docs",
+        "docs/_build/html",
+    ])
+
+
+def i18n_extract() -> int:
+    return _run([
+        sys.executable,
+        "-m",
+        "babel.messages.frontend",
+        "extract",
+        "-F",
+        "babel.cfg",
+        "-k",
+        "tr",
+        "-o",
+        "src/lib/locale/messages.pot",
+        "src",
+    ])
+
+
+def i18n_update() -> int:
+    return _run([
+        sys.executable,
+        "-m",
+        "babel.messages.frontend",
+        "update",
+        "-i",
+        "src/lib/locale/messages.pot",
+        "-d",
+        "src/lib/locale",
+        "-D",
+        "messages",
+    ])
+
+
+def i18n_compile() -> int:
+    return _run([
+        sys.executable,
+        "-m",
+        "babel.messages.frontend",
+        "compile",
+        "-d",
+        "src/lib/locale",
+        "-D",
+        "messages",
+    ])
 
 
 def build() -> int:
@@ -31,17 +83,37 @@ def build() -> int:
 
 def main() -> int:
     parser = argparse.ArgumentParser()
-    parser.add_argument("target", choices=["lint", "docs", "build", "all"])
+    parser.add_argument(
+        "target",
+        choices=[
+            "lint",
+            "docs",
+            "build",
+            "i18n-extract",
+            "i18n-update",
+            "i18n-compile",
+            "all",
+        ],
+    )
     args = parser.parse_args()
 
     if args.target == "lint":
         return lint()
     if args.target == "docs":
         return docs()
+    if args.target == "i18n-extract":
+        return i18n_extract()
+    if args.target == "i18n-update":
+        return i18n_update()
+    if args.target == "i18n-compile":
+        return i18n_compile()
     if args.target == "build":
         return build()
 
     code = lint()
+    if code:
+        return code
+    code = i18n_compile()
     if code:
         return code
     code = docs()

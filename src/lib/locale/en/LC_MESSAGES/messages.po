@@ -1,0 +1,205 @@
+# English translations for multiplayer_games_CMC2026.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: multiplayer_games_CMC2026 0.1.0\n"
+"Report-Msgid-Bugs-To: \n"
+"POT-Creation-Date: 2026-06-10 00:00+0300\n"
+"PO-Revision-Date: 2026-06-10 00:00+0300\n"
+"Last-Translator: multiplayer_games_CMC2026 contributors\n"
+"Language: en\n"
+"Language-Team: en\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Generated-By: Babel\n"
+
+msgid "lang.switch"
+msgstr "RU"
+
+msgid "menu.create_lobby"
+msgstr "CREATE LOBBY"
+
+msgid "menu.lobbies"
+msgstr "AVAILABLE LOBBIES"
+
+msgid "menu.games"
+msgstr "GAMES"
+
+msgid "menu.exit"
+msgstr "EXIT"
+
+msgid "startup.title"
+msgstr "CONNECTING TO SERVER"
+
+msgid "startup.wait"
+msgstr "Please wait..."
+
+msgid "server_unavailable.title"
+msgstr "SERVER UNAVAILABLE"
+
+msgid "server_unavailable.message"
+msgstr "Server is unavailable."
+
+msgid "server_unavailable.retry"
+msgstr "RECONNECT"
+
+msgid "registration.title"
+msgstr "WELCOME"
+
+msgid "registration.prompt"
+msgstr "ENTER YOUR NAME"
+
+msgid "registration.hint"
+msgstr "Press Enter or the CONTINUE button"
+
+msgid "registration.continue"
+msgstr "CONTINUE"
+
+msgid "registration.empty_name"
+msgstr "Name cannot be empty."
+
+msgid "registration.long_name"
+msgstr "Name is too long (18 characters max)."
+
+msgid "join.title"
+msgstr "JOIN LOBBY"
+
+msgid "join.prompt"
+msgstr "ENTER LOBBY ID"
+
+msgid "join.hint"
+msgstr "Enter a number and press Enter"
+
+msgid "join.connect"
+msgstr "CONNECT"
+
+msgid "join.back"
+msgstr "BACK"
+
+msgid "join.empty_id"
+msgstr "Lobby ID cannot be empty."
+
+msgid "join.bad_id"
+msgstr "Lobby ID must be a number."
+
+msgid "main.title"
+msgstr "MAIN MENU"
+
+msgid "main.player"
+msgstr "Player: {player}"
+
+msgid "main.selected"
+msgstr "{player}: selected '{caption}'"
+
+msgid "games.title"
+msgstr "AVAILABLE GAMES"
+
+msgid "games.back"
+msgstr "BACK TO MENU"
+
+msgid "game.tanks.title"
+msgstr "Tanks 1990"
+
+msgid "game.tanks.rules"
+msgstr ""
+"Two players control tanks in an arena. The goal is to destroy the opponent "
+"the required number of times first."
+
+msgid "game.pong.title"
+msgstr "Pong"
+
+msgid "game.pong.rules"
+msgstr ""
+"Classic ping-pong: move your paddle and return the ball. A player scores "
+"when the ball passes the opponent."
+
+msgid "game.x_o.title"
+msgstr "X and O"
+
+msgid "game.x_o.rules"
+msgstr ""
+"Tic-tac-toe for two players. The winner is the first player to make a line "
+"of three symbols."
+
+msgid "game.sea_battle.title"
+msgstr "Sea Battle"
+
+msgid "game.sea_battle.rules"
+msgstr ""
+"Place your fleet and take turns firing at the opponent's grid. The player "
+"who destroys all enemy ships wins."
+
+msgid "game.quiz.title"
+msgstr "Quiz"
+
+msgid "game.quiz.rules"
+msgstr ""
+"Players answer the same questions. The winner is the player with more "
+"correct answers in the round."
+
+msgid "x_o.idle"
+msgstr "Create a lobby or join a game"
+
+msgid "x_o.waiting"
+msgstr "Waiting for the second player"
+
+msgid "x_o.joined"
+msgstr "Player joined"
+
+msgid "x_o.start"
+msgstr "Game started"
+
+msgid "x_o.move"
+msgstr "Move accepted"
+
+msgid "x_o.not_your_turn"
+msgstr "Opponent's turn"
+
+msgid "x_o.bad_move"
+msgstr "Invalid cell"
+
+msgid "x_o.busy"
+msgstr "This cell is occupied"
+
+msgid "x_o.win"
+msgstr "Game finished"
+
+msgid "x_o.draw"
+msgstr "Draw"
+
+msgid "x_o.leave"
+msgstr "Opponent left the game"
+
+msgid "x_o.start_button"
+msgstr "START"
+
+msgid "x_o.back"
+msgstr "MENU"
+
+msgid "x_o.player"
+msgstr "PLAYER"
+
+msgid "x_o.turn"
+msgstr "TURN"
+
+msgid "x_o.lobby_id"
+msgstr "LOBBY ID"
+
+msgid "x_o.waiting_short"
+msgstr "waiting"
+
+msgid "x_o.you"
+msgstr "you"
+
+msgid "x_o.draw_short"
+msgstr "draw"
+
+msgid "x_o.winner"
+msgstr "{player} won"
+
+msgid "x_o.empty_lobby"
+msgstr "Lobby members will appear after server connection"
+
+msgid "x_o.lobby"
+msgstr "Lobby: {players}"

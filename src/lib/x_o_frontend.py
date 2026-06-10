@@ -16,6 +16,7 @@ try:
         build_menu_button_style,
         build_primary_button_style,
     )
+    from .localization import tr
 except ImportError:
     from frontend import Manager
     from menu import (
@@ -25,6 +26,7 @@ except ImportError:
         build_menu_button_style,
         build_primary_button_style,
     )
+    from localization import tr
 
 
 BOARD_SIZE = 474
@@ -32,17 +34,17 @@ CELL_COUNT = 3
 EMPTY_CELL = ""
 
 STATUS_TEXT = {
-    "idle": "Создайте лобби или подключитесь к игре",
-    "waiting": "Ожидание второго игрока",
-    "joined": "Игрок подключился",
-    "start": "Игра началась",
-    "move": "Ход принят",
-    "not your turn": "Сейчас ход соперника",
-    "bad move": "Некорректная клетка",
-    "busy": "Эта клетка уже занята",
-    "win": "Партия завершена",
-    "draw": "Ничья",
-    "leave": "Соперник покинул игру",
+    "idle": "x_o.idle",
+    "waiting": "x_o.waiting",
+    "joined": "x_o.joined",
+    "start": "x_o.start",
+    "move": "x_o.move",
+    "not your turn": "x_o.not_your_turn",
+    "bad move": "x_o.bad_move",
+    "busy": "x_o.busy",
+    "win": "x_o.win",
+    "draw": "x_o.draw",
+    "leave": "x_o.leave",
 }
 
 
@@ -137,35 +139,38 @@ class TicTacToeView(NeonBaseView):
     def _build_ui(self) -> None:
         controls = arcade.gui.UIBoxLayout(vertical=False, space_between=14)
 
-        start_button = arcade.gui.UIFlatButton(
-            text="СТАРТ",
+        self.start_button = arcade.gui.UIFlatButton(
+            text=tr("x_o.start_button"),
             width=190,
             height=64,
             style=build_primary_button_style(),
         )
 
-        @start_button.event("on_click")
+        @self.start_button.event("on_click")
         def on_start(_event):
             self.manager.push_message("start")
             self.status = "waiting"
 
-        controls.add(start_button)
+        controls.add(self.start_button)
 
         if self.on_back is not None:
-            back_button = arcade.gui.UIFlatButton(
-                text="В МЕНЮ",
+            self.back_button = arcade.gui.UIFlatButton(
+                text=tr("x_o.back"),
                 width=190,
                 height=64,
                 style=build_menu_button_style(exit_button=True),
             )
 
-            @back_button.event("on_click")
+            @self.back_button.event("on_click")
             def on_back(_event):
                 self.on_back()
 
-            controls.add(back_button)
+            controls.add(self.back_button)
+        else:
+            self.back_button = None
 
         self._add_centered_widget(controls, align_y=-300)
+        self._add_locale_toggle()
 
     def on_update(self, _delta_time: float) -> None:
         """Считывает новые статусы игры от менеджера."""
@@ -273,7 +278,7 @@ class TicTacToeView(NeonBaseView):
             right=330,
             bottom=height - 116,
             top=height - 24,
-            caption="ИГРОК",
+            caption=tr("x_o.player"),
             value=self._player_text(),
             color=CYAN,
         )
@@ -282,7 +287,7 @@ class TicTacToeView(NeonBaseView):
             right=width - 24,
             bottom=height - 116,
             top=height - 24,
-            caption="ХОД",
+            caption=tr("x_o.turn"),
             value=self._turn_text(),
             color=PURPLE,
         )
@@ -293,7 +298,7 @@ class TicTacToeView(NeonBaseView):
                 right=330,
                 bottom=24,
                 top=80,
-                caption="ID ЛОББИ",
+                caption=tr("x_o.lobby_id"),
                 value=str(self.lobby_id),
                 color=CYAN,
             )
@@ -313,7 +318,7 @@ class TicTacToeView(NeonBaseView):
 
         label = (
             self.left_label
-            if caption in ("ИГРОК", "ID ЛОББИ")
+            if caption in (tr("x_o.player"), tr("x_o.lobby_id"))
             else self.right_label
         )
         label.text = f"{caption}: {value}"
@@ -437,20 +442,20 @@ class TicTacToeView(NeonBaseView):
 
     def _player_text(self) -> str:
         if self.symbol is None:
-            return self.player_name or "ожидание"
+            return self.player_name or tr("x_o.waiting_short")
 
-        name = self.player_name or "вы"
+        name = self.player_name or tr("x_o.you")
         return f"{name} / {self.symbol}"
 
     def _turn_text(self) -> str:
         if self.status == "draw":
-            return "ничья"
+            return tr("x_o.draw_short")
 
         if self.status == "win" and self.turn is not None:
-            return f"победил {self.turn}"
+            return tr("x_o.winner", player=self.turn)
 
         if self.turn is None:
-            return "ожидание"
+            return tr("x_o.waiting_short")
 
         return self.turn
 
@@ -458,10 +463,17 @@ class TicTacToeView(NeonBaseView):
         if self.error_text:
             return self.error_text
 
-        return STATUS_TEXT.get(self.status, self.status)
+        status_key = STATUS_TEXT.get(self.status)
+        return tr(status_key) if status_key else self.status
 
     def _meta_text(self) -> str:
         if not self.nicks:
-            return "Состав лобби появится после подключения к серверу"
+            return tr("x_o.empty_lobby")
 
-        return "Лобби: " + "  /  ".join(self.nicks)
+        return tr("x_o.lobby", players="  /  ".join(self.nicks))
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.start_button.text = tr("x_o.start_button")
+        if self.back_button is not None:
+            self.back_button.text = tr("x_o.back")
