@@ -83,6 +83,24 @@ msgstr "Lobby ID cannot be empty."
 msgid "join.bad_id"
 msgstr "Lobby ID must be a number."
 
+msgid "create.title"
+msgstr "CREATE LOBBY"
+
+msgid "create.prompt"
+msgstr "CHOOSE A GAME"
+
+msgid "create.id_prompt"
+msgstr "Enter lobby ID from {min_id} to {max_id}"
+
+msgid "create.submit"
+msgstr "CREATE"
+
+msgid "create.bad_id_range"
+msgstr "Lobby ID must be from {min_id} to {max_id}."
+
+msgid "create.failed"
+msgstr "Could not create lobby."
+
 msgid "main.title"
 msgstr "MAIN MENU"
 
@@ -113,6 +131,21 @@ msgid "game.pong.rules"
 msgstr ""
 "Classic ping-pong: move your paddle and return the ball. A player scores "
 "when the ball passes the opponent."
+
+msgid "pong.waiting"
+msgstr "Waiting for the second player. Press START when both players joined."
+
+msgid "pong.playing"
+msgstr "Game is running. Controls: W/S or arrow up/down."
+
+msgid "pong.leave"
+msgstr "Opponent left the game"
+
+msgid "pong.start"
+msgstr "START"
+
+msgid "pong.back"
+msgstr "MENU"
 
 msgid "game.x_o.title"
 msgstr "X and O"

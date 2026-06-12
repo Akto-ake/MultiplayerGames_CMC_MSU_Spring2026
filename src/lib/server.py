@@ -410,17 +410,35 @@ class Server():
 
         game = message.get("game")
 
+        if isinstance(game, str):
+            game = game.upper()
+
         if game not in self.games:
             await self._put_error(queue, request_id, "game not found")
             return None
 
-        if not self.free_lobby_ids:
-            await self._put_error(queue, request_id, "no free lobby ids")
-            return None
+        requested_lobby_id = message.get("lobby_id")
+
+        if requested_lobby_id is not None:
+            if not isinstance(requested_lobby_id, int):
+                await self._put_error(queue, request_id, "bad lobby_id")
+                return None
+
+            if requested_lobby_id not in self.free_lobby_ids:
+                await self._put_error(queue, request_id, "lobby id is busy")
+                return None
+
+            new_lobby_id = requested_lobby_id
+        else:
+            if not self.free_lobby_ids:
+                await self._put_error(queue, request_id, "no free lobby ids")
+                return None
+
+            new_lobby_id = next(iter(self.free_lobby_ids))
 
         await self.leave_lobby(queue, nick, lobby_id)
 
-        new_lobby_id = self.free_lobby_ids.pop()
+        self.free_lobby_ids.remove(new_lobby_id)
         new_lobby = self.lobby(new_lobby_id, game)
         new_lobby.add_nick(nick, queue)
 
@@ -439,6 +457,7 @@ class Server():
                 "target": "server",
                 "request_id": request_id,
                 "lobby_id": new_lobby_id,
+                "game": game,
             }
         )
 
@@ -501,6 +520,7 @@ class Server():
                 "target": "server",
                 "request_id": request_id,
                 "lobby_id": new_lobby_id,
+                "game": current_lobby.game,
             }
         )
 
@@ -699,16 +719,18 @@ class Client():
     class Game():
         """Игра"""
 
-        def __init__(self, client, lobby_id: int):
+        def __init__(self, client, lobby_id: int, game_name: str | None = None):
             """Создаёт игру.
 
             Args:
                 client (Client): клиент.
                 lobby_id (int): id лобби.
+                game_name (str | None): название игры.
             """
 
             self.client = client
             self.lobby_id = lobby_id
+            self.game_name = game_name
             self.nicks = []
             self.run_func = None
 
@@ -920,25 +942,31 @@ class Client():
 
         self.nick = nick
 
-    async def init_game(self, game: str):
+    async def init_game(self, game: str, lobby_id: int | None = None):
         """Создание игры.
 
         Args:
             game (str): название игры.
+            lobby_id (int | None): желаемый id лобби.
 
         Returns:
             Game: игра.
         """
 
+        request = {
+            "target": "server",
+            "message": "create",
+            "game": game,
+        }
+
+        if lobby_id is not None:
+            request["lobby_id"] = lobby_id
+
         answer = await self.request(
-            {
-                "target": "server",
-                "message": "create",
-                "game": game,
-            }
+            request
         )
 
-        return self.Game(self, answer["lobby_id"])
+        return self.Game(self, answer["lobby_id"], answer.get("game", game))
 
     async def connect_game(self, lobby_id: int):
         """Подключение к игре.
@@ -958,7 +986,7 @@ class Client():
             }
         )
 
-        return self.Game(self, answer["lobby_id"])
+        return self.Game(self, answer["lobby_id"], answer.get("game"))
 
     async def get_nicks(self):
         """Возвращает список ников.

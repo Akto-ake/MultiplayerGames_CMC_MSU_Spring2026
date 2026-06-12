@@ -131,11 +131,20 @@ async def _run_client_loop(client: Client):
                 if not is_connected:
                     continue
                 try:
-                    game = await client.init_game(message[1])
-                except ClientServerError:
+                    lobby_id = message[2] if len(message) > 2 else None
+                    game = await client.init_game(message[1], lobby_id)
+                except ClientServerError as error:
+                    manager.push_status(
+                        {
+                            "view": "create_error",
+                            "message": str(error),
+                        }
+                    )
                     continue
                 if message[1] == "X_O":
                     manager.push_status({"view": "open_x_o"})
+                if message[1] == "PONG":
+                    manager.push_status({"view": "open_pong"})
                 game.set_run(CLIENT_GAMES[message[1]])
 
             case 1:
@@ -145,8 +154,11 @@ async def _run_client_loop(client: Client):
                     game = await client.connect_game(message[1])
                 except ClientServerError:
                     continue
-                manager.push_status({"view": "open_x_o"})
-                game.set_run(CLIENT_GAMES["X_O"])
+                if game.game_name == "PONG":
+                    manager.push_status({"view": "open_pong"})
+                else:
+                    manager.push_status({"view": "open_x_o"})
+                game.set_run(CLIENT_GAMES[game.game_name or "X_O"])
 
             case code if 1 < code < len(status_client_support._STATUS_):
                 if not is_connected:

@@ -83,6 +83,24 @@ msgstr "ID лобби не может быть пустым."
 msgid "join.bad_id"
 msgstr "ID лобби должен быть числом."
 
+msgid "create.title"
+msgstr "СОЗДАНИЕ ЛОББИ"
+
+msgid "create.prompt"
+msgstr "ВЫБЕРИТЕ ИГРУ"
+
+msgid "create.id_prompt"
+msgstr "Введите ID лобби от {min_id} до {max_id}"
+
+msgid "create.submit"
+msgstr "СОЗДАТЬ"
+
+msgid "create.bad_id_range"
+msgstr "ID лобби должен быть от {min_id} до {max_id}."
+
+msgid "create.failed"
+msgstr "Не удалось создать лобби."
+
 msgid "main.title"
 msgstr "ГЛАВНОЕ МЕНЮ"
 
@@ -113,6 +131,21 @@ msgid "game.pong.rules"
 msgstr ""
 "Классический пинг-понг: двигайте ракетку и отбивайте мяч. Очко получает "
 "тот, кто отправил мяч за край соперника."
+
+msgid "pong.waiting"
+msgstr "Ожидание второго игрока. Нажмите СТАРТ, когда оба игрока в лобби."
+
+msgid "pong.playing"
+msgstr "Игра идёт. Управление: W/S или стрелки вверх/вниз."
+
+msgid "pong.leave"
+msgstr "Соперник покинул игру"
+
+msgid "pong.start"
+msgstr "СТАРТ"
+
+msgid "pong.back"
+msgstr "В МЕНЮ"
 
 msgid "game.x_o.title"
 msgstr "X and O"

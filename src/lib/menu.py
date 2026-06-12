@@ -25,6 +25,8 @@ except ImportError:
 WINDOW_WIDTH = 1280
 WINDOW_HEIGHT = 720
 WINDOW_TITLE = "Multiplayer Games CMC 2026"
+MIN_LOBBY_ID = 1000
+MAX_LOBBY_ID = 9999
 PROJECT_ROOT = Path(__file__).resolve().parents[2]
 GAMES_MEDIA_DIR = PROJECT_ROOT / "media" / "games"
 
@@ -35,32 +37,42 @@ MENU_ACTIONS = [
     ("exit", "menu.exit"),
 ]
 
+LOBBY_GAMES = [
+    ("X_O", "game.x_o.title"),
+    ("PONG", "game.pong.title"),
+]
+
 GAME_CARDS = [
     {
+        "id": "tanks",
         "title_key": "game.tanks.title",
         "rules_key": "game.tanks.rules",
         "colors": ((39, 94, 62), (87, 190, 122)),
         "image": "tanks_1990.jpg",
     },
     {
+        "id": "pong",
         "title_key": "game.pong.title",
         "rules_key": "game.pong.rules",
         "colors": ((26, 72, 116), (95, 186, 255)),
         "image": "pong.jpg",
     },
     {
+        "id": "x_o",
         "title_key": "game.x_o.title",
         "rules_key": "game.x_o.rules",
         "colors": ((81, 46, 126), (184, 128, 255)),
         "image": "x_0.jpg",
     },
     {
+        "id": "sea_battle",
         "title_key": "game.sea_battle.title",
         "rules_key": "game.sea_battle.rules",
         "colors": ((36, 66, 121), (106, 161, 255)),
         "image": "sea_battle.jpg",
     },
     {
+        "id": "quiz",
         "title_key": "game.quiz.title",
         "rules_key": "game.quiz.rules",
         "colors": ((103, 65, 26), (242, 186, 96)),
@@ -206,6 +218,22 @@ def build_input_style() -> dict:
         "invalid": UIInputTextStyle(bg=(72, 19, 47, 210),
                                     border=(250, 118, 184), border_width=2),
     }
+
+
+def show_pong_view(window, player_name: str, on_back: Callable[[], None]) -> None:
+    """Открывает экран Pong."""
+
+    try:
+        from .pong_frontend import PongView
+    except ImportError:
+        from pong_frontend import PongView
+
+    window.show_view(
+        PongView(
+            player_name=player_name,
+            on_back=on_back,
+        )
+    )
 
 
 class NeonBaseView(arcade.View):
@@ -968,6 +996,14 @@ class JoinLobbyView(NeonBaseView):
             if status is None and error is None:
                 return
 
+            if isinstance(status, dict) and status.get("view") == "open_pong":
+                show_pong_view(self.window, self.player_name, self.on_back)
+                return
+
+            if isinstance(status, dict) and status.get("view") == "create_error":
+                self.error_text = status.get("message", tr("create.failed"))
+                return
+
             if isinstance(status, dict) and status.get("view") == "open_x_o":
                 try:
                     from .x_o_frontend import TicTacToeView
@@ -1077,6 +1113,280 @@ class JoinLobbyView(NeonBaseView):
         Manager().push_message((1, lobby_id))
 
 
+class CreateLobbyView(NeonBaseView):
+    """Экран создания лобби с выбором игры и ID."""
+
+    def __init__(self, player_name: str, on_back: Callable[[], None]):
+        super().__init__()
+        self.player_name = player_name
+        self.on_back = on_back
+        self.selected_game = LOBBY_GAMES[0][0]
+        self.error_text = ""
+        self.game_buttons = {}
+
+        self.title_label = arcade.Text(
+            tr("create.title"),
+            x=0,
+            y=0,
+            color=(228, 243, 255),
+            font_size=48,
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+            bold=True,
+        )
+        self.prompt_label = arcade.Text(
+            tr("create.prompt"),
+            x=0,
+            y=0,
+            color=(128, 219, 255),
+            font_size=24,
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+            bold=True,
+        )
+        self.id_label = arcade.Text(
+            tr("create.id_prompt", min_id=MIN_LOBBY_ID, max_id=MAX_LOBBY_ID),
+            x=0,
+            y=0,
+            color=(165, 188, 214),
+            font_size=18,
+            font_name=("Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+        )
+        self.error_label = arcade.Text(
+            "",
+            x=0,
+            y=0,
+            color=(255, 142, 195),
+            font_size=18,
+            font_name=("Calibri", "Arial"),
+            anchor_x="center",
+            anchor_y="center",
+        )
+
+        self._build_ui()
+
+    def _build_ui(self) -> None:
+        form_box = arcade.gui.UIBoxLayout(space_between=14)
+        games_box = arcade.gui.UIBoxLayout(space_between=10)
+        buttons_box = arcade.gui.UIBoxLayout(vertical=False, space_between=14)
+
+        for game_id, title_key in LOBBY_GAMES:
+            button = arcade.gui.UIFlatButton(
+                text=self._game_button_text(game_id, title_key),
+                width=500,
+                height=58,
+                style=build_primary_button_style(),
+            )
+
+            @button.event("on_click")
+            def on_click(_event, selected_game=game_id):
+                self.selected_game = selected_game
+                self._refresh_texts()
+
+            self.game_buttons[game_id] = (button, title_key)
+            games_box.add(button)
+
+        self.lobby_input = VerticalCenteredInputText(
+            width=500,
+            height=60,
+            text="",
+            font_name=("Bahnschrift", "Calibri", "Arial"),
+            font_size=24,
+            text_color=(236, 247, 255),
+            caret_color=CYAN,
+            border_color=CYAN,
+            border_width=2,
+            style=build_input_style(),
+        )
+
+        @self.lobby_input.event("on_change")
+        def on_change(_event):
+            self.error_text = ""
+
+        self.create_button = arcade.gui.UIFlatButton(
+            text=tr("create.submit"),
+            width=260,
+            height=72,
+            style=build_primary_button_style(),
+        )
+
+        @self.create_button.event("on_click")
+        def on_create(_event):
+            self._submit_lobby()
+
+        self.back_button = arcade.gui.UIFlatButton(
+            text=tr("join.back"),
+            width=200,
+            height=72,
+            style=build_menu_button_style(exit_button=True),
+        )
+
+        @self.back_button.event("on_click")
+        def on_back(_event):
+            self.on_back()
+
+        buttons_box.add(self.create_button)
+        buttons_box.add(self.back_button)
+        form_box.add(games_box)
+        form_box.add(self.lobby_input)
+        form_box.add(buttons_box)
+        self._add_centered_widget(form_box, align_y=-78)
+        self._add_locale_toggle()
+
+    def on_show_view(self) -> None:
+        """Фокусирует поле ID лобби при открытии экрана."""
+
+        super().on_show_view()
+        if hasattr(self.ui, "_set_active_widget"):
+            self.ui._set_active_widget(self.lobby_input)
+
+    def on_update(self, _delta_time: float) -> None:
+        """Открывает экран созданной игры после ответа backend."""
+
+        while True:
+            status, error = Manager().pop_status()
+
+            if status is None and error is None:
+                return
+
+            if isinstance(status, dict) and status.get("view") == "create_error":
+                self.error_text = status.get("message", tr("create.failed"))
+                return
+
+            if isinstance(status, dict) and status.get("view") == "open_pong":
+                show_pong_view(self.window, self.player_name, self.on_back)
+                return
+
+            if isinstance(status, dict) and status.get("view") == "open_x_o":
+                try:
+                    from .x_o_frontend import TicTacToeView
+                except ImportError:
+                    from x_o_frontend import TicTacToeView
+
+                self.window.show_view(
+                    TicTacToeView(
+                        player_name=self.player_name,
+                        on_back=self.on_back,
+                    )
+                )
+                return
+
+    def on_draw(self) -> None:
+        """Отрисовывает экран создания лобби."""
+
+        self.clear()
+        self._draw_neon_background()
+        self._draw_create_shell()
+        self._draw_text_layer()
+        self.ui.draw()
+        self._draw_input_focus_glow()
+
+    def on_key_press(self, key: int, modifiers: int) -> None:
+        """Обрабатывает Enter для создания лобби."""
+
+        if key in (arcade.key.ENTER, arcade.key.NUM_ENTER):
+            self._submit_lobby()
+            return
+        super().on_key_press(key, modifiers)
+
+    def _draw_create_shell(self) -> None:
+        width = self.window.width
+        height = self.window.height
+        self._draw_filled_rect(width * 0.20, width * 0.80,
+                               height * 0.15, height * 0.82, (5, 12, 30, 120))
+        self._draw_outlined_rect(
+            width * 0.20, width * 0.80, height * 0.15,
+            height * 0.82, (66, 188, 255, 90), 2)
+        self._draw_filled_rect(width * 0.25, width * 0.75,
+                               height * 0.67, height * 0.73, (20, 52, 110, 80))
+
+    def _draw_text_layer(self) -> None:
+        self._refresh_texts()
+        self.title_label.x = self.window.width / 2
+        self.title_label.y = self.window.height * 0.86
+        self.title_label.draw()
+
+        self.prompt_label.x = self.window.width / 2
+        self.prompt_label.y = self.window.height * 0.70
+        self.prompt_label.draw()
+
+        self.id_label.x = self.window.width / 2
+        self.id_label.y = self.window.height * 0.405
+        self.id_label.draw()
+
+        self.error_label.text = self.error_text
+        self.error_label.x = self.window.width / 2
+        self.error_label.y = self.window.height * 0.16
+        self.error_label.draw()
+
+    def _draw_input_focus_glow(self) -> None:
+        if not self.lobby_input.active:
+            return
+
+        pad_outer = 4
+        pad_inner = 1
+        self._draw_outlined_rect(
+            self.lobby_input.left - pad_outer,
+            self.lobby_input.right + pad_outer,
+            self.lobby_input.bottom - pad_outer,
+            self.lobby_input.top + pad_outer,
+            (104, 228, 255, 220),
+            border_width=2,
+        )
+        self._draw_outlined_rect(
+            self.lobby_input.left - pad_inner,
+            self.lobby_input.right + pad_inner,
+            self.lobby_input.bottom - pad_inner,
+            self.lobby_input.top + pad_inner,
+            (157, 241, 255, 165),
+            border_width=1,
+        )
+
+    def _refresh_texts(self) -> None:
+        super()._refresh_texts()
+        self.title_label.text = tr("create.title")
+        self.prompt_label.text = tr("create.prompt")
+        self.id_label.text = tr(
+            "create.id_prompt",
+            min_id=MIN_LOBBY_ID,
+            max_id=MAX_LOBBY_ID,
+        )
+        self.create_button.text = tr("create.submit")
+        self.back_button.text = tr("join.back")
+        for game_id, (button, title_key) in self.game_buttons.items():
+            button.text = self._game_button_text(game_id, title_key)
+
+    def _game_button_text(self, game_id: str, title_key: str) -> str:
+        prefix = ">" if game_id == self.selected_game else " "
+        return f"{prefix} {tr(title_key)}"
+
+    def _submit_lobby(self) -> None:
+        raw_lobby_id = self.lobby_input.text.strip()
+
+        if not raw_lobby_id:
+            self.error_text = tr("join.empty_id")
+            return
+
+        if not raw_lobby_id.isdigit():
+            self.error_text = tr("join.bad_id")
+            return
+
+        lobby_id = int(raw_lobby_id)
+        if not MIN_LOBBY_ID <= lobby_id <= MAX_LOBBY_ID:
+            self.error_text = tr(
+                "create.bad_id_range",
+                min_id=MIN_LOBBY_ID,
+                max_id=MAX_LOBBY_ID,
+            )
+            return
+
+        Manager().push_message(("create_game", self.selected_game, lobby_id))
+
+
 class MainMenuView(NeonBaseView):
     """Главный экран меню проекта."""
 
@@ -1151,6 +1461,15 @@ class MainMenuView(NeonBaseView):
             if status is None and error is None:
                 return
 
+            if isinstance(status, dict) and status.get("view") == "open_pong":
+                def back_to_menu() -> None:
+                    self.window.show_view(
+                        MainMenuView(self.player_name, self.action_callback)
+                    )
+
+                show_pong_view(self.window, self.player_name, back_to_menu)
+                return
+
             if isinstance(status, dict) and status.get("view") == "open_x_o":
                 try:
                     from .x_o_frontend import TicTacToeView
@@ -1217,7 +1536,14 @@ class MainMenuView(NeonBaseView):
             return
 
         if action == "create_lobby":
-            Manager().push_message(("create_game", "X_O"))
+            self.window.show_view(
+                CreateLobbyView(
+                    player_name=self.player_name,
+                    on_back=lambda: self.window.show_view(
+                        MainMenuView(self.player_name, self.action_callback)
+                    ),
+                )
+            )
             return
 
         if action == "lobbies":
@@ -1349,6 +1675,13 @@ class GamesCatalogView(NeonBaseView):
         self.back_button.text = tr("games.back")
 
     def _draw_game_cards(self) -> None:
+        for game, bounds in self._game_card_bounds():
+            left, right, bottom, top = bounds
+            self._draw_single_card(left, right, bottom, top, game)
+
+    def _game_card_bounds(
+        self,
+    ) -> list[tuple[dict, tuple[float, float, float, float]]]:
         screen_w = self.window.width
         screen_h = self.window.height
         area_left = screen_w * 0.09
@@ -1370,6 +1703,7 @@ class GamesCatalogView(NeonBaseView):
         y_gap = max(16, screen_h * 0.022)
         card_w = (area_w - x_gap * (cols - 1)) / cols
         card_h = (area_h - y_gap * (rows - 1)) / rows
+        bounds = []
 
         for idx, game in enumerate(GAME_CARDS):
             row = idx // cols
@@ -1378,7 +1712,9 @@ class GamesCatalogView(NeonBaseView):
             right = left + card_w
             top = area_top - row * (card_h + y_gap)
             bottom = top - card_h
-            self._draw_single_card(left, right, bottom, top, game)
+            bounds.append((game, (left, right, bottom, top)))
+
+        return bounds
 
     def _draw_single_card(
         self,
