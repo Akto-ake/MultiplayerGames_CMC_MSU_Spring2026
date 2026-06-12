@@ -16,12 +16,16 @@ def _run(command: list[str]) -> int:
 
 
 def lint() -> int:
+    """Run style and docstring checks for source files."""
+
     code1 = _run([sys.executable, "-m", "flake8", "src"])
     code2 = _run([sys.executable, "-m", "pydocstyle", "src"])
     return code1 or code2
 
 
 def docs() -> int:
+    """Build Sphinx HTML documentation."""
+
     return _run([
         sys.executable,
         "-m",
@@ -34,6 +38,8 @@ def docs() -> int:
 
 
 def i18n_extract() -> int:
+    """Extract gettext message ids from source files."""
+
     return _run([
         sys.executable,
         "-m",
@@ -50,6 +56,8 @@ def i18n_extract() -> int:
 
 
 def i18n_update() -> int:
+    """Update locale PO catalogs from the extracted template."""
+
     return _run([
         sys.executable,
         "-m",
@@ -65,6 +73,8 @@ def i18n_update() -> int:
 
 
 def i18n_compile() -> int:
+    """Compile locale PO catalogs to gettext MO files."""
+
     return _run([
         sys.executable,
         "-m",
@@ -78,10 +88,14 @@ def i18n_compile() -> int:
 
 
 def build() -> int:
+    """Build a wheel distribution."""
+
     return _run([sys.executable, "-m", "build", "--wheel"])
 
 
 def main() -> int:
+    """Run selected automation target."""
+
     parser = argparse.ArgumentParser()
     parser.add_argument(
         "target",

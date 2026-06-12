@@ -23,13 +23,6 @@ lib.backend
    :members:
    :show-inheritance:
 
-lib.basis_of_server
--------------------
-
-.. automodule:: lib.basis_of_server
-   :members:
-   :show-inheritance:
-
 lib.status_client_support
 -------------------------
 
