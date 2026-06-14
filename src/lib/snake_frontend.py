@@ -44,9 +44,10 @@ class SnakeView(NeonBaseView):
 
         self.nicks: list[str] = []
         self.lobby_id: int | None = None
+        self.side: str | None = None
+        self.state = None
         self.status = "waiting"
-        self.left_score = 0
-        self.right_score = 0
+        self.start_requested = False
 
         self.title_label = arcade.Text(
             "SNAKE",
@@ -106,8 +107,20 @@ class SnakeView(NeonBaseView):
 
         @self.start_button.event("on_click")
         def on_start(_event):
+            self.start_requested = True
             self.manager.push_message("start")
-            self.status = "prototype"
+            self.status = "starting"
+
+        self.pause_button = arcade.gui.UIFlatButton(
+            text=tr("snake.pause"),
+            width=260,
+            height=64,
+            style=build_primary_button_style(),
+        )
+
+        @self.pause_button.event("on_click")
+        def on_pause(_event):
+            self._toggle_pause()
 
         self.back_button = arcade.gui.UIFlatButton(
             text=tr("snake.back"),
@@ -122,6 +135,7 @@ class SnakeView(NeonBaseView):
             self.on_back()
 
         controls.add(self.start_button)
+        controls.add(self.pause_button)
         controls.add(self.back_button)
         self._add_centered_widget(controls, align_y=-300)
         self._add_locale_toggle()
@@ -136,9 +150,50 @@ class SnakeView(NeonBaseView):
                 return
 
             if isinstance(status, dict) and status.get("game") == "SNAKE":
+                self.state = status.get("state", self.state)
                 self.nicks = status.get("nicks", self.nicks)
                 self.lobby_id = status.get("lobby_id", self.lobby_id)
+                self.side = status.get("side", self.side)
                 self.status = status.get("status", self.status)
+                if self.state is not None:
+                    self.start_requested = False
+
+    def on_key_press(self, key: int, modifiers: int) -> None:
+        """Отправляет направление змейки."""
+
+        direction = None
+        side_name = None
+
+        if key == arcade.key.W:
+            side_name = "left"
+            direction = "up"
+        elif key == arcade.key.S:
+            side_name = "left"
+            direction = "down"
+        elif key == arcade.key.A:
+            side_name = "left"
+            direction = "left"
+        elif key == arcade.key.D:
+            side_name = "left"
+            direction = "right"
+        elif key == arcade.key.UP:
+            side_name = "right"
+            direction = "up"
+        elif key == arcade.key.DOWN:
+            side_name = "right"
+            direction = "down"
+        elif key == arcade.key.LEFT:
+            side_name = "right"
+            direction = "left"
+        elif key == arcade.key.RIGHT:
+            side_name = "right"
+            direction = "right"
+
+        if side_name is not None and direction is not None:
+            self._send_direction(side_name, direction)
+            return
+
+        super().on_key_press(key, modifiers)
 
     def on_draw(self) -> None:
         """Отрисовывает визуальный прототип Snake."""
@@ -173,17 +228,17 @@ class SnakeView(NeonBaseView):
     def _draw_boards(self) -> None:
         left_board, right_board = self._board_bounds()
 
-        self._draw_board(left_board, CYAN, self._left_snake(), (11, 8))
-        self._draw_board(right_board, PURPLE, self._right_snake(), (4, 4))
+        self._draw_board(left_board, CYAN, "left")
+        self._draw_board(right_board, PURPLE, "right")
         self._draw_separator()
 
-    def _draw_board(self, bounds, accent, snake, food) -> None:
+    def _draw_board(self, bounds, accent, side_name) -> None:
         left, right, bottom, top = bounds
         self._draw_filled_rect(left, right, bottom, top, (2, 10, 25, 225))
         self._draw_outlined_rect(left, right, bottom, top, accent + (170,), 3)
         self._draw_grid(bounds)
-        self._draw_food(bounds, food)
-        self._draw_snake(bounds, snake, accent)
+        self._draw_food(bounds, self._food(side_name))
+        self._draw_snake(bounds, self._snake(side_name), accent)
 
     def _draw_grid(self, bounds) -> None:
         left, right, bottom, top = bounds
@@ -257,7 +312,7 @@ class SnakeView(NeonBaseView):
         self.status_label.y = self.window.height * 0.765
         self.status_label.draw()
 
-        self.score_label.text = f"{self.left_score} : {self.right_score}"
+        self.score_label.text = self._score_text()
         self.score_label.x = self.window.width / 2
         self.score_label.y = self.window.height * 0.69
         self.score_label.draw()
@@ -291,10 +346,31 @@ class SnakeView(NeonBaseView):
         if self.status == "leave":
             return tr("snake.leave")
 
-        if self.status == "joined" or len(self.nicks) >= 2:
-            return tr("snake.prototype")
+        winner = self.state.get("winner") if self.state is not None else None
+        if winner is not None:
+            return tr("snake.finished", winner=winner)
+
+        if self.start_requested:
+            return tr("snake.starting")
+
+        if self.state is not None and self.state.get("paused"):
+            return tr("snake.paused")
+
+        if self.state is not None:
+            return tr("snake.playing")
+
+        if len(self.nicks) >= 2:
+            return tr("snake.ready")
 
         return tr("snake.waiting")
+
+    def _score_text(self) -> str:
+        if self.state is None:
+            return "0 : 0"
+
+        players = self.state["players"]
+        score = self.state["score"]
+        return f"{score[players[0]]} : {score[players[1]]}"
 
     def _meta_text(self) -> str:
         if not self.nicks:
@@ -308,12 +384,72 @@ class SnakeView(NeonBaseView):
     def _refresh_texts(self) -> None:
         super()._refresh_texts()
         self.start_button.text = tr("snake.start")
+        self.pause_button.text = (
+            tr("snake.resume")
+            if self.state is not None and self.state.get("paused")
+            else tr("snake.pause")
+        )
         self.back_button.text = tr("snake.back")
 
-    @staticmethod
-    def _left_snake():
-        return [(7, 7), (6, 7), (5, 7), (4, 7), (4, 6)]
+    def _toggle_pause(self) -> None:
+        if self.state is None or self.state.get("winner") is not None:
+            return
 
-    @staticmethod
-    def _right_snake():
-        return [(8, 6), (9, 6), (10, 6), (11, 6), (11, 7)]
+        self.manager.push_message(
+            {
+                "game": "SNAKE",
+                "action": "pause",
+                "round": self.state.get("round"),
+            }
+        )
+
+    def _send_direction(self, side_name: str, direction: str) -> None:
+        if (
+            self.state is None
+            or self.state.get("winner") is not None
+            or self.state.get("paused")
+        ):
+            return
+
+        self.manager.push_message(
+            {
+                "game": "SNAKE",
+                "action": "direction",
+                "round": self.state.get("round"),
+                "side": side_name,
+                "direction": direction,
+            }
+        )
+
+    def _snake(self, side_name: str):
+        if self.state is None:
+            if side_name == "left":
+                return [[7, 7], [6, 7], [5, 7], [4, 7]]
+            return [[8, 6], [9, 6], [10, 6], [11, 6]]
+
+        nick = self._side_nick(side_name)
+        if nick is None:
+            return []
+
+        return self.state["snakes"][nick]["body"]
+
+    def _food(self, side_name: str):
+        if self.state is None:
+            return [11, 8] if side_name == "left" else [4, 4]
+
+        nick = self._side_nick(side_name)
+        if nick is None:
+            return [0, 0]
+
+        return self.state["snakes"][nick]["food"]
+
+    def _side_nick(self, side_name: str) -> str | None:
+        if self.state is None:
+            return None
+
+        players = self.state["players"]
+        if side_name == "left" and len(players) > 0:
+            return players[0]
+        if side_name == "right" and len(players) > 1:
+            return players[1]
+        return None

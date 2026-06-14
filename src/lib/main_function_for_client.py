@@ -1,6 +1,7 @@
 """Основные функции клиентских игр."""
 
 import asyncio
+import random
 
 try:
     from .frontend import Manager
@@ -22,6 +23,22 @@ PONG_BALL_ACCELERATION = 1.07
 PONG_BALL_MAX_SPEED_X = 1.15
 PONG_BALL_MAX_SPEED_Y = 0.82
 PONG_WIN_SCORE = 5
+SNAKE_COLS = 16
+SNAKE_ROWS = 14
+SNAKE_TICK = 0.22
+SNAKE_WIN_SCORE = 5
+SNAKE_DIRECTIONS = {
+    "up": (0, 1),
+    "down": (0, -1),
+    "left": (-1, 0),
+    "right": (1, 0),
+}
+SNAKE_OPPOSITE_DIRECTIONS = {
+    "up": "down",
+    "down": "up",
+    "left": "right",
+    "right": "left",
+}
 
 
 def x_o_win(board):
@@ -566,26 +583,191 @@ async def pong_run(game):
             pass
 
 
-def snake_push(manager, game, status):
+def snake_side_nick(state, side_name):
+    """Возвращает ник игрока Snake по стороне поля."""
+
+    players = state["players"]
+    if side_name == "left" and len(players) > 0:
+        return players[0]
+    if side_name == "right" and len(players) > 1:
+        return players[1]
+    return None
+
+
+def snake_initial_body(side_name):
+    """Возвращает начальное тело змейки."""
+
+    if side_name == "left":
+        return [[7, 7], [6, 7], [5, 7], [4, 7]]
+    return [[8, 6], [9, 6], [10, 6], [11, 6]]
+
+
+def snake_initial_direction(side_name):
+    """Возвращает начальное направление змейки."""
+
+    return "right" if side_name == "left" else "left"
+
+
+def snake_taken_cells(state, excluded_nick=None):
+    """Возвращает клетки, занятые змейками."""
+
+    taken = set()
+    for nick, snake in state["snakes"].items():
+        if nick == excluded_nick:
+            continue
+
+        for cell in snake["body"]:
+            taken.add(tuple(cell))
+
+    return taken
+
+
+def snake_spawn_food(state, nick):
+    """Создаёт еду в свободной клетке поля."""
+
+    taken = snake_taken_cells(state)
+    free_cells = [
+        [col, row]
+        for col in range(SNAKE_COLS)
+        for row in range(SNAKE_ROWS)
+        if (col, row) not in taken
+    ]
+
+    if not free_cells:
+        return [0, 0]
+
+    return random.choice(free_cells)
+
+
+def snake_reset_player(state, nick):
+    """Возвращает змейку игрока в стартовое положение."""
+
+    side_name = state["sides"][nick]
+    direction = snake_initial_direction(side_name)
+    state["snakes"][nick]["body"] = snake_initial_body(side_name)
+    state["snakes"][nick]["direction"] = direction
+    state["snakes"][nick]["pending_direction"] = direction
+    state["snakes"][nick]["food"] = snake_spawn_food(state, nick)
+
+
+def snake_initial_state(players, round_id):
+    """Возвращает начальное состояние Snake."""
+
+    state = {
+        "round": round_id,
+        "players": players,
+        "sides": {
+            players[0]: "left",
+            players[1]: "right",
+        },
+        "snakes": {},
+        "score": {
+            players[0]: 0,
+            players[1]: 0,
+        },
+        "paused": False,
+        "winner": None,
+    }
+
+    for player in players:
+        side_name = state["sides"][player]
+        direction = snake_initial_direction(side_name)
+        state["snakes"][player] = {
+            "body": snake_initial_body(side_name),
+            "direction": direction,
+            "pending_direction": direction,
+            "food": [0, 0],
+        }
+
+    for player in players:
+        state["snakes"][player]["food"] = snake_spawn_food(state, player)
+
+    return state
+
+
+def snake_process_direction(state, side_name, direction):
+    """Обновляет ожидаемое направление змейки."""
+
+    if direction not in SNAKE_DIRECTIONS:
+        return
+
+    nick = snake_side_nick(state, side_name)
+    if nick is None:
+        return
+
+    snake = state["snakes"][nick]
+    if SNAKE_OPPOSITE_DIRECTIONS[snake["direction"]] == direction:
+        return
+
+    snake["pending_direction"] = direction
+
+
+def snake_step(state):
+    """Выполняет один игровой шаг Snake."""
+
+    if state.get("winner") is not None:
+        return
+
+    if state.get("paused"):
+        return
+
+    for nick in state["players"]:
+        snake = state["snakes"][nick]
+        direction = snake["pending_direction"]
+        vector = SNAKE_DIRECTIONS[direction]
+        head_col, head_row = snake["body"][0]
+        new_head = [head_col + vector[0], head_row + vector[1]]
+
+        hit_wall = not (
+            0 <= new_head[0] < SNAKE_COLS
+            and 0 <= new_head[1] < SNAKE_ROWS
+        )
+        hit_self = new_head in snake["body"]
+
+        if hit_wall or hit_self:
+            snake_reset_player(state, nick)
+            continue
+
+        snake["direction"] = direction
+        snake["body"].insert(0, new_head)
+
+        if new_head == snake["food"]:
+            state["score"][nick] += 1
+            snake["food"] = snake_spawn_food(state, nick)
+            if state["score"][nick] >= SNAKE_WIN_SCORE:
+                state["winner"] = nick
+        else:
+            snake["body"].pop()
+
+
+def snake_push(manager, game, state, side, status):
     """Отправляет состояние Snake во фронтенд."""
 
     manager.push_status(
         {
             "game": "SNAKE",
+            "state": state,
             "nicks": list(game.nicks),
             "lobby_id": game.get_id(),
+            "side": side,
             "status": status,
         }
     )
 
 
 async def snake_run(game):
-    """Временная локальная логика Snake без игрового процесса."""
+    """Локальная логика Snake."""
 
     manager = Manager()
+    state = None
+    side = None
+    host = None
+    round_id = 0
+    tick_timer = 0.0
+    finish_reported = False
 
     await game.get_nicks()
-    snake_push(manager, game, "waiting")
+    snake_push(manager, game, state, side, "waiting")
 
     task = asyncio.create_task(game.pop_message())
 
@@ -608,7 +790,67 @@ async def snake_run(game):
                 return
 
             if user_message == "start":
-                snake_push(manager, game, "waiting")
+                await game.push_message({"status": "start"})
+
+            if (
+                isinstance(user_message, dict)
+                and user_message.get("game") == "SNAKE"
+                and user_message.get("action") == "pause"
+            ):
+                await game.push_message(
+                    {
+                        "status": "pause",
+                        "message": {
+                            "round": user_message.get("round", round_id),
+                        },
+                    }
+                )
+
+            if (
+                isinstance(user_message, dict)
+                and user_message.get("game") == "SNAKE"
+                and user_message.get("action") == "direction"
+            ):
+                await game.push_message(
+                    {
+                        "status": "direction",
+                        "message": {
+                            "round": user_message.get("round", round_id),
+                            "side": user_message.get("side"),
+                            "direction": user_message.get("direction"),
+                        },
+                    }
+                )
+
+            if (
+                state is not None
+                and game.client.nick == host
+                and state.get("winner") is None
+                and not state.get("paused")
+            ):
+                tick_timer += 0.02
+                if tick_timer >= SNAKE_TICK:
+                    snake_step(state)
+                    await game.push_message(
+                        {
+                            "status": "state",
+                            "message": state,
+                        }
+                    )
+                    status = "finished" if state.get("winner") else "move"
+                    snake_push(manager, game, state, side, status)
+                    tick_timer = 0.0
+
+            if (
+                state is not None
+                and state.get("winner") is not None
+                and not finish_reported
+            ):
+                if game.client.nick == host:
+                    await game.push_message({"status": "round_finished"})
+
+                snake_push(manager, game, state, side, "finished")
+                finish_reported = True
 
             if not task.done():
                 continue
@@ -619,11 +861,64 @@ async def snake_run(game):
             match message.get("status"):
                 case "joined":
                     status = "joined" if len(game.nicks) >= 2 else "waiting"
-                    snake_push(manager, game, status)
+                    snake_push(manager, game, state, side, status)
 
                 case "leave":
-                    snake_push(manager, game, "leave")
+                    snake_push(manager, game, state, side, "leave")
                     return
+
+                case "start":
+                    data = message["message"]
+                    round_id = data.get("round", round_id + 1)
+                    players = data["players"]
+                    host = data["host"]
+                    side = "left" if game.client.nick == players[0] else "right"
+                    state = snake_initial_state(players, round_id)
+                    tick_timer = 0.0
+                    finish_reported = False
+                    snake_push(manager, game, state, side, "start")
+
+                case "direction":
+                    if state is None:
+                        continue
+
+                    data = message["message"]
+                    message_round = data.get("round")
+                    if message_round is not None and message_round != round_id:
+                        continue
+
+                    snake_process_direction(
+                        state,
+                        data.get("side"),
+                        data.get("direction"),
+                    )
+
+                case "pause":
+                    if state is None:
+                        continue
+
+                    data = message.get("message") or {}
+                    message_round = data.get("round")
+                    if message_round is not None and message_round != round_id:
+                        continue
+
+                    state["paused"] = not state.get("paused", False)
+                    tick_timer = 0.0
+                    snake_push(manager, game, state, side, "move")
+
+                    if game.client.nick == host:
+                        await game.push_message(
+                            {
+                                "status": "state",
+                                "message": state,
+                            }
+                        )
+
+                case "state":
+                    state = message["message"]
+                    round_id = state.get("round", round_id)
+                    status = "finished" if state.get("winner") else "move"
+                    snake_push(manager, game, state, side, status)
 
                 case "error":
                     raise ClientServerError(message.get("message"))

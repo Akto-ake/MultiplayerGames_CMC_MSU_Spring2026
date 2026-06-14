@@ -161,14 +161,35 @@ msgstr "В МЕНЮ"
 msgid "snake.waiting"
 msgstr "Ожидание второго игрока. Шаблон экрана Snake."
 
+msgid "snake.ready"
+msgstr "Оба игрока в лобби. Нажмите СТАРТ."
+
+msgid "snake.starting"
+msgstr "Запуск партии..."
+
 msgid "snake.prototype"
 msgstr "Визуальный шаблон Snake. Игровая логика будет добавлена позже."
+
+msgid "snake.playing"
+msgstr "Левая змейка: WASD. Правая змейка: стрелки. Игра до 5 очков."
+
+msgid "snake.paused"
+msgstr "Пауза. Нажмите ПАУЗА ещё раз, чтобы продолжить."
+
+msgid "snake.finished"
+msgstr "Победил {winner}. Нажмите СТАРТ для новой партии."
 
 msgid "snake.leave"
 msgstr "Соперник покинул игру"
 
 msgid "snake.start"
 msgstr "СТАРТ"
+
+msgid "snake.pause"
+msgstr "ПАУЗА"
+
+msgid "snake.resume"
+msgstr "ПРОДОЛЖИТЬ"
 
 msgid "snake.back"
 msgstr "В МЕНЮ"

@@ -61,6 +61,13 @@ GAME_CARDS = [
         "image": "pong.jpg",
     },
     {
+        "id": "snake",
+        "title_key": "game.snake.title",
+        "rules_key": "game.snake.rules",
+        "colors": ((34, 112, 76), (95, 232, 148)),
+        "image": "snake.png",
+    },
+    {
         "id": "x_o",
         "title_key": "game.x_o.title",
         "rules_key": "game.x_o.rules",
@@ -1486,7 +1493,7 @@ class CreateLobbyView(NeonBaseView):
         self.form_box.add(self.id_label)
         self.form_box.add(self.lobby_input)
         self.form_box.add(self.buttons_box)
-        self._add_centered_widget(self.form_box, align_y=-45)
+        self._add_centered_widget(self.form_box, align_y=-80)
         self._add_locale_toggle()
         self._register_responsive_text(self.title_label, 48, 12, 0.36)
         self._register_responsive_text(self.prompt_label, 24, 12, 0.44)
@@ -1570,12 +1577,12 @@ class CreateLobbyView(NeonBaseView):
         width = self.window.width
         height = self.window.height
         self._draw_filled_rect(width * 0.22, width * 0.78,
-                               height * 0.17, height * 0.78, (5, 12, 30, 120))
+                               height * 0.11, height * 0.78, (5, 12, 30, 120))
         self._draw_outlined_rect(
-            width * 0.22, width * 0.78, height * 0.17,
+            width * 0.22, width * 0.78, height * 0.11,
             height * 0.78, (66, 188, 255, 90), 2)
         self._draw_filled_rect(width * 0.38, width * 0.62,
-                               height * 0.67, height * 0.73, (20, 52, 110, 80))
+                               height * 0.655, height * 0.725, (20, 52, 110, 80))
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
@@ -1585,7 +1592,7 @@ class CreateLobbyView(NeonBaseView):
         self.title_label.draw()
 
         self.prompt_label.x = self.window.width / 2
-        self.prompt_label.y = self.window.height * 0.70
+        self.prompt_label.y = self.window.height * 0.69
         self.prompt_label.draw()
 
         self.error_label.text = self.error_text

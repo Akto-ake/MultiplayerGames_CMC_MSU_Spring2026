@@ -161,14 +161,35 @@ msgstr "MENU"
 msgid "snake.waiting"
 msgstr "Waiting for the second player. Snake screen prototype."
 
+msgid "snake.ready"
+msgstr "Both players are in the lobby. Press START."
+
+msgid "snake.starting"
+msgstr "Starting match..."
+
 msgid "snake.prototype"
 msgstr "Snake visual prototype. Gameplay will be added later."
+
+msgid "snake.playing"
+msgstr "Left snake: WASD. Right snake: arrow keys. First to 5 points wins."
+
+msgid "snake.paused"
+msgstr "Paused. Press PAUSE again to resume."
+
+msgid "snake.finished"
+msgstr "{winner} won. Press START for a new match."
 
 msgid "snake.leave"
 msgstr "Opponent left the game"
 
 msgid "snake.start"
 msgstr "START"
+
+msgid "snake.pause"
+msgstr "PAUSE"
+
+msgid "snake.resume"
+msgstr "RESUME"
 
 msgid "snake.back"
 msgstr "MENU"
