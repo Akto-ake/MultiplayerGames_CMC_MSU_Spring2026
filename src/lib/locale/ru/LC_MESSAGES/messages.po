@@ -24,7 +24,7 @@ msgid "menu.lobbies"
 msgstr "ДОСТУПНЫЕ ЛОББИ"
 
 msgid "menu.games"
-msgstr "ИГРЫ"
+msgstr "ОПИСАНИЕ ИГР"
 
 msgid "menu.exit"
 msgstr "ВЫХОД"
@@ -175,7 +175,7 @@ msgid "x_o.idle"
 msgstr "Создайте лобби или подключитесь к игре"
 
 msgid "x_o.waiting"
-msgstr "Ожидание второго игрока"
+msgstr "Ожидание подключения игрока"
 
 msgid "x_o.joined"
 msgstr "Игрок подключился"

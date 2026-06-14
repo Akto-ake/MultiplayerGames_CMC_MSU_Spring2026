@@ -1,4 +1,4 @@
-"""Фронтенд для игры X and O."""
+﻿"""Фронтенд для игры X and O."""
 
 from __future__ import annotations
 
@@ -86,7 +86,7 @@ class TicTacToeView(NeonBaseView):
             x=0,
             y=0,
             color=(154, 220, 255),
-            font_size=22,
+            font_size=17,
             font_name=("Bahnschrift", "Calibri", "Arial"),
             anchor_x="center",
             anchor_y="center",
@@ -138,8 +138,6 @@ class TicTacToeView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        controls = arcade.gui.UIBoxLayout(vertical=False, space_between=14)
-
         self.start_button = arcade.gui.UIFlatButton(
             text=tr("x_o.start_button"),
             width=190,
@@ -151,13 +149,13 @@ class TicTacToeView(NeonBaseView):
         def on_start(_event):
             self.manager.push_message("start")
 
-        controls.add(self.start_button)
+        self.ui.add(self.start_button)
 
         if self.on_back is not None:
             self.back_button = arcade.gui.UIFlatButton(
                 text=tr("x_o.back"),
                 width=190,
-                height=64,
+                height=56,
                 style=build_menu_button_style(exit_button=True),
             )
 
@@ -166,12 +164,25 @@ class TicTacToeView(NeonBaseView):
                 self.manager.push_message({"action": "leave_game"})
                 self.on_back()
 
-            controls.add(self.back_button)
+            self.ui.add(self.back_button)
         else:
             self.back_button = None
 
-        self._add_centered_widget(controls, align_y=-300)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 56, 20, 0.42)
+        self._register_responsive_text(self.status_label, 17, 10, 0.54)
+        self._register_responsive_text(self.meta_label, 18, 10, 0.56)
+        self._register_responsive_text(self.left_label, 20, 10, 0.24)
+        self._register_responsive_text(self.right_label, 20, 10, 0.24)
+        self._register_responsive_widget(
+            self.start_button, 190, 64, 110, 38
+        )
+        self._register_responsive_button(self.start_button)
+        if self.back_button is not None:
+            self._register_responsive_widget(
+                self.back_button, 190, 56, 110, 42
+            )
+            self._register_responsive_button(self.back_button)
 
     def on_update(self, _delta_time: float) -> None:
         """Считывает новые статусы игры от менеджера."""
@@ -272,37 +283,48 @@ class TicTacToeView(NeonBaseView):
     def _draw_game_shell(self) -> None:
         width = self.window.width
         height = self.window.height
+        scale = min(width / 1280, height / 720, 1.0)
+        panel_margin = max(14, 24 * scale)
+        info_panel_width = max(170, 250 * scale)
+        lobby_panel_width = max(190, 306 * scale)
+        panel_height = max(50, 72 * scale)
+        panel_gap = max(10, 16 * scale)
+        panel_top = height - panel_margin
+        panel_bottom = panel_top - panel_height
+        turn_left = width - panel_margin - info_panel_width
+        player_top = panel_bottom - panel_gap
+        player_bottom = player_top - panel_height
 
         self._draw_filled_rect(
-            width * 0.16,
-            width * 0.84,
-            height * 0.11,
-            height * 0.80,
+            width * 0.26,
+            width * 0.74,
+            height * 0.14,
+            height * 0.78,
             (5, 12, 30, 105),
         )
         self._draw_outlined_rect(
-            width * 0.16,
-            width * 0.84,
-            height * 0.11,
-            height * 0.80,
+            width * 0.26,
+            width * 0.74,
+            height * 0.14,
+            height * 0.78,
             (66, 188, 255, 80),
             border_width=2,
         )
 
         self._draw_player_panel(
-            left=24,
-            right=330,
-            bottom=height - 116,
-            top=height - 24,
+            left=turn_left,
+            right=width - panel_margin,
+            bottom=player_bottom,
+            top=player_top,
             caption=tr("x_o.player"),
             value=self._player_text(),
             color=CYAN,
         )
         self._draw_player_panel(
-            left=width - 330,
-            right=width - 24,
-            bottom=height - 116,
-            top=height - 24,
+            left=turn_left,
+            right=width - panel_margin,
+            bottom=panel_bottom,
+            top=panel_top,
             caption=tr("x_o.turn"),
             value=self._turn_text(),
             color=PURPLE,
@@ -310,10 +332,10 @@ class TicTacToeView(NeonBaseView):
 
         if self.lobby_id is not None:
             self._draw_player_panel(
-                left=24,
-                right=330,
-                bottom=24,
-                top=80,
+                left=panel_margin,
+                right=panel_margin + lobby_panel_width,
+                bottom=panel_margin,
+                top=panel_margin + max(42, 56 * scale),
                 caption=tr("x_o.lobby_id"),
                 value=str(self.lobby_id),
                 color=CYAN,
@@ -343,19 +365,50 @@ class TicTacToeView(NeonBaseView):
         label.draw()
 
     def _draw_text_layer(self) -> None:
+        self._update_responsive_layout()
+        self._position_control_buttons()
+        _left, _right, board_bottom, board_top, _cell_size = (
+            self._board_bounds()
+        )
+        scale = min(
+            self.window.width / 1280,
+            self.window.height / 720,
+            1.0,
+        )
         self.title_label.x = self.window.width / 2
-        self.title_label.y = self.window.height * 0.875
+        self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
 
         self.status_label.text = self._status_text()
         self.status_label.x = self.window.width / 2
-        self.status_label.y = self.window.height * 0.755
+        self.status_label.y = board_top + max(14, 18 * scale)
         self.status_label.draw()
 
         self.meta_label.text = self._meta_text()
         self.meta_label.x = self.window.width / 2
-        self.meta_label.y = self.window.height * 0.185
+        self.meta_label.y = board_bottom - max(12, 18 * scale)
         self.meta_label.draw()
+
+    def _position_control_buttons(self) -> None:
+        width = self.window.width
+        height = self.window.height
+        scale = min(width / 1280, height / 720, 1.0)
+        panel_margin = max(14, 24 * scale)
+        panel_width = max(190, 306 * scale)
+        button_gap = max(8, 14 * scale)
+
+        start_left = (width - self.start_button.width) / 2
+        self.start_button.move(
+            dx=start_left - self.start_button.left,
+            dy=panel_margin - self.start_button.bottom,
+        )
+
+        if self.back_button is not None:
+            back_left = panel_margin + panel_width + button_gap
+            self.back_button.move(
+                dx=back_left - self.back_button.left,
+                dy=panel_margin - self.back_button.bottom,
+            )
 
     def _draw_board(self) -> None:
         left, right, bottom, top, cell_size = self._board_bounds()

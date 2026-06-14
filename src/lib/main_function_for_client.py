@@ -174,7 +174,8 @@ async def x_o_run(game):
 
             match message.get("status"):
                 case "joined":
-                    x_o_push(manager, game, board, symbol, turn, "joined")
+                    status = "joined" if len(game.nicks) >= 2 else "waiting"
+                    x_o_push(manager, game, board, symbol, turn, status)
 
                 case "leave":
                     board = [[X_O_EMPTY] * 3 for _ in range(3)]

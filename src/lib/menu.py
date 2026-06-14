@@ -251,6 +251,12 @@ class NeonBaseView(arcade.View):
         self.ui = arcade.gui.UIManager()
         self._stars = self._generate_stars(count=140)
         self.locale_button = None
+        self._responsive_state = None
+        self._responsive_texts = []
+        self._responsive_widgets = []
+        self._responsive_buttons = []
+        self._responsive_inputs = []
+        self._responsive_boxes = []
 
     def on_show_view(self) -> None:
         """Активирует UI-менеджер при показе экрана."""
@@ -338,6 +344,157 @@ class NeonBaseView(arcade.View):
             align_y=-12,
         )
         self.ui.add(anchor_layout)
+
+    def _register_responsive_text(
+        self,
+        label,
+        font_size: float,
+        min_font_size: float = 10,
+        width_ratio: float | None = None,
+    ) -> None:
+        """Регистрирует текст для общего адаптивного масштабирования."""
+
+        self._responsive_texts.append(
+            (label, font_size, min_font_size, width_ratio)
+        )
+
+    def _register_responsive_widget(
+        self,
+        widget,
+        width: float,
+        height: float,
+        min_width: float | None = None,
+        min_height: float | None = None,
+    ) -> None:
+        """Регистрирует размеры GUI-виджета."""
+
+        self._responsive_widgets.append(
+            (
+                widget,
+                width,
+                height,
+                min_width or width * 0.55,
+                min_height or height * 0.55,
+            )
+        )
+
+    def _register_responsive_button(
+        self,
+        button,
+        font_size: float = 24,
+        min_font_size: float = 12,
+    ) -> None:
+        """Регистрирует шрифт кнопки."""
+
+        self._responsive_buttons.append(
+            (button, font_size, min_font_size)
+        )
+
+    def _register_responsive_input(
+        self,
+        input_widget,
+        font_size: float,
+        min_font_size: float = 12,
+    ) -> None:
+        """Регистрирует шрифт поля ввода."""
+
+        self._responsive_inputs.append(
+            (input_widget, font_size, min_font_size)
+        )
+
+    def _register_responsive_box(
+        self,
+        box,
+        space_between: float,
+        min_space: float = 6,
+    ) -> None:
+        """Регистрирует расстояние между элементами контейнера."""
+
+        self._responsive_boxes.append(
+            (box, space_between, min_space)
+        )
+
+    def _update_responsive_layout(self) -> None:
+        """Масштабирует зарегистрированные элементы под размер окна."""
+
+        scale = min(
+            self.window.width / WINDOW_WIDTH,
+            self.window.height / WINDOW_HEIGHT,
+            1.0,
+        )
+        scale = max(scale, 0.55)
+        text_state = tuple(
+            getattr(label, "text", "")
+            for label, _size, _min_size, _ratio in self._responsive_texts
+        )
+        state = (scale, text_state)
+
+        if state == self._responsive_state:
+            return
+
+        self._responsive_state = state
+
+        for label, base_size, min_size, width_ratio in self._responsive_texts:
+            font_size = max(min_size, base_size * scale)
+            if hasattr(label, "update_font"):
+                label.update_font(font_size=font_size)
+            else:
+                label.font_size = font_size
+            if width_ratio is not None:
+                self._fit_responsive_text(
+                    label,
+                    self.window.width * width_ratio,
+                    min_size,
+                )
+
+        for widget, width, height, min_width, min_height in self._responsive_widgets:
+            widget.resize(
+                width=max(min_width, width * scale),
+                height=max(min_height, height * scale),
+            )
+
+        for button, base_size, min_size in self._responsive_buttons:
+            font_size = max(min_size, base_size * scale)
+            for style in button.style.values():
+                style.font_size = font_size
+            button.trigger_full_render()
+
+        for input_widget, base_size, min_size in self._responsive_inputs:
+            font_size = max(min_size, base_size * scale)
+            input_widget.doc.set_style(
+                0,
+                len(input_widget.text),
+                {"font_size": font_size},
+            )
+            input_widget.caret.set_style({"font_size": font_size})
+            input_widget.trigger_full_render()
+
+        for box, base_space, min_space in self._responsive_boxes:
+            box._space_between = max(min_space, base_space * scale)
+            box._trigger_size_hint_update()
+
+        if self.locale_button is not None:
+            self.locale_button.resize(
+                width=max(48, 74 * scale),
+                height=max(32, 46 * scale),
+            )
+            for style in self.locale_button.style.values():
+                style.font_size = max(12, 24 * scale)
+            self.locale_button.trigger_full_render()
+
+    @staticmethod
+    def _fit_responsive_text(label, available_width, min_font_size) -> None:
+        """Уменьшает текст до доступной ширины."""
+
+        if label.content_width <= available_width:
+            return
+
+        fitted_size = label.font_size * available_width / label.content_width
+        fitted_size = max(min_font_size, fitted_size)
+        if hasattr(label, "update_font"):
+            label.update_font(font_size=fitted_size)
+        else:
+            label.font_size = fitted_size
 
     def _refresh_texts(self) -> None:
         if self.locale_button is not None:
@@ -526,6 +683,8 @@ class StartupView(NeonBaseView):
             anchor_y="center",
         )
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 48, 22, 0.52)
+        self._register_responsive_text(self.message_label, 22, 12, 0.50)
 
     def on_update(self, _delta_time: float) -> None:
         """Проверяет статусы подключения и переключает экран."""
@@ -576,6 +735,7 @@ class StartupView(NeonBaseView):
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.64
         self.title_label.draw()
@@ -624,7 +784,7 @@ class ServerUnavailableView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        button_box = arcade.gui.UIBoxLayout(space_between=14)
+        self.button_box = arcade.gui.UIBoxLayout(space_between=14)
 
         self.retry_button = arcade.gui.UIFlatButton(
             text=tr("server_unavailable.retry"),
@@ -650,10 +810,17 @@ class ServerUnavailableView(NeonBaseView):
             Manager().push_message((0,))
             arcade.exit()
 
-        button_box.add(self.retry_button)
-        button_box.add(self.exit_button)
-        self._add_centered_widget(button_box, align_y=-120)
+        self.button_box.add(self.retry_button)
+        self.button_box.add(self.exit_button)
+        self._add_centered_widget(self.button_box, align_y=-120)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 48, 22, 0.52)
+        self._register_responsive_text(self.message_label, 22, 12, 0.52)
+        self._register_responsive_widget(self.retry_button, 380, 78)
+        self._register_responsive_widget(self.exit_button, 380, 78)
+        self._register_responsive_button(self.retry_button)
+        self._register_responsive_button(self.exit_button)
+        self._register_responsive_box(self.button_box, 14)
 
     def on_draw(self) -> None:
         """Отрисовывает экран недоступности сервера."""
@@ -675,6 +842,7 @@ class ServerUnavailableView(NeonBaseView):
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.70
         self.title_label.draw()
@@ -784,6 +952,17 @@ class RegistrationView(NeonBaseView):
         self.form_box.add(self.continue_button)
         self._add_centered_widget(self.form_box, align_y=-20)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 52, 18, 0.38)
+        self._register_responsive_text(self.prompt_label, 28, 12, 0.27)
+        self._register_responsive_text(self.hint_label, 18, 10, 0.52)
+        self._register_responsive_text(self.error_label, 18, 10, 0.52)
+        self._register_responsive_widget(self.name_input, 560, 64, 280, 38)
+        self._register_responsive_widget(
+            self.continue_button, 360, 78, 180, 46
+        )
+        self._register_responsive_button(self.continue_button)
+        self._register_responsive_input(self.name_input, 26)
+        self._register_responsive_box(self.form_box, 16, 8)
 
     def on_show_view(self) -> None:
         """Фокусирует поле имени при открытии экрана."""
@@ -825,7 +1004,7 @@ class RegistrationView(NeonBaseView):
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
-        self._update_responsive_fonts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
@@ -842,95 +1021,6 @@ class RegistrationView(NeonBaseView):
         self.error_label.x = self.window.width / 2
         self.error_label.y = self.window.height * 0.28
         self.error_label.draw()
-
-    def _update_responsive_fonts(self) -> None:
-        """Масштабирует надписи при изменении размера окна."""
-
-        scale = min(
-            self.window.width / WINDOW_WIDTH,
-            self.window.height / WINDOW_HEIGHT,
-            1.0,
-        )
-        scale = max(scale, 0.45)
-        layout_state = (
-            scale,
-            self.title_label.text,
-            self.prompt_label.text,
-            self.hint_label.text,
-            self.continue_button.text,
-        )
-
-        if layout_state == self._font_layout_state:
-            return
-
-        self._font_layout_state = layout_state
-        self.title_label.font_size = 52 * scale
-        self.prompt_label.font_size = 28 * scale
-        self.hint_label.font_size = 18 * scale
-        self.error_label.font_size = 18 * scale
-
-        self.name_input.resize(
-            width=max(280, 560 * scale),
-            height=max(38, 64 * scale),
-        )
-        self.continue_button.resize(
-            width=max(180, 360 * scale),
-            height=max(46, 78 * scale),
-        )
-        self.form_box._space_between = max(8, 16 * scale)
-        self.form_box._trigger_size_hint_update()
-
-        self._fit_text_width(
-            self.title_label,
-            available_width=self.window.width * 0.38,
-            min_font_size=18,
-        )
-        self._fit_text_width(
-            self.prompt_label,
-            available_width=self.window.width * 0.27,
-            min_font_size=12,
-        )
-        self._fit_text_width(
-            self.hint_label,
-            available_width=self.window.width * 0.52,
-            min_font_size=10,
-        )
-
-        input_font_size = max(12, 26 * scale)
-        self.name_input.doc.set_style(
-            0,
-            len(self.name_input.text),
-            {"font_size": input_font_size},
-        )
-        self.name_input.caret.set_style({"font_size": input_font_size})
-        self.name_input.trigger_full_render()
-
-        button_font_size = max(12, 24 * scale)
-        self._set_button_font_size(self.continue_button, button_font_size)
-        if self.locale_button is not None:
-            self._set_button_font_size(self.locale_button, button_font_size)
-
-    @staticmethod
-    def _fit_text_width(
-        label: arcade.Text,
-        available_width: float,
-        min_font_size: float,
-    ) -> None:
-        """Уменьшает текст, если он шире доступной области."""
-
-        if label.content_width <= available_width:
-            return
-
-        fitted_size = label.font_size * available_width / label.content_width
-        label.font_size = max(min_font_size, fitted_size)
-
-    @staticmethod
-    def _set_button_font_size(button, font_size: float) -> None:
-        """Обновляет размер текста во всех состояниях кнопки."""
-
-        for style in button.style.values():
-            style.font_size = font_size
-        button.trigger_full_render()
 
     def _refresh_texts(self) -> None:
         super()._refresh_texts()
@@ -1032,8 +1122,12 @@ class JoinLobbyView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        form_box = arcade.gui.UIBoxLayout(space_between=16)
-        buttons_box = arcade.gui.UIBoxLayout(vertical=False, space_between=14)
+        self.form_box = arcade.gui.UIBoxLayout(
+            align="center", space_between=16
+        )
+        self.buttons_box = arcade.gui.UIBoxLayout(
+            vertical=False, align="center", space_between=14
+        )
 
         self.lobby_input = VerticalCenteredInputText(
             width=560,
@@ -1054,7 +1148,7 @@ class JoinLobbyView(NeonBaseView):
 
         self.connect_button = arcade.gui.UIFlatButton(
             text=tr("join.connect"),
-            width=280,
+            width=340,
             height=78,
             style=build_primary_button_style(),
         )
@@ -1074,12 +1168,26 @@ class JoinLobbyView(NeonBaseView):
         def on_back(_event):
             self.on_back()
 
-        buttons_box.add(self.connect_button)
-        buttons_box.add(self.back_button)
-        form_box.add(self.lobby_input)
-        form_box.add(buttons_box)
-        self._add_centered_widget(form_box, align_y=-20)
+        self.buttons_box.add(self.connect_button)
+        self.buttons_box.add(self.back_button)
+        self.form_box.add(self.lobby_input)
+        self.form_box.add(self.buttons_box)
+        self._add_centered_widget(self.form_box, align_y=-20)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 48, 12, 0.54)
+        self._register_responsive_text(self.prompt_label, 28, 12, 0.52)
+        self._register_responsive_text(self.hint_label, 18, 10, 0.52)
+        self._register_responsive_text(self.error_label, 18, 10, 0.52)
+        self._register_responsive_widget(self.lobby_input, 560, 64, 280, 38)
+        self._register_responsive_widget(
+            self.connect_button, 340, 78, 260, 46
+        )
+        self._register_responsive_widget(self.back_button, 220, 78)
+        self._register_responsive_button(self.connect_button)
+        self._register_responsive_button(self.back_button)
+        self._register_responsive_input(self.lobby_input, 26)
+        self._register_responsive_box(self.form_box, 16, 8)
+        self._register_responsive_box(self.buttons_box, 14, 7)
 
     def on_show_view(self) -> None:
         """Фокусирует поле ID лобби при открытии экрана."""
@@ -1087,6 +1195,25 @@ class JoinLobbyView(NeonBaseView):
         super().on_show_view()
         if hasattr(self.ui, "_set_active_widget"):
             self.ui._set_active_widget(self.lobby_input)
+
+    def _draw_center_backlight(self) -> None:
+        width = self.window.width
+        height = self.window.height
+        self._draw_filled_rect(
+            width * 0.211,
+            width * 0.789,
+            height * 0.805,
+            height * 0.915,
+            (22, 58, 120, 70),
+        )
+        self._draw_outlined_rect(
+            width * 0.21,
+            width * 0.79,
+            height * 0.805,
+            height * 0.915,
+            (94, 206, 255, 110),
+            border_width=2,
+        )
 
     def on_update(self, _delta_time: float) -> None:
         """Считывает статусы и открывает экран игры при готовности."""
@@ -1145,13 +1272,14 @@ class JoinLobbyView(NeonBaseView):
         self._draw_outlined_rect(
             width * 0.20, width * 0.80, height * 0.18,
             height * 0.78, (66, 188, 255, 90), 2)
-        self._draw_filled_rect(width * 0.25, width * 0.75,
+        self._draw_filled_rect(width * 0.35, width * 0.65,
                                height * 0.60, height * 0.66, (20, 52, 110, 80))
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
-        self.title_label.y = self.window.height * 0.84
+        self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
 
         self.prompt_label.x = self.window.width / 2
@@ -1247,15 +1375,14 @@ class CreateLobbyView(NeonBaseView):
             anchor_y="center",
             bold=True,
         )
-        self.id_label = arcade.Text(
+        self.id_label = arcade.gui.UILabel(
             tr("create.id_prompt", min_id=MIN_LOBBY_ID, max_id=MAX_LOBBY_ID),
-            x=0,
-            y=0,
-            color=(165, 188, 214),
-            font_size=18,
+            width=500,
+            height=24,
+            text_color=(155, 170, 190),
+            font_size=15,
             font_name=("Calibri", "Arial"),
-            anchor_x="center",
-            anchor_y="center",
+            align="center",
         )
         self.error_label = arcade.Text(
             "",
@@ -1271,9 +1398,11 @@ class CreateLobbyView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        form_box = arcade.gui.UIBoxLayout(space_between=14)
-        games_box = arcade.gui.UIBoxLayout(space_between=10)
-        buttons_box = arcade.gui.UIBoxLayout(vertical=False, space_between=14)
+        self.form_box = arcade.gui.UIBoxLayout(space_between=14)
+        self.games_box = arcade.gui.UIBoxLayout(space_between=10)
+        self.buttons_box = arcade.gui.UIBoxLayout(
+            vertical=False, space_between=14
+        )
 
         for game_id, title_key in LOBBY_GAMES:
             button = arcade.gui.UIFlatButton(
@@ -1289,7 +1418,7 @@ class CreateLobbyView(NeonBaseView):
                 self._refresh_texts()
 
             self.game_buttons[game_id] = (button, title_key)
-            games_box.add(button)
+            self.games_box.add(button)
 
         self.lobby_input = VerticalCenteredInputText(
             width=500,
@@ -1330,13 +1459,31 @@ class CreateLobbyView(NeonBaseView):
         def on_back(_event):
             self.on_back()
 
-        buttons_box.add(self.create_button)
-        buttons_box.add(self.back_button)
-        form_box.add(games_box)
-        form_box.add(self.lobby_input)
-        form_box.add(buttons_box)
-        self._add_centered_widget(form_box, align_y=-78)
+        self.buttons_box.add(self.create_button)
+        self.buttons_box.add(self.back_button)
+        self.form_box.add(self.games_box)
+        self.form_box.add(self.id_label)
+        self.form_box.add(self.lobby_input)
+        self.form_box.add(self.buttons_box)
+        self._add_centered_widget(self.form_box, align_y=-45)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 48, 12, 0.36)
+        self._register_responsive_text(self.prompt_label, 24, 12, 0.44)
+        self._register_responsive_text(self.id_label, 15, 10, 0.48)
+        self._register_responsive_text(self.error_label, 18, 10, 0.52)
+        self._register_responsive_widget(self.id_label, 500, 24, 280, 18)
+        self._register_responsive_widget(self.lobby_input, 500, 60, 280, 38)
+        self._register_responsive_widget(self.create_button, 260, 72)
+        self._register_responsive_widget(self.back_button, 200, 72)
+        self._register_responsive_button(self.create_button)
+        self._register_responsive_button(self.back_button)
+        self._register_responsive_input(self.lobby_input, 24)
+        self._register_responsive_box(self.form_box, 14, 6)
+        self._register_responsive_box(self.games_box, 10, 5)
+        self._register_responsive_box(self.buttons_box, 14, 7)
+        for button, _title_key in self.game_buttons.values():
+            self._register_responsive_widget(button, 500, 58, 280, 36)
+            self._register_responsive_button(button)
 
     def on_show_view(self) -> None:
         """Фокусирует поле ID лобби при открытии экрана."""
@@ -1397,16 +1544,17 @@ class CreateLobbyView(NeonBaseView):
     def _draw_create_shell(self) -> None:
         width = self.window.width
         height = self.window.height
-        self._draw_filled_rect(width * 0.20, width * 0.80,
-                               height * 0.15, height * 0.82, (5, 12, 30, 120))
+        self._draw_filled_rect(width * 0.22, width * 0.78,
+                               height * 0.17, height * 0.78, (5, 12, 30, 120))
         self._draw_outlined_rect(
-            width * 0.20, width * 0.80, height * 0.15,
-            height * 0.82, (66, 188, 255, 90), 2)
-        self._draw_filled_rect(width * 0.25, width * 0.75,
+            width * 0.22, width * 0.78, height * 0.17,
+            height * 0.78, (66, 188, 255, 90), 2)
+        self._draw_filled_rect(width * 0.38, width * 0.62,
                                height * 0.67, height * 0.73, (20, 52, 110, 80))
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
@@ -1414,10 +1562,6 @@ class CreateLobbyView(NeonBaseView):
         self.prompt_label.x = self.window.width / 2
         self.prompt_label.y = self.window.height * 0.70
         self.prompt_label.draw()
-
-        self.id_label.x = self.window.width / 2
-        self.id_label.y = self.window.height * 0.405
-        self.id_label.draw()
 
         self.error_label.text = self.error_text
         self.error_label.x = self.window.width / 2
@@ -1525,7 +1669,7 @@ class MainMenuView(NeonBaseView):
         self._build_ui()
 
     def _build_ui(self) -> None:
-        button_box = arcade.gui.UIBoxLayout(space_between=12)
+        self.button_box = arcade.gui.UIBoxLayout(space_between=12)
         for action, title_key in MENU_ACTIONS:
             button = arcade.gui.UIFlatButton(
                 text=tr(title_key),
@@ -1539,10 +1683,16 @@ class MainMenuView(NeonBaseView):
                 self._handle_action(menu_action, tr(caption_key))
 
             self.menu_buttons[action] = (button, title_key)
-            button_box.add(button)
+            self.button_box.add(button)
 
-        self._add_centered_widget(button_box, align_y=-30)
+        self._add_centered_widget(self.button_box, align_y=-30)
         self._add_locale_toggle()
+        self._register_responsive_text(self.title_label, 52, 12, 0.36)
+        self._register_responsive_text(self.status_label, 18, 10, 0.56)
+        self._register_responsive_box(self.button_box, 12, 6)
+        for button, _title_key in self.menu_buttons.values():
+            self._register_responsive_widget(button, 620, 82, 340, 46)
+            self._register_responsive_button(button)
 
     def on_draw(self) -> None:
         """Отрисовывает главный экран меню."""
@@ -1609,6 +1759,7 @@ class MainMenuView(NeonBaseView):
 
     def _draw_text_layer(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
         self.title_label.y = self.window.height * 0.86
         self.title_label.draw()
@@ -1698,9 +1849,9 @@ class GamesCatalogView(NeonBaseView):
     def _build_ui(self) -> None:
         self.back_button = arcade.gui.UIFlatButton(
             text=tr("games.back"),
-            width=250,
+            width=320,
             height=56,
-            style=build_primary_button_style(),
+            style=build_menu_button_style(exit_button=True),
         )
 
         @self.back_button.event("on_click")
@@ -1719,6 +1870,7 @@ class GamesCatalogView(NeonBaseView):
                 )
             )
             self._add_locale_toggle()
+            self._register_catalog_responsive_elements()
             return
 
         anchor_layout = arcade.gui.UIAnchorLayout()
@@ -1731,6 +1883,16 @@ class GamesCatalogView(NeonBaseView):
         )
         self.ui.add(anchor_layout)
         self._add_locale_toggle()
+        self._register_catalog_responsive_elements()
+
+    def _register_catalog_responsive_elements(self) -> None:
+        """Регистрирует заголовок и кнопку каталога для масштабирования."""
+
+        self._register_responsive_text(self.title_label, 48, 18, 0.38)
+        self._register_responsive_widget(
+            self.back_button, 320, 56, 230, 40
+        )
+        self._register_responsive_button(self.back_button)
 
     def on_draw(self) -> None:
         """Отрисовывает каталог доступных игр."""
@@ -1752,22 +1914,38 @@ class GamesCatalogView(NeonBaseView):
             self.window.width * 0.06,
             self.window.width * 0.94,
             self.window.height * 0.08,
-            self.window.height * 0.88,
+            self.window.height * 0.85,
             (5, 12, 30, 100),
         )
         self._draw_outlined_rect(
             self.window.width * 0.06,
             self.window.width * 0.94,
             self.window.height * 0.08,
-            self.window.height * 0.88,
+            self.window.height * 0.85,
             (66, 188, 255, 72),
+            border_width=2,
+        )
+        self._draw_filled_rect(
+            self.window.width * 0.289,
+            self.window.width * 0.71,
+            self.window.height * 0.875,
+            self.window.height * 0.975,
+            (22, 58, 120, 70),
+        )
+        self._draw_outlined_rect(
+            self.window.width * 0.29,
+            self.window.width * 0.71,
+            self.window.height * 0.875,
+            self.window.height * 0.975,
+            (94, 206, 255, 110),
             border_width=2,
         )
 
     def _draw_titles(self) -> None:
         self._refresh_texts()
+        self._update_responsive_layout()
         self.title_label.x = self.window.width / 2
-        self.title_label.y = self.window.height * 0.94
+        self.title_label.y = self.window.height * 0.925
         self.title_label.draw()
 
     def _refresh_texts(self) -> None:
@@ -1835,7 +2013,7 @@ class GamesCatalogView(NeonBaseView):
         pad_x = max(14, card_w * 0.04)
         pad_y = max(12, card_h * 0.05)
         title_size = 20 if card_w > 420 else 18
-        rules_size = 14 if card_w > 420 else 13
+        rules_size = 12 if card_w > 420 else 11
 
         title_y = top - pad_y - 8
         arcade.draw_text(
@@ -1895,14 +2073,14 @@ class GamesCatalogView(NeonBaseView):
     ) -> tuple[list[str], int]:
         """Подбирает перенос и размер шрифта так, чтобы весь текст влезал в карточку."""
         for size in range(initial_size, 10, -1):
-            wrap_width = max(18, int(text_width / (size * 0.58)))
+            wrap_width = max(18, int(text_width / (size * 0.68)))
             lines = textwrap.wrap(text, width=wrap_width)
             line_step = int(size * 1.32)
             if len(lines) * line_step <= text_height:
                 return lines, size
 
         size = 10
-        wrap_width = max(16, int(text_width / (size * 0.58)))
+        wrap_width = max(16, int(text_width / (size * 0.68)))
         lines = textwrap.wrap(text, width=wrap_width)
         max_lines = max(1, int(text_height / int(size * 1.32)))
         if len(lines) > max_lines:

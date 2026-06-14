@@ -24,7 +24,7 @@ msgid "menu.lobbies"
 msgstr "AVAILABLE LOBBIES"
 
 msgid "menu.games"
-msgstr "GAMES"
+msgstr "GAME DESCRIPTIONS"
 
 msgid "menu.exit"
 msgstr "EXIT"
@@ -175,7 +175,7 @@ msgid "x_o.idle"
 msgstr "Create a lobby or join a game"
 
 msgid "x_o.waiting"
-msgstr "Waiting for the second player"
+msgstr "Waiting for a player to connect"
 
 msgid "x_o.joined"
 msgstr "Player joined"
