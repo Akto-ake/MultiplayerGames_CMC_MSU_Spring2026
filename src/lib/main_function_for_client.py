@@ -51,18 +51,27 @@ def x_o_parse_move(message):
     return None
 
 
-def x_o_push(manager, game, board, symbol, turn, status):
+def x_o_push(
+    manager,
+    game,
+    board,
+    symbol,
+    turn,
+    status,
+    move_pending=False,
+):
     """Отправляет состояние крестиков-ноликов во фронтенд."""
 
     manager.push_status(
         {
             "game": "X_O",
-            "board": board,
-            "nicks": game.nicks,
+            "board": [row.copy() for row in board],
+            "nicks": list(game.nicks),
             "lobby_id": game.get_id(),
             "symbol": symbol,
             "turn": turn,
             "status": status,
+            "move_pending": move_pending,
         }
     )
 
@@ -76,6 +85,8 @@ async def x_o_run(game):
     symbols = {}
     turn = None
     symbol = None
+    move_pending = False
+    finished = False
 
     await game.get_nicks()
     x_o_push(manager, game, board, symbol, turn, "waiting")
@@ -89,6 +100,18 @@ async def x_o_run(game):
             user_message = manager.pop_message()
 
             if (
+                isinstance(user_message, dict)
+                and user_message.get("action") == "leave_game"
+            ):
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+                await game.leave()
+                return
+
+            if (
                 isinstance(user_message, tuple)
                 and len(user_message) > 0
                 and user_message[0] == 0
@@ -96,12 +119,17 @@ async def x_o_run(game):
                 manager.push_message(user_message)
                 return
 
-            if user_message == "start" and turn is None:
+            if user_message == "start" and (turn is None or finished):
                 await game.push_message({"status": "start"})
 
             move = x_o_parse_move(user_message)
 
-            if move is not None and symbol is not None:
+            if (
+                move is not None
+                and symbol is not None
+                and not move_pending
+                and not finished
+            ):
                 row, col = move
 
                 if turn != game.client.nick:
@@ -113,9 +141,19 @@ async def x_o_run(game):
                     continue
 
                 if board[row][col] != X_O_EMPTY:
-                    x_o_push(manager, game, board, symbol, turn, "busy")
                     continue
 
+                board[row][col] = symbol
+                move_pending = True
+                x_o_push(
+                    manager,
+                    game,
+                    board,
+                    symbol,
+                    turn,
+                    "move",
+                    move_pending=True,
+                )
                 await game.push_message(
                     {
                         "status": "move",
@@ -139,16 +177,19 @@ async def x_o_run(game):
                     x_o_push(manager, game, board, symbol, turn, "joined")
 
                 case "leave":
+                    board = [[X_O_EMPTY] * 3 for _ in range(3)]
+                    symbols = {}
+                    turn = None
+                    symbol = None
+                    move_pending = False
+                    finished = False
                     x_o_push(manager, game, board, symbol, turn, "leave")
-                    return
 
                 case "start":
-                    if turn is not None:
-                        continue
-
                     first = message["message"]
                     second = [nick for nick in game.nicks if nick != first][0]
 
+                    board = [[X_O_EMPTY] * 3 for _ in range(3)]
                     symbols = {
                         first: "X",
                         second: "O",
@@ -156,6 +197,8 @@ async def x_o_run(game):
 
                     turn = first
                     symbol = symbols[game.client.nick]
+                    move_pending = False
+                    finished = False
 
                     x_o_push(manager, game, board, symbol, turn, "start")
 
@@ -164,6 +207,7 @@ async def x_o_run(game):
                     nick = data["nick"]
                     row = data["row"]
                     col = data["col"]
+                    move_pending = False
 
                     if nick != turn:
                         raise ClientServerError("wrong turn")
@@ -171,15 +215,22 @@ async def x_o_run(game):
                     if data["symbol"] != symbols[nick]:
                         raise ClientServerError("wrong symbol")
 
+                    if board[row][col] not in (X_O_EMPTY, data["symbol"]):
+                        raise ClientServerError("cell is busy")
+
                     board[row][col] = data["symbol"]
 
                     if x_o_win(board):
+                        finished = True
                         x_o_push(manager, game, board, symbol, turn, "win")
-                        return
+                        await game.push_message({"status": "round_finished"})
+                        continue
 
                     if all(X_O_EMPTY not in row for row in board):
+                        finished = True
                         x_o_push(manager, game, board, symbol, turn, "draw")
-                        return
+                        await game.push_message({"status": "round_finished"})
+                        continue
 
                     turn = [nick for nick in game.nicks if nick != turn][0]
                     x_o_push(manager, game, board, symbol, turn, "move")

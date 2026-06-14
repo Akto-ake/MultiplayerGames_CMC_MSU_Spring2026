@@ -341,6 +341,17 @@ class Server():
             case "who":
                 await self.who(queue, nick, lobby_id, message.get("request_id"))
 
+            case "leave":
+                await self.leave_lobby(queue, nick, lobby_id)
+                lobby_id = None
+                await queue.put(
+                    {
+                        "target": "server",
+                        "request_id": message.get("request_id"),
+                        "status": "left",
+                    }
+                )
+
             case "disconnect":
                 return nick, lobby_id, True
 
@@ -822,6 +833,11 @@ class Client():
 
             return self.lobby_id
 
+        async def leave(self):
+            """Покидает текущее лобби, сохраняя соединение с сервером."""
+
+            await self.client.leave_game()
+
     def __init__(self, host: str = CLIENT_HOST, port: int = SERVER_PORT):
         """Создаёт клиента.
 
@@ -1003,6 +1019,19 @@ class Client():
         )
 
         return answer["nicks"]
+
+    async def leave_game(self):
+        """Покидает текущее лобби и очищает старые игровые сообщения."""
+
+        await self.request(
+            {
+                "target": "server",
+                "message": "leave",
+            }
+        )
+
+        while not self.game_messages.empty():
+            self.game_messages.get_nowait()
 
     async def disconnect(self):
         """Отключается от сервера."""

@@ -68,6 +68,7 @@ class TicTacToeView(NeonBaseView):
         self.turn: str | None = None
         self.status = "idle"
         self.error_text = ""
+        self.move_pending = False
 
         self.title_label = arcade.Text(
             "X AND O",
@@ -149,7 +150,6 @@ class TicTacToeView(NeonBaseView):
         @self.start_button.event("on_click")
         def on_start(_event):
             self.manager.push_message("start")
-            self.status = "waiting"
 
         controls.add(self.start_button)
 
@@ -163,6 +163,7 @@ class TicTacToeView(NeonBaseView):
 
             @self.back_button.event("on_click")
             def on_back(_event):
+                self.manager.push_message({"action": "leave_game"})
                 self.on_back()
 
             controls.add(self.back_button)
@@ -203,15 +204,13 @@ class TicTacToeView(NeonBaseView):
 
         row, col = cell
 
-        if self.status in ("win", "draw", "leave"):
+        if self.status in ("win", "draw", "leave") or self.move_pending:
             return
 
         if self.symbol is None:
-            self.status = "waiting"
             return
 
         if self.board[row][col] != EMPTY_CELL:
-            self.status = "busy"
             return
 
         if self.turn is not None and self.player_name and self.turn != self.player_name:
@@ -219,6 +218,9 @@ class TicTacToeView(NeonBaseView):
             return
 
         self.manager.push_message({"row": row, "col": col})
+        self.board[row][col] = self.symbol
+        self.status = "move"
+        self.move_pending = True
 
     def _consume_statuses(self) -> None:
         latest_status = None
@@ -252,6 +254,20 @@ class TicTacToeView(NeonBaseView):
         self.turn = latest_status.get("turn")
         self.status = latest_status.get("status", self.status)
         self.error_text = ""
+        self.move_pending = latest_status.get("move_pending", False)
+        self._sync_start_button()
+
+    def _sync_start_button(self) -> None:
+        """Показывает старт только до раунда и после его завершения."""
+
+        self.start_button.visible = self.status in (
+            "idle",
+            "waiting",
+            "joined",
+            "leave",
+            "win",
+            "draw",
+        )
 
     def _draw_game_shell(self) -> None:
         width = self.window.width
@@ -367,6 +383,23 @@ class TicTacToeView(NeonBaseView):
 
                 if symbol == EMPTY_CELL:
                     continue
+
+                cell_left = left + cell_size * col
+                cell_right = cell_left + cell_size
+                cell_top = top - cell_size * row
+                cell_bottom = cell_top - cell_size
+                fill_color = (
+                    (16, 112, 150, 80)
+                    if symbol == "X"
+                    else (103, 48, 150, 80)
+                )
+                self._draw_filled_rect(
+                    cell_left + 5,
+                    cell_right - 5,
+                    cell_bottom + 5,
+                    cell_top - 5,
+                    fill_color,
+                )
 
                 center_x = left + cell_size * (col + 0.5)
                 center_y = top - cell_size * (row + 0.5)

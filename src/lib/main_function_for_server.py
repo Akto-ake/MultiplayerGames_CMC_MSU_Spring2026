@@ -79,10 +79,54 @@ async def x_o_main_lobby(lobby):
                                 "message": nick,
                             }
                         )
-                        return
+                        stage = "waiting"
+                        first_player = None
+
+                    case "client", "round_finished":
+                        stage = "finished"
 
                     case "client", _:
                         lobby.push_message(message)
+
+            case "finished":
+                match target, status:
+                    case "main_lobby", "leave":
+                        lobby.push_message(
+                            {
+                                "target": "client",
+                                "status": "leave",
+                                "message": nick,
+                            }
+                        )
+                        stage = "waiting"
+                        first_player = None
+
+                    case "client", "start":
+                        players = lobby.get_list_nicks()
+                        if len(players) < lobby.max_players:
+                            lobby.push_message(
+                                {
+                                    "target": "client",
+                                    "status": "error",
+                                    "message": "not enough players",
+                                },
+                                [nick],
+                            )
+                            continue
+
+                        first_player = next(
+                            player
+                            for player in players
+                            if player != first_player
+                        )
+                        stage = "game"
+                        lobby.push_message(
+                            {
+                                "target": "client",
+                                "status": "start",
+                                "message": first_player,
+                            }
+                        )
 
 
 async def pong_main_lobby(lobby):
