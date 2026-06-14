@@ -86,9 +86,14 @@ BG_TOP = (7, 10, 20)
 BG_BOTTOM = (9, 24, 50)
 
 
+def get_window_screen(window: arcade.Window):
+    """Возвращает экран, на котором находится окно."""
+    return window.screen
+
+
 def enter_soft_fullscreen(window: arcade.Window) -> None:
     """Растягивает окно на весь экран без системного fullscreen-переключения."""
-    screen = window.get_window_screen()
+    screen = get_window_screen(window)
     window.set_size(screen.width, screen.height)
     window.set_location(screen.x, screen.y)
     setattr(window, "_soft_fullscreen", True)
@@ -98,7 +103,7 @@ def exit_soft_fullscreen(window: arcade.Window) -> None:
     """Возвращает окно к исходному размеру после soft fullscreen."""
     windowed_size = getattr(window, "_windowed_size", (WINDOW_WIDTH, WINDOW_HEIGHT))
     width, height = windowed_size
-    screen = window.get_window_screen()
+    screen = get_window_screen(window)
     window.set_size(width, height)
     window.set_location(
         screen.x + (screen.width - width) // 2,
@@ -113,7 +118,7 @@ def is_window_full_like(window: arcade.Window) -> bool:
         return True
 
     win_w, win_h = window.get_size()
-    screen = window.get_window_screen()
+    screen = get_window_screen(window)
     tolerance = 2
     return (
         abs(win_w - screen.width) <= tolerance
