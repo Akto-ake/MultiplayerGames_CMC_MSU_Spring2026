@@ -9,7 +9,7 @@ import arcade.gui
 
 try:
     from .frontend import Manager
-    from .localization import tr
+    from .localization import tr, tr_error
     from .menu import (
         CYAN,
         PURPLE,
@@ -19,7 +19,7 @@ try:
     )
 except ImportError:
     from frontend import Manager
-    from localization import tr
+    from localization import tr, tr_error
     from menu import (
         CYAN,
         PURPLE,
@@ -226,7 +226,7 @@ class PongView(NeonBaseView):
                 latest_status = status
 
         if latest_error is not None:
-            self.error_text = str(latest_error)
+            self.error_text = tr_error(latest_error)
 
         if latest_status is None:
             return

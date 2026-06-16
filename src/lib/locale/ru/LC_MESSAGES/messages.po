@@ -83,6 +83,9 @@ msgstr "ID лобби не может быть пустым."
 msgid "join.bad_id"
 msgstr "ID лобби должен быть числом."
 
+msgid "join.failed"
+msgstr "Не удалось подключиться к лобби."
+
 msgid "create.title"
 msgstr "СОЗДАНИЕ ЛОББИ"
 
@@ -101,6 +104,81 @@ msgstr "ID лобби должен быть от {min_id} до {max_id}."
 msgid "create.failed"
 msgstr "Не удалось создать лобби."
 
+msgid "error.bad_json"
+msgstr "Некорректный JSON."
+
+msgid "error.json_message_must_be_dict"
+msgstr "Сообщение JSON должно быть объектом."
+
+msgid "error.unknown_target"
+msgstr "Неизвестный адресат сообщения."
+
+msgid "error.unknown_message"
+msgstr "Неизвестная команда сервера."
+
+msgid "error.bad_nick"
+msgstr "Некорректное имя игрока."
+
+msgid "error.leave_lobby_first"
+msgstr "Сначала выйдите из текущего лобби."
+
+msgid "error.first_login"
+msgstr "Сначала введите имя игрока."
+
+msgid "error.game_not_found"
+msgstr "Игра не найдена."
+
+msgid "error.bad_lobby_id"
+msgstr "Некорректный ID лобби."
+
+msgid "error.lobby_id_is_busy"
+msgstr "Этот ID лобби уже занят."
+
+msgid "error.no_free_lobby_ids"
+msgstr "Свободных ID лобби больше нет."
+
+msgid "error.lobby_not_found"
+msgstr "Лобби не найдено."
+
+msgid "error.nick_is_busy_in_lobby"
+msgstr "Это имя уже занято в лобби."
+
+msgid "error.lobby_is_full"
+msgstr "Лобби уже заполнено."
+
+msgid "error.first_create_or_join_lobby"
+msgstr "Сначала создайте лобби или подключитесь к нему."
+
+msgid "error.not_in_this_lobby"
+msgstr "Вы не состоите в этом лобби."
+
+msgid "error.lobby_crashed"
+msgstr "Лобби аварийно завершилось."
+
+msgid "error.not_enough_players"
+msgstr "Недостаточно игроков для старта."
+
+msgid "error.game_is_not_started"
+msgstr "Игра ещё не запущена."
+
+msgid "error.wrong_turn"
+msgstr "Сейчас ход другого игрока."
+
+msgid "error.wrong_symbol"
+msgstr "Некорректный символ хода."
+
+msgid "error.cell_is_busy"
+msgstr "Эта клетка уже занята."
+
+msgid "error.game_run_function_is_not_set"
+msgstr "Локальная логика игры не настроена."
+
+msgid "error.client_is_not_connected"
+msgstr "Клиент не подключён к серверу."
+
+msgid "error.server_unavailable"
+msgstr "Сервер недоступен."
+
 msgid "main.title"
 msgstr "ГЛАВНОЕ МЕНЮ"
 
@@ -117,7 +195,7 @@ msgid "games.back"
 msgstr "НАЗАД В МЕНЮ"
 
 msgid "game.tanks.title"
-msgstr "Tanks 1990"
+msgstr "Танки 1990"
 
 msgid "game.tanks.rules"
 msgstr ""
@@ -125,7 +203,7 @@ msgstr ""
 "нужное число раз."
 
 msgid "game.pong.title"
-msgstr "Pong"
+msgstr "Пинг-понг"
 
 msgid "game.pong.rules"
 msgstr ""
@@ -133,7 +211,7 @@ msgstr ""
 "тот, кто отправил мяч за край соперника."
 
 msgid "game.snake.title"
-msgstr "Snake"
+msgstr "Змейка"
 
 msgid "game.snake.rules"
 msgstr ""
@@ -195,7 +273,7 @@ msgid "snake.back"
 msgstr "В МЕНЮ"
 
 msgid "game.x_o.title"
-msgstr "X and O"
+msgstr "Крестики-нолики"
 
 msgid "game.x_o.rules"
 msgstr ""

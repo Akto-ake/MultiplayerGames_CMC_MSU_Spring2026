@@ -5,11 +5,13 @@ import asyncio
 try:
     from . import status_client_support
     from .frontend import Manager
+    from .localization import tr, tr_error
     from .main_function_for_client import CLIENT_GAMES
     from .server import Client, ClientServerError
 except ImportError:
     import status_client_support
     from frontend import Manager
+    from localization import tr, tr_error
     from main_function_for_client import CLIENT_GAMES
     from server import Client, ClientServerError
 
@@ -30,7 +32,7 @@ async def play_game(game: Client.Game):
     except ClientServerError as error:
         manager.push_status(
             None,
-            error=status_client_support.Error_game(str(error), 1),
+            error=status_client_support.Error_game(tr_error(error), 1),
         )
 
 
@@ -50,7 +52,7 @@ def push_server_unavailable(manager: Manager):
     manager.push_status(
         {
             "view": "server_unavailable",
-            "message": "Сервер недоступен.",
+            "message": tr("server_unavailable.message"),
         }
     )
 
@@ -137,7 +139,7 @@ async def _run_client_loop(client: Client):
                     manager.push_status(
                         {
                             "view": "create_error",
-                            "message": str(error),
+                            "message": tr_error(error),
                         }
                     )
                     continue
@@ -154,7 +156,13 @@ async def _run_client_loop(client: Client):
                     continue
                 try:
                     game = await client.connect_game(message[1])
-                except ClientServerError:
+                except ClientServerError as error:
+                    manager.push_status(
+                        {
+                            "view": "join_error",
+                            "message": tr_error(error),
+                        }
+                    )
                     continue
                 if game.game_name == "PONG":
                     manager.push_status({"view": "open_pong"})

@@ -52,6 +52,19 @@ def tr(message_id: str, **kwargs: object) -> str:
     return text
 
 
+def tr_error(message: object) -> str:
+    """Translate a server/client error message when a catalog key exists."""
+
+    message_text = str(message or "")
+    message_key = "error." + message_text.replace(" ", "_")
+    translated = tr(message_key)
+
+    if translated != message_key:
+        return translated
+
+    return message_text
+
+
 def _translate(message_id: str) -> str:
     """Translate through compiled gettext catalog or source PO fallback."""
 

@@ -83,6 +83,9 @@ msgstr "Lobby ID cannot be empty."
 msgid "join.bad_id"
 msgstr "Lobby ID must be a number."
 
+msgid "join.failed"
+msgstr "Could not join lobby."
+
 msgid "create.title"
 msgstr "CREATE LOBBY"
 
@@ -100,6 +103,81 @@ msgstr "Lobby ID must be from {min_id} to {max_id}."
 
 msgid "create.failed"
 msgstr "Could not create lobby."
+
+msgid "error.bad_json"
+msgstr "Invalid JSON."
+
+msgid "error.json_message_must_be_dict"
+msgstr "JSON message must be an object."
+
+msgid "error.unknown_target"
+msgstr "Unknown message target."
+
+msgid "error.unknown_message"
+msgstr "Unknown server command."
+
+msgid "error.bad_nick"
+msgstr "Invalid player name."
+
+msgid "error.leave_lobby_first"
+msgstr "Leave the current lobby first."
+
+msgid "error.first_login"
+msgstr "Enter a player name first."
+
+msgid "error.game_not_found"
+msgstr "Game not found."
+
+msgid "error.bad_lobby_id"
+msgstr "Invalid lobby ID."
+
+msgid "error.lobby_id_is_busy"
+msgstr "This lobby ID is already busy."
+
+msgid "error.no_free_lobby_ids"
+msgstr "No free lobby IDs are available."
+
+msgid "error.lobby_not_found"
+msgstr "Lobby not found."
+
+msgid "error.nick_is_busy_in_lobby"
+msgstr "This name is already busy in the lobby."
+
+msgid "error.lobby_is_full"
+msgstr "Lobby is full."
+
+msgid "error.first_create_or_join_lobby"
+msgstr "Create or join a lobby first."
+
+msgid "error.not_in_this_lobby"
+msgstr "You are not in this lobby."
+
+msgid "error.lobby_crashed"
+msgstr "Lobby crashed."
+
+msgid "error.not_enough_players"
+msgstr "Not enough players to start."
+
+msgid "error.game_is_not_started"
+msgstr "Game is not started yet."
+
+msgid "error.wrong_turn"
+msgstr "It is another player's turn."
+
+msgid "error.wrong_symbol"
+msgstr "Invalid move symbol."
+
+msgid "error.cell_is_busy"
+msgstr "This cell is occupied."
+
+msgid "error.game_run_function_is_not_set"
+msgstr "Game run function is not set."
+
+msgid "error.client_is_not_connected"
+msgstr "Client is not connected to the server."
+
+msgid "error.server_unavailable"
+msgstr "Server is unavailable."
 
 msgid "main.title"
 msgstr "MAIN MENU"

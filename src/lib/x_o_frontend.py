@@ -16,7 +16,7 @@ try:
         build_menu_button_style,
         build_primary_button_style,
     )
-    from .localization import tr
+    from .localization import tr, tr_error
 except ImportError:
     from frontend import Manager
     from menu import (
@@ -26,7 +26,7 @@ except ImportError:
         build_menu_button_style,
         build_primary_button_style,
     )
-    from localization import tr
+    from localization import tr, tr_error
 
 
 BOARD_SIZE = 474
@@ -253,7 +253,7 @@ class TicTacToeView(NeonBaseView):
                 latest_status = status
 
         if latest_error is not None:
-            self.error_text = str(latest_error)
+            self.error_text = tr_error(latest_error)
 
         if latest_status is None:
             return

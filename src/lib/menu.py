@@ -16,10 +16,10 @@ from arcade.gui.widgets.text import UIInputTextStyle
 
 try:
     from .frontend import Manager
-    from .localization import tr, toggle_locale
+    from .localization import tr, toggle_locale, tr_error
 except ImportError:
     from frontend import Manager
-    from localization import tr, toggle_locale
+    from localization import tr, toggle_locale, tr_error
 
 
 WINDOW_WIDTH = 1280
@@ -1257,7 +1257,13 @@ class JoinLobbyView(NeonBaseView):
                 return
 
             if isinstance(status, dict) and status.get("view") == "create_error":
-                self.error_text = status.get("message", tr("create.failed"))
+                self.error_text = tr_error(
+                    status.get("message", tr("create.failed"))
+                )
+                return
+
+            if isinstance(status, dict) and status.get("view") == "join_error":
+                self.error_text = tr_error(status.get("message", tr("join.failed")))
                 return
 
             if isinstance(status, dict) and status.get("view") == "open_x_o":
@@ -1530,7 +1536,9 @@ class CreateLobbyView(NeonBaseView):
                 return
 
             if isinstance(status, dict) and status.get("view") == "create_error":
-                self.error_text = status.get("message", tr("create.failed"))
+                self.error_text = tr_error(
+                    status.get("message", tr("create.failed"))
+                )
                 return
 
             if isinstance(status, dict) and status.get("view") == "open_pong":
