@@ -398,6 +398,37 @@ async def snake_main_lobby(lobby):
                         start_round()
 
 
+async def quiz_main_lobby(lobby):
+    """Минимальная серверная логика лобби викторины."""
+
+    while True:
+        nick, message = await lobby.pop_message()
+        target = message.get("target")
+        status = message.get("status")
+
+        match target, status:
+            case "main_lobby", "joined":
+                lobby.push_message(
+                    {
+                        "target": "client",
+                        "status": "joined",
+                        "message": nick,
+                    }
+                )
+
+            case "main_lobby", "leave":
+                lobby.push_message(
+                    {
+                        "target": "client",
+                        "status": "leave",
+                        "message": nick,
+                    }
+                )
+
+            case _:
+                continue
+
+
 GAMES = {
     "X_O": {
         "main_func": x_o_main_lobby,
@@ -409,6 +440,10 @@ GAMES = {
     },
     "SNAKE": {
         "main_func": snake_main_lobby,
+        "max_players": 2,
+    },
+    "QUIZ": {
+        "main_func": quiz_main_lobby,
         "max_players": 2,
     },
 }

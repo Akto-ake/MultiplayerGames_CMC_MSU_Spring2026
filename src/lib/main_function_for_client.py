@@ -932,8 +932,47 @@ async def snake_run(game):
             pass
 
 
+async def quiz_run(game):
+    """Минимальная клиентская заглушка викторины."""
+
+    manager = Manager()
+
+    await game.get_nicks()
+    task = asyncio.create_task(game.pop_message())
+
+    try:
+        while True:
+            await asyncio.sleep(0.01)
+
+            user_message = manager.pop_message()
+            if (
+                isinstance(user_message, dict)
+                and user_message.get("action") == "leave_game"
+            ):
+                task.cancel()
+                try:
+                    await task
+                except asyncio.CancelledError:
+                    pass
+                await game.leave()
+                return
+
+            if task.done():
+                task.result()
+                task = asyncio.create_task(game.pop_message())
+
+    finally:
+        task.cancel()
+
+        try:
+            await task
+        except asyncio.CancelledError:
+            pass
+
+
 CLIENT_GAMES = {
     "X_O": x_o_run,
     "PONG": pong_run,
     "SNAKE": snake_run,
+    "QUIZ": quiz_run,
 }

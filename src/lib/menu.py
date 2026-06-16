@@ -43,6 +43,7 @@ LOBBY_GAMES = [
     ("X_O", "game.x_o.title"),
     ("PONG", "game.pong.title"),
     ("SNAKE", "game.snake.title"),
+    ("QUIZ", "game.quiz.title"),
 ]
 
 GAME_CARDS = [
@@ -261,6 +262,22 @@ def show_snake_view(window, player_name: str, on_back: Callable[[], None]) -> No
 
     window.show_view(
         SnakeView(
+            player_name=player_name,
+            on_back=on_back,
+        )
+    )
+
+
+def show_quiz_view(window, player_name: str, on_back: Callable[[], None]) -> None:
+    """Открывает экран викторины."""
+
+    try:
+        from .quiz_frontend import QuizView
+    except ImportError:
+        from quiz_frontend import QuizView
+
+    window.show_view(
+        QuizView(
             player_name=player_name,
             on_back=on_back,
         )
@@ -1256,6 +1273,10 @@ class JoinLobbyView(NeonBaseView):
                 show_snake_view(self.window, self.player_name, self.on_back)
                 return
 
+            if isinstance(status, dict) and status.get("view") == "open_quiz":
+                show_quiz_view(self.window, self.player_name, self.on_back)
+                return
+
             if isinstance(status, dict) and status.get("view") == "create_error":
                 self.error_text = status.get("message", tr("create.failed"))
                 return
@@ -1541,6 +1562,10 @@ class CreateLobbyView(NeonBaseView):
                 show_snake_view(self.window, self.player_name, self.on_back)
                 return
 
+            if isinstance(status, dict) and status.get("view") == "open_quiz":
+                show_quiz_view(self.window, self.player_name, self.on_back)
+                return
+
             if isinstance(status, dict) and status.get("view") == "open_x_o":
                 try:
                     from .x_o_frontend import TicTacToeView
@@ -1760,6 +1785,15 @@ class MainMenuView(NeonBaseView):
                     )
 
                 show_snake_view(self.window, self.player_name, back_to_menu)
+                return
+
+            if isinstance(status, dict) and status.get("view") == "open_quiz":
+                def back_to_menu() -> None:
+                    self.window.show_view(
+                        MainMenuView(self.player_name, self.action_callback)
+                    )
+
+                show_quiz_view(self.window, self.player_name, back_to_menu)
                 return
 
             if isinstance(status, dict) and status.get("view") == "open_x_o":
