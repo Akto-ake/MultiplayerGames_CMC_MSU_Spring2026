@@ -937,15 +937,27 @@ async def quiz_run(game):
 
     manager = Manager()
 
+    def push_quiz_status(status, payload=None):
+        payload = payload or {}
+        manager.push_status(
+            {
+                "game": "QUIZ",
+                "nicks": list(game.nicks),
+                "lobby_id": game.get_id(),
+                "status": status,
+                "players": payload.get("players", list(game.nicks)),
+                "question_index": payload.get("question_index", 0),
+                "total_questions": payload.get("total_questions", 0),
+                "question": payload.get("question"),
+                "options": payload.get("options", []),
+                "answers": payload.get("answers", {}),
+                "scores": payload.get("scores", {}),
+                "correct_answers": payload.get("correct_answers", []),
+            }
+        )
+
     await game.get_nicks()
-    manager.push_status(
-        {
-            "game": "QUIZ",
-            "nicks": list(game.nicks),
-            "lobby_id": game.get_id(),
-            "status": "waiting",
-        }
-    )
+    push_quiz_status("waiting")
     task = asyncio.create_task(game.pop_message())
 
     try:
@@ -968,17 +980,34 @@ async def quiz_run(game):
             if user_message == "start":
                 await game.push_message({"status": "start"})
 
+            if isinstance(user_message, dict):
+                if user_message.get("action") == "answer":
+                    await game.push_message(
+                        {
+                            "status": "answer",
+                            "message": user_message.get("answer"),
+                        }
+                    )
+                    continue
+
+                if user_message.get("action") == "next":
+                    await game.push_message({"status": "next"})
+                    continue
+
             if task.done():
                 message = task.result()
                 task = asyncio.create_task(game.pop_message())
+                payload = message.get("message")
+                if not isinstance(payload, dict):
+                    payload = {}
 
                 match message.get("status"):
                     case "joined":
                         status = "joined" if len(game.nicks) >= 2 else "waiting"
                     case "waiting":
                         status = "waiting"
-                    case "start":
-                        status = "start"
+                    case "question" | "answer" | "answered" | "finished":
+                        status = message.get("status")
                     case "leave":
                         status = "leave"
                     case "error":
@@ -986,14 +1015,7 @@ async def quiz_run(game):
                     case _:
                         continue
 
-                manager.push_status(
-                    {
-                        "game": "QUIZ",
-                        "nicks": list(game.nicks),
-                        "lobby_id": game.get_id(),
-                        "status": status,
-                    }
-                )
+                push_quiz_status(status, payload)
 
     finally:
         task.cancel()

@@ -227,8 +227,29 @@ msgstr "Игрок подключился. Нажмите СТАРТ."
 msgid "quiz.start"
 msgstr "Игра началась"
 
+msgid "quiz.answer"
+msgstr "Ожидание ответа"
+
+msgid "quiz.choose_answer"
+msgstr "Выберите вариант ответа"
+
+msgid "quiz.wait_answer"
+msgstr "Ожидаем ответ второго игрока"
+
+msgid "quiz.answered"
+msgstr "Оба игрока ответили"
+
+msgid "quiz.finished"
+msgstr "Игра окончена"
+
+msgid "quiz.score_title"
+msgstr "Количество верных ответов:"
+
 msgid "quiz.start_button"
 msgstr "СТАРТ"
+
+msgid "quiz.next_button"
+msgstr "ДАЛЕЕ"
 
 msgid "quiz.back"
 msgstr "В МЕНЮ"
@@ -244,6 +265,12 @@ msgstr "ID ЛОББИ"
 
 msgid "quiz.lobby"
 msgstr "Лобби: {players}"
+
+msgid "quiz.question_counter"
+msgstr "Вопрос {current}/{total}"
+
+msgid "quiz.correct_answers"
+msgstr "Правильные ответы:"
 
 msgid "x_o.idle"
 msgstr "Создайте лобби или подключитесь к игре"
