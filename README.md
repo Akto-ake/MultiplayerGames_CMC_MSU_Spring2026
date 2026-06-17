@@ -62,12 +62,16 @@ doit list
 doit i18n
 doit test
 doit html
+doit wheel
 ```
 
 ## Сборка wheel
 
 ```bash
-python -m build --wheel
+doit wheel
+
+Далее в новом окружении:
+pip install dist/multiplayer_games_cmc2026-0.1.0-py3-none-any.whl
 ```
 
 ## Просмотр документации
