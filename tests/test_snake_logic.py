@@ -9,7 +9,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "src"))
 
-from lib.main_function_for_client import ( 
+from lib.main_function_for_client import (
     SNAKE_WIN_SCORE,
     snake_initial_body,
     snake_initial_state,
