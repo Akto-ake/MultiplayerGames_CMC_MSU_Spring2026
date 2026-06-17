@@ -1,6 +1,7 @@
 """Серверная и локальная часть проекта."""
 
 import asyncio
+from datetime import datetime
 import json
 
 try:
@@ -37,6 +38,13 @@ def create_message(target, status, message):
         "status": status,
         "message": message,
     }
+
+
+def server_log(message: str) -> None:
+    """Печатает служебное сообщение сервера с временем."""
+
+    current_time = datetime.now().strftime("%H:%M:%S")
+    print(f"[{current_time}] {message}", flush=True)
 
 
 class Server():
@@ -142,7 +150,7 @@ class Server():
 
         client_id = "{}:{}".format(*writer.get_extra_info("peername"))
 
-        print(client_id)
+        server_log(f"Client connected: {client_id}")
 
         nick = None
         lobby_id = None
@@ -174,7 +182,11 @@ class Server():
 
             await self.leave_lobby(queue, nick, lobby_id)
 
-            print(client_id, "DONE")
+            client_label = f"{client_id}"
+            if nick is not None:
+                client_label += f" ({nick})"
+
+            server_log(f"Client disconnected: {client_label}")
 
             writer.close()
             await writer.wait_closed()
@@ -392,6 +404,9 @@ class Server():
             await self._put_error(queue, request_id, "leave lobby first")
             return nick
 
+        if nick != new_nick:
+            server_log(f"Client login: {new_nick}")
+
         return new_nick
 
     async def create_lobby(
@@ -462,6 +477,9 @@ class Server():
         )
 
         self.lobby_tasks[new_lobby_id] = task
+        server_log(
+            f"Lobby created: id={new_lobby_id}, game={game}, host={nick}"
+        )
 
         await queue.put(
             {
@@ -525,6 +543,11 @@ class Server():
             return None
 
         current_lobby.add_nick(nick, queue)
+        server_log(
+            "Lobby joined: "
+            f"id={new_lobby_id}, game={current_lobby.game}, player={nick}, "
+            f"players={current_lobby.get_list_nicks()}"
+        )
 
         await queue.put(
             {
@@ -643,11 +666,17 @@ class Server():
         current_lobby.remove_nick(nick)
 
         if current_lobby.get_list_nicks():
+            server_log(
+                "Lobby left: "
+                f"id={lobby_id}, player={nick}, "
+                f"remaining={current_lobby.get_list_nicks()}"
+            )
             await current_lobby.messages.put(
                 (nick, create_message("main_lobby", "leave", nick))
             )
             return
 
+        server_log(f"Lobby closed: id={lobby_id}, last_player={nick}")
         self.stop_lobby(lobby_id)
 
     def lobby_done(self, lobby_id: int, task: asyncio.Task):
@@ -673,7 +702,7 @@ class Server():
         if error is None:
             return
 
-        print(f"Lobby {lobby_id} crashed:", error)
+        server_log(f"Lobby crashed: id={lobby_id}, error={error}")
 
         current_lobby.push_message(
             create_message("main_lobby", "error", "lobby crashed")
@@ -716,12 +745,18 @@ class Server():
         self.server = await asyncio.start_server(
             self.client_connected, host, port
         )
+        addresses = ", ".join(
+            str(sock.getsockname())
+            for sock in self.server.sockets or []
+        )
+        server_log(f"Server started: {addresses}")
 
         try:
             async with self.server:
                 await self.server.serve_forever()
         finally:
             await self.close()
+            server_log("Server stopped")
 
 
 class Client():
