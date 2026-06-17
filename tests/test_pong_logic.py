@@ -21,7 +21,7 @@ from lib.main_function_for_client import (
 
 
 class PongLogicTest(unittest.TestCase):
-    """Тесты чистых переходов состояния Pong."""
+    """Тесты переходов состояния Pong."""
 
     def test_initial_state_has_centered_objects(self) -> None:
         """Начальное состояние Pong содержит центрированные объекты."""

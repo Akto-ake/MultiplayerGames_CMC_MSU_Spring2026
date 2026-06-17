@@ -18,7 +18,7 @@ from lib.main_function_for_server import (
 
 
 class QuizLogicTest(unittest.TestCase):
-    """Тесты чистого построения раунда викторины."""
+    """Тесты построения раунда викторины."""
 
     def test_round_contains_five_unique_questions(self) -> None:
         """Раунд состоит из пяти разных вопросов из банка."""

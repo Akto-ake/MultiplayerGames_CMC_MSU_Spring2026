@@ -22,7 +22,7 @@ def clear_manager() -> None:
 
 
 class XoLogicTest(unittest.TestCase):
-    """Тесты чистых функций крестиков-ноликов."""
+    """Тесты функций крестиков-ноликов."""
 
     def setUp(self) -> None:
         clear_manager()

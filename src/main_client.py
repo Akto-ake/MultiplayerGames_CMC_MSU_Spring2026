@@ -1,4 +1,4 @@
-"""Точка входа клиентского приложения."""
+"""Точка запуска клиента."""
 
 import asyncio
 import threading
@@ -27,7 +27,7 @@ async def main():
 
 
 def cli() -> None:
-    """Console entry point for client app."""
+    """Точка входа консоли для клиента."""
 
     asyncio.run(main())
 
