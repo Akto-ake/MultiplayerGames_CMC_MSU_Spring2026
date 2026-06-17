@@ -11,6 +11,7 @@ venv/
 # Tooling
 .pytest_cache/
 .coverage
+docs/_build/
 *.pot
 *.mo
 
