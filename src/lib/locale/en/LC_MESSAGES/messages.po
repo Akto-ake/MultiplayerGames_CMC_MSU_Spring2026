@@ -4,540 +4,757 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multiplayer_games_CMC2026 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-10 00:00+0300\n"
+"POT-Creation-Date: 2026-06-17 22:00+0300\n"
 "PO-Revision-Date: 2026-06-10 00:00+0300\n"
 "Last-Translator: multiplayer_games_CMC2026 contributors\n"
 "Language: en\n"
 "Language-Team: en\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel\n"
+"Generated-By: Babel 2.18.0\n"
 
-msgid "lang.switch"
-msgstr "RU"
-
-msgid "menu.create_lobby"
-msgstr "CREATE LOBBY"
-
-msgid "menu.lobbies"
-msgstr "AVAILABLE LOBBIES"
-
-msgid "menu.games"
-msgstr "GAME DESCRIPTIONS"
-
-msgid "menu.exit"
-msgstr "EXIT"
-
-msgid "startup.title"
-msgstr "CONNECTING TO SERVER"
-
-msgid "startup.wait"
-msgstr "Please wait..."
-
-msgid "server_unavailable.title"
-msgstr "SERVER UNAVAILABLE"
-
+#: src/lib/backend.py:55 src/lib/menu.py:754 src/lib/menu.py:799
+#: src/lib/menu.py:897
 msgid "server_unavailable.message"
 msgstr "Server is unavailable."
 
+#: src/lib/menu.py:355 src/lib/menu.py:542
+msgid "lang.switch"
+msgstr "RU"
+
+#: src/lib/menu.py:706 src/lib/menu.py:790
+msgid "startup.title"
+msgstr "CONNECTING TO SERVER"
+
+#: src/lib/menu.py:717 src/lib/menu.py:791
+msgid "startup.wait"
+msgstr "Please wait..."
+
+#: src/lib/menu.py:801 src/lib/menu.py:903
+msgid "server_unavailable.title"
+msgstr "SERVER UNAVAILABLE"
+
+#: src/lib/menu.py:831 src/lib/menu.py:905
 msgid "server_unavailable.retry"
 msgstr "RECONNECT"
 
+#: src/lib/menu.py:843 src/lib/menu.py:906
+msgid "menu.exit"
+msgstr "EXIT"
+
+#: src/lib/menu.py:917 src/lib/menu.py:1068
 msgid "registration.title"
 msgstr "WELCOME"
 
+#: src/lib/menu.py:928 src/lib/menu.py:1069
 msgid "registration.prompt"
 msgstr "ENTER YOUR NAME"
 
+#: src/lib/menu.py:939 src/lib/menu.py:1070
 msgid "registration.hint"
 msgstr "Press Enter or the CONTINUE button"
 
+#: src/lib/menu.py:982 src/lib/menu.py:1071
 msgid "registration.continue"
 msgstr "CONTINUE"
 
+#: src/lib/menu.py:1101
 msgid "registration.empty_name"
 msgstr "Name cannot be empty."
 
+#: src/lib/menu.py:1105
 msgid "registration.long_name"
 msgstr "Name is too long (18 characters max)."
 
+#: src/lib/menu.py:1121 src/lib/menu.py:1355
 msgid "join.title"
 msgstr "JOIN LOBBY"
 
+#: src/lib/menu.py:1132 src/lib/menu.py:1356
 msgid "join.prompt"
 msgstr "ENTER LOBBY ID"
 
+#: src/lib/menu.py:1143 src/lib/menu.py:1357
 msgid "join.hint"
 msgstr "Enter a number and press Enter"
 
+#: src/lib/menu.py:1191 src/lib/menu.py:1358
 msgid "join.connect"
 msgstr "CONNECT"
 
+#: src/lib/menu.py:1202 src/lib/menu.py:1359 src/lib/menu.py:1507
+#: src/lib/menu.py:1669
 msgid "join.back"
 msgstr "BACK"
 
-msgid "join.empty_id"
-msgstr "Lobby ID cannot be empty."
-
-msgid "join.bad_id"
-msgstr "Lobby ID must be a number."
-
-msgid "join.failed"
-msgstr "Could not join lobby."
-
-msgid "create.title"
-msgstr "CREATE LOBBY"
-
-msgid "create.prompt"
-msgstr "CHOOSE A GAME"
-
-msgid "create.id_prompt"
-msgstr "Enter lobby ID from {min_id} to {max_id}"
-
-msgid "create.submit"
-msgstr "CREATE"
-
-msgid "create.bad_id_range"
-msgstr "Lobby ID must be from {min_id} to {max_id}."
-
+#: src/lib/menu.py:1282 src/lib/menu.py:1561
 msgid "create.failed"
 msgstr "Could not create lobby."
 
-msgid "error.bad_json"
-msgstr "Invalid JSON."
+#: src/lib/menu.py:1287
+msgid "join.failed"
+msgstr "Could not join lobby."
 
-msgid "error.json_message_must_be_dict"
-msgstr "JSON message must be an object."
+#: src/lib/menu.py:1388 src/lib/menu.py:1681
+msgid "join.empty_id"
+msgstr "Lobby ID cannot be empty."
 
-msgid "error.unknown_target"
-msgstr "Unknown message target."
+#: src/lib/menu.py:1392 src/lib/menu.py:1685
+msgid "join.bad_id"
+msgstr "Lobby ID must be a number."
 
-msgid "error.unknown_message"
-msgstr "Unknown server command."
+#: src/lib/menu.py:1412 src/lib/menu.py:1661
+msgid "create.title"
+msgstr "CREATE LOBBY"
 
-msgid "error.bad_nick"
-msgstr "Invalid player name."
+#: src/lib/menu.py:1423 src/lib/menu.py:1662
+msgid "create.prompt"
+msgstr "CHOOSE A GAME"
 
-msgid "error.leave_lobby_first"
-msgstr "Leave the current lobby first."
+#: src/lib/menu.py:1434 src/lib/menu.py:1664
+msgid "create.id_prompt"
+msgstr "Enter lobby ID from {min_id} to {max_id}"
 
-msgid "error.first_login"
-msgstr "Enter a player name first."
+#: src/lib/menu.py:1496 src/lib/menu.py:1668
+msgid "create.submit"
+msgstr "CREATE"
 
-msgid "error.game_not_found"
-msgstr "Game not found."
+#: src/lib/menu.py:1691
+msgid "create.bad_id_range"
+msgstr "Lobby ID must be from {min_id} to {max_id}."
 
-msgid "error.bad_lobby_id"
-msgstr "Invalid lobby ID."
-
-msgid "error.lobby_id_is_busy"
-msgstr "This lobby ID is already busy."
-
-msgid "error.no_free_lobby_ids"
-msgstr "No free lobby IDs are available."
-
-msgid "error.lobby_not_found"
-msgstr "Lobby not found."
-
-msgid "error.nick_is_busy_in_lobby"
-msgstr "This name is already busy in the lobby."
-
-msgid "error.lobby_is_full"
-msgstr "Lobby is full."
-
-msgid "error.first_create_or_join_lobby"
-msgstr "Create or join a lobby first."
-
-msgid "error.not_in_this_lobby"
-msgstr "You are not in this lobby."
-
-msgid "error.lobby_crashed"
-msgstr "Lobby crashed."
-
-msgid "error.not_enough_players"
-msgstr "Not enough players to start."
-
-msgid "error.game_is_not_started"
-msgstr "Game is not started yet."
-
-msgid "error.wrong_turn"
-msgstr "It is another player's turn."
-
-msgid "error.wrong_symbol"
-msgstr "Invalid move symbol."
-
-msgid "error.cell_is_busy"
-msgstr "This cell is occupied."
-
-msgid "error.game_run_function_is_not_set"
-msgstr "Game run function is not set."
-
-msgid "error.client_is_not_connected"
-msgstr "Client is not connected to the server."
-
-msgid "error.server_unavailable"
-msgstr "Server is unavailable."
-
-msgid "main.title"
-msgstr "MAIN MENU"
-
+#: src/lib/menu.py:1710 src/lib/menu.py:1863
 msgid "main.player"
 msgstr "Player: {player}"
 
+#: src/lib/menu.py:1714 src/lib/menu.py:1857
+msgid "main.title"
+msgstr "MAIN MENU"
+
+#: src/lib/menu.py:1906
 msgid "main.selected"
 msgstr "{player}: selected '{caption}'"
 
+#: src/lib/menu.py:1920 src/lib/menu.py:2036
 msgid "games.title"
 msgstr "AVAILABLE GAMES"
 
+#: src/lib/menu.py:1934 src/lib/menu.py:2037
 msgid "games.back"
 msgstr "BACK TO MENU"
 
-msgid "game.tanks.title"
-msgstr "Tanks 1990"
-
-msgid "game.tanks.rules"
+#: src/lib/menu.py:2103
+msgid "title_key"
 msgstr ""
-"Two players control tanks in an arena. The goal is to destroy the opponent "
-"the required number of times first."
 
-msgid "game.pong.title"
-msgstr "Pong"
+#: src/lib/menu.py:2137
+msgid "rules_key"
+msgstr ""
 
+#: src/lib/pong_frontend.py:124 src/lib/pong_frontend.py:597
+msgid "pong.start"
+msgstr "START"
+
+#: src/lib/pong_frontend.py:137 src/lib/pong_frontend.py:598
+msgid "pong.back"
+msgstr "MENU"
+
+#: src/lib/pong_frontend.py:571 src/lib/snake_frontend.py:377
+#: src/lib/x_o_frontend.py:557
+msgid "x_o.empty_lobby"
+msgstr "Lobby members will appear after server connection"
+
+#: src/lib/pong_frontend.py:573 src/lib/snake_frontend.py:379
+#: src/lib/x_o_frontend.py:559
+msgid "x_o.lobby"
+msgstr "Lobby: {players}"
+
+#: src/lib/pong_frontend.py:583
+msgid "pong.leave"
+msgstr "Opponent left the game"
+
+#: src/lib/pong_frontend.py:587
+msgid "pong.finished"
+msgstr "{winner} won. Press START for a new match."
+
+#: src/lib/pong_frontend.py:590
+msgid "pong.waiting"
+msgstr "Waiting for the second player. First to 5 points wins."
+
+#: src/lib/pong_frontend.py:592
+msgid "pong.playing"
+msgstr "Left paddle: W/S. Right paddle: arrow up/down."
+
+#: src/lib/quiz_frontend.py:80 src/lib/quiz_frontend.py:513
+msgid "game.quiz.title"
+msgstr "Quiz"
+
+#: src/lib/quiz_frontend.py:201 src/lib/quiz_frontend.py:514
+msgid "quiz.start_button"
+msgstr "START"
+
+#: src/lib/quiz_frontend.py:214 src/lib/quiz_frontend.py:515
+msgid "quiz.next_button"
+msgstr "NEXT"
+
+#: src/lib/quiz_frontend.py:227 src/lib/quiz_frontend.py:516
+msgid "quiz.back"
+msgstr "MENU"
+
+#: src/lib/quiz_frontend.py:356
+msgid "quiz.lobby_id"
+msgstr "LOBBY ID"
+
+#: src/lib/quiz_frontend.py:525
+msgid "quiz.wait_answer"
+msgstr "Waiting for the second player"
+
+#: src/lib/quiz_frontend.py:526
+msgid "quiz.choose_answer"
+msgstr "Choose an answer"
+
+#: src/lib/quiz_frontend.py:539
+msgid "quiz.empty_lobby"
+msgstr "Lobby members will appear after server connection"
+
+#: src/lib/quiz_frontend.py:542
+msgid "quiz.lobby"
+msgstr "Lobby: {players}"
+
+#: src/lib/quiz_frontend.py:547
+msgid "quiz.question_counter"
+msgstr "Question {current}/{total}"
+
+#: src/lib/quiz_frontend.py:558
+msgid "quiz.question_placeholder"
+msgstr "The question will appear here"
+
+#: src/lib/quiz_frontend.py:578
+msgid "quiz.score_title"
+msgstr "Correct answers count:"
+
+#: src/lib/quiz_frontend.py:583
+msgid "quiz.correct_answers"
+msgstr "Correct answers:"
+
+#: src/lib/snake_frontend.py:102 src/lib/snake_frontend.py:386
+msgid "snake.start"
+msgstr "START"
+
+#: src/lib/snake_frontend.py:115 src/lib/snake_frontend.py:390
+msgid "snake.pause"
+msgstr "PAUSE"
+
+#: src/lib/snake_frontend.py:126 src/lib/snake_frontend.py:392
+msgid "snake.back"
+msgstr "MENU"
+
+#: src/lib/snake_frontend.py:347
+msgid "snake.leave"
+msgstr "Opponent left the game"
+
+#: src/lib/snake_frontend.py:351
+msgid "snake.finished"
+msgstr "{winner} won. Press START for a new match."
+
+#: src/lib/snake_frontend.py:354
+msgid "snake.starting"
+msgstr "Starting match..."
+
+#: src/lib/snake_frontend.py:357
+msgid "snake.paused"
+msgstr "Paused. Press PAUSE again to resume."
+
+#: src/lib/snake_frontend.py:360
+msgid "snake.playing"
+msgstr "Left snake: WASD. Right snake: arrow keys. First to 5 points wins."
+
+#: src/lib/snake_frontend.py:363
+msgid "snake.ready"
+msgstr "Both players are in the lobby. Press START."
+
+#: src/lib/snake_frontend.py:365
+msgid "snake.waiting"
+msgstr "Waiting for the second player. Snake screen prototype."
+
+#: src/lib/snake_frontend.py:388
+msgid "snake.resume"
+msgstr "RESUME"
+
+#: src/lib/x_o_frontend.py:142 src/lib/x_o_frontend.py:563
+msgid "x_o.start_button"
+msgstr "START"
+
+#: src/lib/x_o_frontend.py:156 src/lib/x_o_frontend.py:565
+msgid "x_o.back"
+msgstr "MENU"
+
+#: src/lib/x_o_frontend.py:319 src/lib/x_o_frontend.py:359
+msgid "x_o.player"
+msgstr "PLAYER"
+
+#: src/lib/x_o_frontend.py:328
+msgid "x_o.turn"
+msgstr "TURN"
+
+#: src/lib/x_o_frontend.py:339 src/lib/x_o_frontend.py:359
+msgid "x_o.lobby_id"
+msgstr "LOBBY ID"
+
+#: src/lib/x_o_frontend.py:531 src/lib/x_o_frontend.py:544
+msgid "x_o.waiting_short"
+msgstr "waiting"
+
+#: src/lib/x_o_frontend.py:533
+msgid "x_o.you"
+msgstr "you"
+
+#: src/lib/x_o_frontend.py:538
+msgid "x_o.draw_short"
+msgstr "draw"
+
+#: src/lib/x_o_frontend.py:541
+msgid "x_o.winner"
+msgstr "{player} won"
+
+#: key literal translation
+#, fuzzy
+msgid "error."
+msgstr "Invalid player name."
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_json"
+msgstr "Invalid player name."
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_lobby_id"
+msgstr "LOBBY ID"
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_nick"
+msgstr "Invalid player name."
+
+#: key literal translation
+msgid "error.cell_is_busy"
+msgstr ""
+
+#: key literal translation
+msgid "error.client_is_not_connected"
+msgstr ""
+
+#: key literal translation
+msgid "error.first_create_or_join_lobby"
+msgstr ""
+
+#: key literal translation
+msgid "error.first_login"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_is_not_started"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_not_found"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_run_function_is_not_set"
+msgstr ""
+
+#: key literal translation
+msgid "error.json_message_must_be_dict"
+msgstr ""
+
+#: key literal translation
+msgid "error.leave_lobby_first"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_crashed"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_id_is_busy"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_is_full"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_not_found"
+msgstr ""
+
+#: key literal translation
+msgid "error.nick_is_busy_in_lobby"
+msgstr ""
+
+#: key literal translation
+msgid "error.no_free_lobby_ids"
+msgstr ""
+
+#: key literal translation
+msgid "error.not_enough_players"
+msgstr ""
+
+#: key literal translation
+msgid "error.not_in_this_lobby"
+msgstr ""
+
+#: key literal translation
+#, fuzzy
+msgid "error.server_unavailable"
+msgstr "SERVER UNAVAILABLE"
+
+#: key literal translation
+msgid "error.unknown_message"
+msgstr ""
+
+#: key literal translation
+msgid "error.unknown_target"
+msgstr ""
+
+#: key literal translation
+msgid "error.wrong_symbol"
+msgstr ""
+
+#: key literal translation
+msgid "error.wrong_turn"
+msgstr ""
+
+#: key literal translation
 msgid "game.pong.rules"
 msgstr ""
 "Classic ping-pong: move your paddle and return the ball. A player scores "
 "when the ball passes the opponent."
 
-msgid "game.snake.title"
-msgstr "Snake"
+#: key literal translation
+msgid "game.pong.title"
+msgstr "Pong"
 
-msgid "game.snake.rules"
-msgstr ""
-"Two players control snakes on separate boards. The player with the higher "
-"score wins."
-
-msgid "pong.waiting"
-msgstr "Waiting for the second player. First to 5 points wins."
-
-msgid "pong.playing"
-msgstr "Left paddle: W/S. Right paddle: arrow up/down."
-
-msgid "pong.finished"
-msgstr "{winner} won. Press START for a new match."
-
-msgid "pong.leave"
-msgstr "Opponent left the game"
-
-msgid "pong.start"
-msgstr "START"
-
-msgid "pong.back"
-msgstr "MENU"
-
-msgid "snake.waiting"
-msgstr "Waiting for the second player. Snake screen prototype."
-
-msgid "snake.ready"
-msgstr "Both players are in the lobby. Press START."
-
-msgid "snake.starting"
-msgstr "Starting match..."
-
-msgid "snake.prototype"
-msgstr "Snake visual prototype. Gameplay will be added later."
-
-msgid "snake.playing"
-msgstr "Left snake: WASD. Right snake: arrow keys. First to 5 points wins."
-
-msgid "snake.paused"
-msgstr "Paused. Press PAUSE again to resume."
-
-msgid "snake.finished"
-msgstr "{winner} won. Press START for a new match."
-
-msgid "snake.leave"
-msgstr "Opponent left the game"
-
-msgid "snake.start"
-msgstr "START"
-
-msgid "snake.pause"
-msgstr "PAUSE"
-
-msgid "snake.resume"
-msgstr "RESUME"
-
-msgid "snake.back"
-msgstr "MENU"
-
-msgid "game.x_o.title"
-msgstr "X and O"
-
-msgid "game.x_o.rules"
-msgstr ""
-"Tic-tac-toe for two players. The winner is the first player to make a line "
-"of three symbols."
-
-msgid "game.sea_battle.title"
-msgstr "Sea Battle"
-
-msgid "game.sea_battle.rules"
-msgstr ""
-"Place your fleet and take turns firing at the opponent's grid. The player "
-"who destroys all enemy ships wins."
-
-msgid "game.quiz.title"
-msgstr "Quiz"
-
+#: key literal translation
 msgid "game.quiz.rules"
 msgstr ""
 "Players answer the same questions. The winner is the player with more "
 "correct answers in the round."
 
-msgid "quiz.waiting"
-msgstr "Waiting for a player to connect"
+#: key literal translation
+msgid "game.sea_battle.rules"
+msgstr ""
+"Place your fleet and take turns firing at the opponent's grid. The player"
+" who destroys all enemy ships wins."
 
-msgid "quiz.joined"
-msgstr "Player joined. Press START."
+#: key literal translation
+msgid "game.sea_battle.title"
+msgstr "Sea Battle"
 
-msgid "quiz.start"
-msgstr "Game started"
+#: key literal translation
+msgid "game.snake.rules"
+msgstr ""
+"Two players control snakes on separate boards. The player with the higher"
+" score wins."
 
+#: key literal translation
+msgid "game.snake.title"
+msgstr "Snake"
+
+#: key literal translation
+msgid "game.tanks.rules"
+msgstr ""
+"Two players control tanks in an arena. The goal is to destroy the "
+"opponent the required number of times first."
+
+#: key literal translation
+msgid "game.tanks.title"
+msgstr "Tanks 1990"
+
+#: key literal translation
+msgid "game.x_o.rules"
+msgstr ""
+"Tic-tac-toe for two players. The winner is the first player to make a "
+"line of three symbols."
+
+#: key literal translation
+msgid "game.x_o.title"
+msgstr "X and O"
+
+#: key literal translation
+msgid "menu.create_lobby"
+msgstr "CREATE LOBBY"
+
+#: key literal translation
+msgid "menu.games"
+msgstr "GAME DESCRIPTIONS"
+
+#: key literal translation
+msgid "menu.lobbies"
+msgstr "AVAILABLE LOBBIES"
+
+#: key literal translation
+#, fuzzy
+msgid "pong.jpg"
+msgstr "Left paddle: W/S. Right paddle: arrow up/down."
+
+#: key literal translation
 msgid "quiz.answer"
 msgstr "Waiting for an answer"
 
-msgid "quiz.choose_answer"
-msgstr "Choose an answer"
-
-msgid "quiz.wait_answer"
-msgstr "Waiting for the second player"
-
-msgid "quiz.answered"
-msgstr "Both players answered"
-
-msgid "quiz.finished"
-msgstr "Game finished"
-
-msgid "quiz.score_title"
-msgstr "Correct answers count:"
-
-msgid "quiz.start_button"
-msgstr "START"
-
-msgid "quiz.next_button"
-msgstr "NEXT"
-
-msgid "quiz.back"
-msgstr "MENU"
-
-msgid "quiz.leave"
-msgstr "Opponent left the game"
-
-msgid "quiz.empty_lobby"
-msgstr "Lobby members will appear after server connection"
-
-msgid "quiz.lobby_id"
-msgstr "LOBBY ID"
-
-msgid "quiz.lobby"
-msgstr "Lobby: {players}"
-
-msgid "quiz.question_counter"
-msgstr "Question {current}/{total}"
-
-msgid "quiz.correct_answers"
-msgstr "Correct answers:"
-
-msgid "quiz.question_placeholder"
-msgstr "The question will appear here"
-
-msgid "quiz.answer_placeholder"
-msgstr "Answer option"
-
-msgid "quiz.question.jackson_middle_name"
-msgstr "What was Michael Jackson's middle name?"
-
-msgid "quiz.answer.jackson_joseph"
-msgstr "Joseph"
-
-msgid "quiz.answer.jackson_john"
-msgstr "John"
-
-msgid "quiz.answer.jackson_james"
-msgstr "James"
-
-msgid "quiz.answer.jackson_jim"
-msgstr "Jim"
-
-msgid "quiz.question.pharaoh_headdress"
-msgstr "What was the special headdress worn by pharaohs in Ancient Egypt called?"
-
-msgid "quiz.answer.kartuz"
-msgstr "Kartuz"
-
-msgid "quiz.answer.nemes"
-msgstr "Nemes"
-
-msgid "quiz.answer.crown"
-msgstr "Crown"
-
-msgid "quiz.answer.ubrus"
-msgstr "Ubrus"
-
-msgid "quiz.question.detynets"
-msgstr "In Old Rus, a detynets was called..."
-
-msgid "quiz.answer.kremlin"
-msgstr "A kremlin"
-
-msgid "quiz.answer.school"
-msgstr "A school"
-
-msgid "quiz.answer.princely_palace"
-msgstr "A princely palace"
-
-msgid "quiz.answer.monastery"
-msgstr "A monastery"
-
-msgid "quiz.question.old_builder"
-msgstr "What was a builder called in old times?"
-
-msgid "quiz.answer.cooper"
-msgstr "Cooper"
-
-msgid "quiz.answer.beekeeper"
-msgstr "Beekeeper"
-
+#: key literal translation
 msgid "quiz.answer.architect"
 msgstr "Architect"
 
-msgid "quiz.answer.helmsman"
-msgstr "Helmsman"
-
-msgid "quiz.question.proverb_cat"
-msgstr "Complete the proverb: 'The cat knows...'"
-
-msgid "quiz.answer.mice_do_not_know"
-msgstr "but the mice do not"
-
-msgid "quiz.answer.how_much_trouble_costs"
-msgstr "how much trouble costs"
-
-msgid "quiz.answer.where_secret_lies"
-msgstr "where the secret lies"
-
-msgid "quiz.answer.whose_meat_it_ate"
-msgstr "whose meat it ate"
-
-msgid "quiz.question.carnivorous_plant"
-msgstr "Which of these plants is carnivorous?"
-
-msgid "quiz.answer.bupleurum"
-msgstr "Bupleurum"
-
-msgid "quiz.answer.sundew"
-msgstr "Sundew"
-
-msgid "quiz.answer.pedicularis"
-msgstr "Pedicularis"
-
+#: key literal translation
 msgid "quiz.answer.astragalus"
 msgstr "Astragalus"
 
-msgid "quiz.question.rooftop_climber"
-msgstr "What do you call a person who climbs roofs of tall buildings?"
+#: key literal translation
+msgid "quiz.answer.beekeeper"
+msgstr "Beekeeper"
 
-msgid "quiz.answer.digger"
-msgstr "Digger"
-
-msgid "quiz.answer.stalker"
-msgstr "Stalker"
-
-msgid "quiz.answer.roofer"
-msgstr "Roofer"
-
+#: key literal translation
 msgid "quiz.answer.biker"
 msgstr "Biker"
 
-msgid "quiz.question.wedding_anniversaries"
-msgstr "How many years pass between a calico and a golden wedding anniversary?"
+#: key literal translation
+msgid "quiz.answer.bupleurum"
+msgstr "Bupleurum"
 
+#: key literal translation
+msgid "quiz.answer.cooper"
+msgstr "Cooper"
+
+#: key literal translation
+msgid "quiz.answer.crown"
+msgstr "Crown"
+
+#: key literal translation
+msgid "quiz.answer.digger"
+msgstr "Digger"
+
+#: key literal translation
 msgid "quiz.answer.eleven"
 msgstr "11"
 
-msgid "quiz.answer.nineteen"
-msgstr "19"
-
-msgid "quiz.answer.twenty_five"
-msgstr "25"
-
+#: key literal translation
 msgid "quiz.answer.forty_nine"
 msgstr "49"
 
-msgid "x_o.idle"
-msgstr "Create a lobby or join a game"
+#: key literal translation
+msgid "quiz.answer.helmsman"
+msgstr "Helmsman"
 
-msgid "x_o.waiting"
-msgstr "Waiting for a player to connect"
+#: key literal translation
+msgid "quiz.answer.how_much_trouble_costs"
+msgstr "how much trouble costs"
 
-msgid "x_o.joined"
-msgstr "Player joined"
+#: key literal translation
+msgid "quiz.answer.jackson_james"
+msgstr "James"
 
-msgid "x_o.start"
-msgstr "Game started"
+#: key literal translation
+msgid "quiz.answer.jackson_jim"
+msgstr "Jim"
 
-msgid "x_o.move"
-msgstr "Move accepted"
+#: key literal translation
+msgid "quiz.answer.jackson_john"
+msgstr "John"
 
-msgid "x_o.not_your_turn"
-msgstr "Opponent's turn"
+#: key literal translation
+msgid "quiz.answer.jackson_joseph"
+msgstr "Joseph"
 
-msgid "x_o.bad_move"
-msgstr "Invalid cell"
+#: key literal translation
+msgid "quiz.answer.kartuz"
+msgstr "Kartuz"
 
-msgid "x_o.busy"
-msgstr "This cell is occupied"
+#: key literal translation
+msgid "quiz.answer.kremlin"
+msgstr "A kremlin"
 
-msgid "x_o.win"
+#: key literal translation
+msgid "quiz.answer.mice_do_not_know"
+msgstr "but the mice do not"
+
+#: key literal translation
+msgid "quiz.answer.monastery"
+msgstr "A monastery"
+
+#: key literal translation
+msgid "quiz.answer.nemes"
+msgstr "Nemes"
+
+#: key literal translation
+msgid "quiz.answer.nineteen"
+msgstr "19"
+
+#: key literal translation
+msgid "quiz.answer.pedicularis"
+msgstr "Pedicularis"
+
+#: key literal translation
+msgid "quiz.answer.princely_palace"
+msgstr "A princely palace"
+
+#: key literal translation
+msgid "quiz.answer.roofer"
+msgstr "Roofer"
+
+#: key literal translation
+msgid "quiz.answer.school"
+msgstr "A school"
+
+#: key literal translation
+msgid "quiz.answer.stalker"
+msgstr "Stalker"
+
+#: key literal translation
+msgid "quiz.answer.sundew"
+msgstr "Sundew"
+
+#: key literal translation
+msgid "quiz.answer.twenty_five"
+msgstr "25"
+
+#: key literal translation
+msgid "quiz.answer.ubrus"
+msgstr "Ubrus"
+
+#: key literal translation
+msgid "quiz.answer.where_secret_lies"
+msgstr "where the secret lies"
+
+#: key literal translation
+msgid "quiz.answer.whose_meat_it_ate"
+msgstr "whose meat it ate"
+
+#: key literal translation
+msgid "quiz.answer_placeholder"
+msgstr "Answer option"
+
+#: key literal translation
+msgid "quiz.answered"
+msgstr "Both players answered"
+
+#: key literal translation
+msgid "quiz.finished"
 msgstr "Game finished"
 
-msgid "x_o.draw"
-msgstr "Draw"
+#: key literal translation
+msgid "quiz.joined"
+msgstr "Player joined. Press START."
 
-msgid "x_o.leave"
+#: key literal translation
+#, fuzzy
+msgid "quiz.jpg"
+msgstr "Player joined. Press START."
+
+#: key literal translation
+msgid "quiz.leave"
 msgstr "Opponent left the game"
 
-msgid "x_o.start_button"
-msgstr "START"
+#: key literal translation
+msgid "quiz.question.carnivorous_plant"
+msgstr "Which of these plants is carnivorous?"
 
-msgid "x_o.back"
+#: key literal translation
+msgid "quiz.question.detynets"
+msgstr "In Old Rus, a detynets was called..."
+
+#: key literal translation
+msgid "quiz.question.jackson_middle_name"
+msgstr "What was Michael Jackson's middle name?"
+
+#: key literal translation
+msgid "quiz.question.old_builder"
+msgstr "What was a builder called in old times?"
+
+#: key literal translation
+msgid "quiz.question.pharaoh_headdress"
+msgstr "What was the special headdress worn by pharaohs in Ancient Egypt called?"
+
+#: key literal translation
+msgid "quiz.question.proverb_cat"
+msgstr "Complete the proverb: 'The cat knows...'"
+
+#: key literal translation
+msgid "quiz.question.rooftop_climber"
+msgstr "What do you call a person who climbs roofs of tall buildings?"
+
+#: key literal translation
+msgid "quiz.question.wedding_anniversaries"
+msgstr "How many years pass between a calico and a golden wedding anniversary?"
+
+#: key literal translation
+msgid "quiz.start"
+msgstr "Game started"
+
+#: key literal translation
+msgid "quiz.waiting"
+msgstr "Waiting for a player to connect"
+
+#: key literal translation
+#, fuzzy
+msgid "snake.png"
+msgstr "Left snake: WASD. Right snake: arrow keys. First to 5 points wins."
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.bad_move"
 msgstr "MENU"
 
-msgid "x_o.player"
-msgstr "PLAYER"
+#: key literal translation
+#, fuzzy
+msgid "x_o.busy"
+msgstr "Lobby: {players}"
 
-msgid "x_o.turn"
-msgstr "TURN"
-
-msgid "x_o.lobby_id"
-msgstr "LOBBY ID"
-
-msgid "x_o.waiting_short"
-msgstr "waiting"
-
-msgid "x_o.you"
-msgstr "you"
-
-msgid "x_o.draw_short"
+#: key literal translation
+#, fuzzy
+msgid "x_o.draw"
 msgstr "draw"
 
-msgid "x_o.winner"
+#: key literal translation
+#, fuzzy
+msgid "x_o.idle"
 msgstr "{player} won"
 
-msgid "x_o.empty_lobby"
-msgstr "Lobby members will appear after server connection"
+#: key literal translation
+#, fuzzy
+msgid "x_o.joined"
+msgstr "{player} won"
 
-msgid "x_o.lobby"
-msgstr "Lobby: {players}"
+#: key literal translation
+#, fuzzy
+msgid "x_o.leave"
+msgstr "PLAYER"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.move"
+msgstr "you"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.not_your_turn"
+msgstr "TURN"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.start"
+msgstr "START"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.waiting"
+msgstr "waiting"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.win"
+msgstr "{player} won"
+

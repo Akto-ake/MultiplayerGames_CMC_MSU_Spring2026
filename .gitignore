@@ -19,3 +19,8 @@ docs/_build/
 .idea/
 .vscode/
 .DS_Store
+
+.i18n
+.doit.db
+.test
+*.egg-info/

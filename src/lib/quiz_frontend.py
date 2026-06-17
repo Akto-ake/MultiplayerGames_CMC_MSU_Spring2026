@@ -40,6 +40,15 @@ ANSWER_LETTERS = ("A", "B", "C", "D")
 ANSWER_BLUE = (50, 155, 255)
 ANSWER_PINK = (230, 88, 178)
 ANSWER_PURPLE = PURPLE
+STATUS_TEXT = {
+    "waiting": "quiz.waiting",
+    "joined": "quiz.joined",
+    "start": "quiz.start",
+    "answer": "quiz.answer",
+    "answered": "quiz.answered",
+    "finished": "quiz.finished",
+    "leave": "quiz.leave",
+}
 
 
 class QuizView(NeonBaseView):
@@ -516,7 +525,8 @@ class QuizView(NeonBaseView):
                 return tr("quiz.wait_answer")
             return tr("quiz.choose_answer")
 
-        return tr(f"quiz.{self.status}")
+        status_key = STATUS_TEXT.get(self.status)
+        return tr(status_key) if status_key else self.status
 
     def _show_start_button(self) -> bool:
         return self.status in ("waiting", "joined", "leave")

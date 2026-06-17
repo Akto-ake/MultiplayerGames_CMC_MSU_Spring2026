@@ -4,542 +4,760 @@ msgid ""
 msgstr ""
 "Project-Id-Version: multiplayer_games_CMC2026 0.1.0\n"
 "Report-Msgid-Bugs-To: \n"
-"POT-Creation-Date: 2026-06-10 00:00+0300\n"
+"POT-Creation-Date: 2026-06-17 22:00+0300\n"
 "PO-Revision-Date: 2026-06-10 00:00+0300\n"
 "Last-Translator: multiplayer_games_CMC2026 contributors\n"
 "Language: ru\n"
 "Language-Team: ru\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Generated-By: Babel\n"
+"Generated-By: Babel 2.18.0\n"
 
-msgid "lang.switch"
-msgstr "EN"
-
-msgid "menu.create_lobby"
-msgstr "СОЗДАТЬ ЛОББИ"
-
-msgid "menu.lobbies"
-msgstr "ДОСТУПНЫЕ ЛОББИ"
-
-msgid "menu.games"
-msgstr "ОПИСАНИЕ ИГР"
-
-msgid "menu.exit"
-msgstr "ВЫХОД"
-
-msgid "startup.title"
-msgstr "ПОДКЛЮЧЕНИЕ К СЕРВЕРУ"
-
-msgid "startup.wait"
-msgstr "Пожалуйста, подождите..."
-
-msgid "server_unavailable.title"
-msgstr "СЕРВЕР НЕДОСТУПЕН"
-
+#: src/lib/backend.py:55 src/lib/menu.py:754 src/lib/menu.py:799
+#: src/lib/menu.py:897
 msgid "server_unavailable.message"
 msgstr "Сервер недоступен."
 
+#: src/lib/menu.py:355 src/lib/menu.py:542
+msgid "lang.switch"
+msgstr "EN"
+
+#: src/lib/menu.py:706 src/lib/menu.py:790
+msgid "startup.title"
+msgstr "ПОДКЛЮЧЕНИЕ К СЕРВЕРУ"
+
+#: src/lib/menu.py:717 src/lib/menu.py:791
+msgid "startup.wait"
+msgstr "Пожалуйста, подождите..."
+
+#: src/lib/menu.py:801 src/lib/menu.py:903
+msgid "server_unavailable.title"
+msgstr "СЕРВЕР НЕДОСТУПЕН"
+
+#: src/lib/menu.py:831 src/lib/menu.py:905
 msgid "server_unavailable.retry"
 msgstr "ПЕРЕПОДКЛЮЧИТЬСЯ"
 
+#: src/lib/menu.py:843 src/lib/menu.py:906
+msgid "menu.exit"
+msgstr "ВЫХОД"
+
+#: src/lib/menu.py:917 src/lib/menu.py:1068
 msgid "registration.title"
 msgstr "ДОБРО ПОЖАЛОВАТЬ"
 
+#: src/lib/menu.py:928 src/lib/menu.py:1069
 msgid "registration.prompt"
 msgstr "ВВЕДИТЕ ИМЯ"
 
+#: src/lib/menu.py:939 src/lib/menu.py:1070
 msgid "registration.hint"
 msgstr "Нажмите Enter или кнопку ПРОДОЛЖИТЬ"
 
+#: src/lib/menu.py:982 src/lib/menu.py:1071
 msgid "registration.continue"
 msgstr "ПРОДОЛЖИТЬ"
 
+#: src/lib/menu.py:1101
 msgid "registration.empty_name"
 msgstr "Имя не может быть пустым."
 
+#: src/lib/menu.py:1105
 msgid "registration.long_name"
 msgstr "Имя слишком длинное (максимум 18 символов)."
 
+#: src/lib/menu.py:1121 src/lib/menu.py:1355
 msgid "join.title"
 msgstr "ПОДКЛЮЧЕНИЕ К ЛОББИ"
 
+#: src/lib/menu.py:1132 src/lib/menu.py:1356
 msgid "join.prompt"
 msgstr "ВВЕДИТЕ ID ЛОББИ"
 
+#: src/lib/menu.py:1143 src/lib/menu.py:1357
 msgid "join.hint"
 msgstr "Введите число и нажмите Enter"
 
+#: src/lib/menu.py:1191 src/lib/menu.py:1358
 msgid "join.connect"
 msgstr "ПОДКЛЮЧИТЬСЯ"
 
+#: src/lib/menu.py:1202 src/lib/menu.py:1359 src/lib/menu.py:1507
+#: src/lib/menu.py:1669
 msgid "join.back"
 msgstr "НАЗАД"
 
-msgid "join.empty_id"
-msgstr "ID лобби не может быть пустым."
-
-msgid "join.bad_id"
-msgstr "ID лобби должен быть числом."
-
-msgid "join.failed"
-msgstr "Не удалось подключиться к лобби."
-
-msgid "create.title"
-msgstr "СОЗДАНИЕ ЛОББИ"
-
-msgid "create.prompt"
-msgstr "ВЫБЕРИТЕ ИГРУ"
-
-msgid "create.id_prompt"
-msgstr "Введите ID лобби от {min_id} до {max_id}"
-
-msgid "create.submit"
-msgstr "СОЗДАТЬ"
-
-msgid "create.bad_id_range"
-msgstr "ID лобби должен быть от {min_id} до {max_id}."
-
+#: src/lib/menu.py:1282 src/lib/menu.py:1561
 msgid "create.failed"
 msgstr "Не удалось создать лобби."
 
-msgid "error.bad_json"
-msgstr "Некорректный JSON."
+#: src/lib/menu.py:1287
+msgid "join.failed"
+msgstr "Не удалось подключиться к лобби."
 
-msgid "error.json_message_must_be_dict"
-msgstr "Сообщение JSON должно быть объектом."
+#: src/lib/menu.py:1388 src/lib/menu.py:1681
+msgid "join.empty_id"
+msgstr "ID лобби не может быть пустым."
 
-msgid "error.unknown_target"
-msgstr "Неизвестный адресат сообщения."
+#: src/lib/menu.py:1392 src/lib/menu.py:1685
+msgid "join.bad_id"
+msgstr "ID лобби должен быть числом."
 
-msgid "error.unknown_message"
-msgstr "Неизвестная команда сервера."
+#: src/lib/menu.py:1412 src/lib/menu.py:1661
+msgid "create.title"
+msgstr "СОЗДАНИЕ ЛОББИ"
 
-msgid "error.bad_nick"
-msgstr "Некорректное имя игрока."
+#: src/lib/menu.py:1423 src/lib/menu.py:1662
+msgid "create.prompt"
+msgstr "ВЫБЕРИТЕ ИГРУ"
 
-msgid "error.leave_lobby_first"
-msgstr "Сначала выйдите из текущего лобби."
+#: src/lib/menu.py:1434 src/lib/menu.py:1664
+msgid "create.id_prompt"
+msgstr "Введите ID лобби от {min_id} до {max_id}"
 
-msgid "error.first_login"
-msgstr "Сначала введите имя игрока."
+#: src/lib/menu.py:1496 src/lib/menu.py:1668
+msgid "create.submit"
+msgstr "СОЗДАТЬ"
 
-msgid "error.game_not_found"
-msgstr "Игра не найдена."
+#: src/lib/menu.py:1691
+msgid "create.bad_id_range"
+msgstr "ID лобби должен быть от {min_id} до {max_id}."
 
-msgid "error.bad_lobby_id"
-msgstr "Некорректный ID лобби."
-
-msgid "error.lobby_id_is_busy"
-msgstr "Этот ID лобби уже занят."
-
-msgid "error.no_free_lobby_ids"
-msgstr "Свободных ID лобби больше нет."
-
-msgid "error.lobby_not_found"
-msgstr "Лобби не найдено."
-
-msgid "error.nick_is_busy_in_lobby"
-msgstr "Это имя уже занято в лобби."
-
-msgid "error.lobby_is_full"
-msgstr "Лобби уже заполнено."
-
-msgid "error.first_create_or_join_lobby"
-msgstr "Сначала создайте лобби или подключитесь к нему."
-
-msgid "error.not_in_this_lobby"
-msgstr "Вы не состоите в этом лобби."
-
-msgid "error.lobby_crashed"
-msgstr "Лобби аварийно завершилось."
-
-msgid "error.not_enough_players"
-msgstr "Недостаточно игроков для старта."
-
-msgid "error.game_is_not_started"
-msgstr "Игра ещё не запущена."
-
-msgid "error.wrong_turn"
-msgstr "Сейчас ход другого игрока."
-
-msgid "error.wrong_symbol"
-msgstr "Некорректный символ хода."
-
-msgid "error.cell_is_busy"
-msgstr "Эта клетка уже занята."
-
-msgid "error.game_run_function_is_not_set"
-msgstr "Локальная логика игры не настроена."
-
-msgid "error.client_is_not_connected"
-msgstr "Клиент не подключён к серверу."
-
-msgid "error.server_unavailable"
-msgstr "Сервер недоступен."
-
-msgid "main.title"
-msgstr "ГЛАВНОЕ МЕНЮ"
-
+#: src/lib/menu.py:1710 src/lib/menu.py:1863
 msgid "main.player"
 msgstr "Игрок: {player}"
 
+#: src/lib/menu.py:1714 src/lib/menu.py:1857
+msgid "main.title"
+msgstr "ГЛАВНОЕ МЕНЮ"
+
+#: src/lib/menu.py:1906
 msgid "main.selected"
 msgstr "{player}: выбрано '{caption}'"
 
+#: src/lib/menu.py:1920 src/lib/menu.py:2036
 msgid "games.title"
 msgstr "ДОСТУПНЫЕ ИГРЫ"
 
+#: src/lib/menu.py:1934 src/lib/menu.py:2037
 msgid "games.back"
 msgstr "НАЗАД В МЕНЮ"
 
-msgid "game.tanks.title"
-msgstr "Танки 1990"
-
-msgid "game.tanks.rules"
+#: src/lib/menu.py:2103
+msgid "title_key"
 msgstr ""
-"Два игрока управляют танками на арене. Цель: первым уничтожить соперника "
-"нужное число раз."
 
-msgid "game.pong.title"
-msgstr "Пинг-понг"
+#: src/lib/menu.py:2137
+msgid "rules_key"
+msgstr ""
 
+#: src/lib/pong_frontend.py:124 src/lib/pong_frontend.py:597
+msgid "pong.start"
+msgstr "СТАРТ"
+
+#: src/lib/pong_frontend.py:137 src/lib/pong_frontend.py:598
+msgid "pong.back"
+msgstr "В МЕНЮ"
+
+#: src/lib/pong_frontend.py:571 src/lib/snake_frontend.py:377
+#: src/lib/x_o_frontend.py:557
+msgid "x_o.empty_lobby"
+msgstr "Состав лобби появится после подключения к серверу"
+
+#: src/lib/pong_frontend.py:573 src/lib/snake_frontend.py:379
+#: src/lib/x_o_frontend.py:559
+msgid "x_o.lobby"
+msgstr "Лобби: {players}"
+
+#: src/lib/pong_frontend.py:583
+msgid "pong.leave"
+msgstr "Соперник покинул игру"
+
+#: src/lib/pong_frontend.py:587
+msgid "pong.finished"
+msgstr "Победил {winner}. Нажмите СТАРТ для новой партии."
+
+#: src/lib/pong_frontend.py:590
+msgid "pong.waiting"
+msgstr "Ожидание второго игрока. Игра до 5 очков."
+
+#: src/lib/pong_frontend.py:592
+msgid "pong.playing"
+msgstr "Левая ракетка: W/S. Правая ракетка: стрелки вверх/вниз."
+
+#: src/lib/quiz_frontend.py:80 src/lib/quiz_frontend.py:513
+msgid "game.quiz.title"
+msgstr "Викторина"
+
+#: src/lib/quiz_frontend.py:201 src/lib/quiz_frontend.py:514
+msgid "quiz.start_button"
+msgstr "СТАРТ"
+
+#: src/lib/quiz_frontend.py:214 src/lib/quiz_frontend.py:515
+msgid "quiz.next_button"
+msgstr "ДАЛЕЕ"
+
+#: src/lib/quiz_frontend.py:227 src/lib/quiz_frontend.py:516
+msgid "quiz.back"
+msgstr "В МЕНЮ"
+
+#: src/lib/quiz_frontend.py:356
+msgid "quiz.lobby_id"
+msgstr "ID ЛОББИ"
+
+#: src/lib/quiz_frontend.py:525
+msgid "quiz.wait_answer"
+msgstr "Ожидаем ответ второго игрока"
+
+#: src/lib/quiz_frontend.py:526
+msgid "quiz.choose_answer"
+msgstr "Выберите вариант ответа"
+
+#: src/lib/quiz_frontend.py:539
+msgid "quiz.empty_lobby"
+msgstr "Состав лобби появится после подключения к серверу"
+
+#: src/lib/quiz_frontend.py:542
+msgid "quiz.lobby"
+msgstr "Лобби: {players}"
+
+#: src/lib/quiz_frontend.py:547
+msgid "quiz.question_counter"
+msgstr "Вопрос {current}/{total}"
+
+#: src/lib/quiz_frontend.py:558
+msgid "quiz.question_placeholder"
+msgstr "Вопрос появится здесь"
+
+#: src/lib/quiz_frontend.py:578
+msgid "quiz.score_title"
+msgstr "Количество верных ответов:"
+
+#: src/lib/quiz_frontend.py:583
+msgid "quiz.correct_answers"
+msgstr "Правильные ответы:"
+
+#: src/lib/snake_frontend.py:102 src/lib/snake_frontend.py:386
+msgid "snake.start"
+msgstr "СТАРТ"
+
+#: src/lib/snake_frontend.py:115 src/lib/snake_frontend.py:390
+msgid "snake.pause"
+msgstr "ПАУЗА"
+
+#: src/lib/snake_frontend.py:126 src/lib/snake_frontend.py:392
+msgid "snake.back"
+msgstr "В МЕНЮ"
+
+#: src/lib/snake_frontend.py:347
+msgid "snake.leave"
+msgstr "Соперник покинул игру"
+
+#: src/lib/snake_frontend.py:351
+msgid "snake.finished"
+msgstr "Победил {winner}. Нажмите СТАРТ для новой партии."
+
+#: src/lib/snake_frontend.py:354
+msgid "snake.starting"
+msgstr "Запуск партии..."
+
+#: src/lib/snake_frontend.py:357
+msgid "snake.paused"
+msgstr "Пауза. Нажмите ПАУЗА ещё раз, чтобы продолжить."
+
+#: src/lib/snake_frontend.py:360
+msgid "snake.playing"
+msgstr "Левая змейка: WASD. Правая змейка: стрелки. Игра до 5 очков."
+
+#: src/lib/snake_frontend.py:363
+msgid "snake.ready"
+msgstr "Оба игрока в лобби. Нажмите СТАРТ."
+
+#: src/lib/snake_frontend.py:365
+msgid "snake.waiting"
+msgstr "Ожидание второго игрока. Шаблон экрана Snake."
+
+#: src/lib/snake_frontend.py:388
+msgid "snake.resume"
+msgstr "ПРОДОЛЖИТЬ"
+
+#: src/lib/x_o_frontend.py:142 src/lib/x_o_frontend.py:563
+msgid "x_o.start_button"
+msgstr "СТАРТ"
+
+#: src/lib/x_o_frontend.py:156 src/lib/x_o_frontend.py:565
+msgid "x_o.back"
+msgstr "В МЕНЮ"
+
+#: src/lib/x_o_frontend.py:319 src/lib/x_o_frontend.py:359
+msgid "x_o.player"
+msgstr "ИГРОК"
+
+#: src/lib/x_o_frontend.py:328
+msgid "x_o.turn"
+msgstr "ХОД"
+
+#: src/lib/x_o_frontend.py:339 src/lib/x_o_frontend.py:359
+msgid "x_o.lobby_id"
+msgstr "ID ЛОББИ"
+
+#: src/lib/x_o_frontend.py:531 src/lib/x_o_frontend.py:544
+msgid "x_o.waiting_short"
+msgstr "ожидание"
+
+#: src/lib/x_o_frontend.py:533
+msgid "x_o.you"
+msgstr "вы"
+
+#: src/lib/x_o_frontend.py:538
+msgid "x_o.draw_short"
+msgstr "ничья"
+
+#: src/lib/x_o_frontend.py:541
+msgid "x_o.winner"
+msgstr "победил {player}"
+
+#: key literal translation
+#, fuzzy
+msgid "error."
+msgstr "Некорректное имя игрока."
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_json"
+msgstr "Некорректное имя игрока."
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_lobby_id"
+msgstr "ID ЛОББИ"
+
+#: key literal translation
+#, fuzzy
+msgid "error.bad_nick"
+msgstr "Некорректное имя игрока."
+
+#: key literal translation
+msgid "error.cell_is_busy"
+msgstr ""
+
+#: key literal translation
+msgid "error.client_is_not_connected"
+msgstr ""
+
+#: key literal translation
+msgid "error.first_create_or_join_lobby"
+msgstr ""
+
+#: key literal translation
+msgid "error.first_login"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_is_not_started"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_not_found"
+msgstr ""
+
+#: key literal translation
+msgid "error.game_run_function_is_not_set"
+msgstr ""
+
+#: key literal translation
+msgid "error.json_message_must_be_dict"
+msgstr ""
+
+#: key literal translation
+msgid "error.leave_lobby_first"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_crashed"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_id_is_busy"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_is_full"
+msgstr ""
+
+#: key literal translation
+msgid "error.lobby_not_found"
+msgstr ""
+
+#: key literal translation
+msgid "error.nick_is_busy_in_lobby"
+msgstr ""
+
+#: key literal translation
+msgid "error.no_free_lobby_ids"
+msgstr ""
+
+#: key literal translation
+msgid "error.not_enough_players"
+msgstr ""
+
+#: key literal translation
+msgid "error.not_in_this_lobby"
+msgstr ""
+
+#: key literal translation
+#, fuzzy
+msgid "error.server_unavailable"
+msgstr "СЕРВЕР НЕДОСТУПЕН"
+
+#: key literal translation
+msgid "error.unknown_message"
+msgstr ""
+
+#: key literal translation
+msgid "error.unknown_target"
+msgstr ""
+
+#: key literal translation
+msgid "error.wrong_symbol"
+msgstr ""
+
+#: key literal translation
+msgid "error.wrong_turn"
+msgstr ""
+
+#: key literal translation
 msgid "game.pong.rules"
 msgstr ""
 "Классический пинг-понг: двигайте ракетку и отбивайте мяч. Очко получает "
 "тот, кто отправил мяч за край соперника."
 
-msgid "game.snake.title"
-msgstr "Змейка"
+#: key literal translation
+msgid "game.pong.title"
+msgstr "Пинг-понг"
 
-msgid "game.snake.rules"
-msgstr ""
-"Два игрока управляют змейками на отдельных полях. Побеждает игрок с "
-"большим счётом."
-
-msgid "pong.waiting"
-msgstr "Ожидание второго игрока. Игра до 5 очков."
-
-msgid "pong.playing"
-msgstr "Левая ракетка: W/S. Правая ракетка: стрелки вверх/вниз."
-
-msgid "pong.finished"
-msgstr "Победил {winner}. Нажмите СТАРТ для новой партии."
-
-msgid "pong.leave"
-msgstr "Соперник покинул игру"
-
-msgid "pong.start"
-msgstr "СТАРТ"
-
-msgid "pong.back"
-msgstr "В МЕНЮ"
-
-msgid "snake.waiting"
-msgstr "Ожидание второго игрока. Шаблон экрана Snake."
-
-msgid "snake.ready"
-msgstr "Оба игрока в лобби. Нажмите СТАРТ."
-
-msgid "snake.starting"
-msgstr "Запуск партии..."
-
-msgid "snake.prototype"
-msgstr "Визуальный шаблон Snake. Игровая логика будет добавлена позже."
-
-msgid "snake.playing"
-msgstr "Левая змейка: WASD. Правая змейка: стрелки. Игра до 5 очков."
-
-msgid "snake.paused"
-msgstr "Пауза. Нажмите ПАУЗА ещё раз, чтобы продолжить."
-
-msgid "snake.finished"
-msgstr "Победил {winner}. Нажмите СТАРТ для новой партии."
-
-msgid "snake.leave"
-msgstr "Соперник покинул игру"
-
-msgid "snake.start"
-msgstr "СТАРТ"
-
-msgid "snake.pause"
-msgstr "ПАУЗА"
-
-msgid "snake.resume"
-msgstr "ПРОДОЛЖИТЬ"
-
-msgid "snake.back"
-msgstr "В МЕНЮ"
-
-msgid "game.x_o.title"
-msgstr "Крестики-нолики"
-
-msgid "game.x_o.rules"
-msgstr ""
-"Крестики-нолики для двух игроков. Побеждает тот, кто первым соберет линию "
-"из трех своих символов."
-
-msgid "game.sea_battle.title"
-msgstr "Морской бой"
-
-msgid "game.sea_battle.rules"
-msgstr ""
-"Разместите флот на поле и по очереди стреляйте по клеткам противника. "
-"Побеждает уничтоживший все корабли."
-
-msgid "game.quiz.title"
-msgstr "Викторина"
-
+#: key literal translation
 msgid "game.quiz.rules"
 msgstr ""
 "Игроки отвечают на одинаковые вопросы. Побеждает тот, кто набрал больше "
 "правильных ответов за раунд."
 
-msgid "quiz.waiting"
-msgstr "Ожидание подключения игрока"
+#: key literal translation
+msgid "game.sea_battle.rules"
+msgstr ""
+"Разместите флот на поле и по очереди стреляйте по клеткам противника. "
+"Побеждает уничтоживший все корабли."
 
-msgid "quiz.joined"
-msgstr "Игрок подключился. Нажмите СТАРТ."
+#: key literal translation
+msgid "game.sea_battle.title"
+msgstr "Морской бой"
 
-msgid "quiz.start"
-msgstr "Игра началась"
+#: key literal translation
+msgid "game.snake.rules"
+msgstr ""
+"Два игрока управляют змейками на отдельных полях. Побеждает игрок с "
+"большим счётом."
 
+#: key literal translation
+msgid "game.snake.title"
+msgstr "Змейка"
+
+#: key literal translation
+msgid "game.tanks.rules"
+msgstr ""
+"Два игрока управляют танками на арене. Цель: первым уничтожить соперника "
+"нужное число раз."
+
+#: key literal translation
+msgid "game.tanks.title"
+msgstr "Танки 1990"
+
+#: key literal translation
+msgid "game.x_o.rules"
+msgstr ""
+"Крестики-нолики для двух игроков. Побеждает тот, кто первым соберет линию"
+" из трех своих символов."
+
+#: key literal translation
+msgid "game.x_o.title"
+msgstr "Крестики-нолики"
+
+#: key literal translation
+msgid "menu.create_lobby"
+msgstr "СОЗДАТЬ ЛОББИ"
+
+#: key literal translation
+msgid "menu.games"
+msgstr "ОПИСАНИЕ ИГР"
+
+#: key literal translation
+msgid "menu.lobbies"
+msgstr "ДОСТУПНЫЕ ЛОББИ"
+
+#: key literal translation
+#, fuzzy
+msgid "pong.jpg"
+msgstr "Левая ракетка: W/S. Правая ракетка: стрелки вверх/вниз."
+
+#: key literal translation
 msgid "quiz.answer"
 msgstr "Ожидание ответа"
 
-msgid "quiz.choose_answer"
-msgstr "Выберите вариант ответа"
+#: key literal translation
+msgid "quiz.answer.architect"
+msgstr "Зодчий"
 
-msgid "quiz.wait_answer"
-msgstr "Ожидаем ответ второго игрока"
+#: key literal translation
+msgid "quiz.answer.astragalus"
+msgstr "Астрагал"
 
-msgid "quiz.answered"
-msgstr "Оба игрока ответили"
+#: key literal translation
+msgid "quiz.answer.beekeeper"
+msgstr "Бортник"
 
-msgid "quiz.finished"
-msgstr "Игра окончена"
+#: key literal translation
+msgid "quiz.answer.biker"
+msgstr "Байкер"
 
-msgid "quiz.score_title"
-msgstr "Количество верных ответов:"
+#: key literal translation
+msgid "quiz.answer.bupleurum"
+msgstr "Володушка"
 
-msgid "quiz.start_button"
-msgstr "СТАРТ"
+#: key literal translation
+msgid "quiz.answer.cooper"
+msgstr "Бондарь"
 
-msgid "quiz.next_button"
-msgstr "ДАЛЕЕ"
+#: key literal translation
+msgid "quiz.answer.crown"
+msgstr "Корона"
 
-msgid "quiz.back"
-msgstr "В МЕНЮ"
+#: key literal translation
+msgid "quiz.answer.digger"
+msgstr "Диггер"
 
-msgid "quiz.leave"
-msgstr "Соперник покинул игру"
+#: key literal translation
+msgid "quiz.answer.eleven"
+msgstr "11"
 
-msgid "quiz.empty_lobby"
-msgstr "Состав лобби появится после подключения к серверу"
+#: key literal translation
+msgid "quiz.answer.forty_nine"
+msgstr "49"
 
-msgid "quiz.lobby_id"
-msgstr "ID ЛОББИ"
+#: key literal translation
+msgid "quiz.answer.helmsman"
+msgstr "Кормчий"
 
-msgid "quiz.lobby"
-msgstr "Лобби: {players}"
+#: key literal translation
+msgid "quiz.answer.how_much_trouble_costs"
+msgstr "Почем фунт лиха"
 
-msgid "quiz.question_counter"
-msgstr "Вопрос {current}/{total}"
-
-msgid "quiz.correct_answers"
-msgstr "Правильные ответы:"
-
-msgid "quiz.question_placeholder"
-msgstr "Вопрос появится здесь"
-
-msgid "quiz.answer_placeholder"
-msgstr "Вариант ответа"
-
-msgid "quiz.question.jackson_middle_name"
-msgstr "Назовите второе имя Майкла Джексона?"
-
-msgid "quiz.answer.jackson_joseph"
-msgstr "Джозеф"
-
-msgid "quiz.answer.jackson_john"
-msgstr "Джон"
-
+#: key literal translation
 msgid "quiz.answer.jackson_james"
 msgstr "Джеймс"
 
+#: key literal translation
 msgid "quiz.answer.jackson_jim"
 msgstr "Джим"
 
+#: key literal translation
+msgid "quiz.answer.jackson_john"
+msgstr "Джон"
+
+#: key literal translation
+msgid "quiz.answer.jackson_joseph"
+msgstr "Джозеф"
+
+#: key literal translation
+msgid "quiz.answer.kartuz"
+msgstr "Картуз"
+
+#: key literal translation
+msgid "quiz.answer.kremlin"
+msgstr "Кремль"
+
+#: key literal translation
+msgid "quiz.answer.mice_do_not_know"
+msgstr "Да мыши не знают"
+
+#: key literal translation
+msgid "quiz.answer.monastery"
+msgstr "Монастырь"
+
+#: key literal translation
+msgid "quiz.answer.nemes"
+msgstr "Немес"
+
+#: key literal translation
+msgid "quiz.answer.nineteen"
+msgstr "19"
+
+#: key literal translation
+msgid "quiz.answer.pedicularis"
+msgstr "Мытник"
+
+#: key literal translation
+msgid "quiz.answer.princely_palace"
+msgstr "Княжеский терем"
+
+#: key literal translation
+msgid "quiz.answer.roofer"
+msgstr "Руфер"
+
+#: key literal translation
+msgid "quiz.answer.school"
+msgstr "Школу"
+
+#: key literal translation
+msgid "quiz.answer.stalker"
+msgstr "Сталкер"
+
+#: key literal translation
+msgid "quiz.answer.sundew"
+msgstr "Росянка"
+
+#: key literal translation
+msgid "quiz.answer.twenty_five"
+msgstr "25"
+
+#: key literal translation
+msgid "quiz.answer.ubrus"
+msgstr "Убрус"
+
+#: key literal translation
+msgid "quiz.answer.where_secret_lies"
+msgstr "Где собака зарыта"
+
+#: key literal translation
+msgid "quiz.answer.whose_meat_it_ate"
+msgstr "Чье мясо съела"
+
+#: key literal translation
+msgid "quiz.answer_placeholder"
+msgstr "Вариант ответа"
+
+#: key literal translation
+msgid "quiz.answered"
+msgstr "Оба игрока ответили"
+
+#: key literal translation
+msgid "quiz.finished"
+msgstr "Игра окончена"
+
+#: key literal translation
+msgid "quiz.joined"
+msgstr "Игрок подключился. Нажмите СТАРТ."
+
+#: key literal translation
+#, fuzzy
+msgid "quiz.jpg"
+msgstr "Игрок подключился. Нажмите СТАРТ."
+
+#: key literal translation
+msgid "quiz.leave"
+msgstr "Соперник покинул игру"
+
+#: key literal translation
+msgid "quiz.question.carnivorous_plant"
+msgstr "Какое из этих растений - плотоядное?"
+
+#: key literal translation
+msgid "quiz.question.detynets"
+msgstr "Детинцем на Руси называли..."
+
+#: key literal translation
+msgid "quiz.question.jackson_middle_name"
+msgstr "Назовите второе имя Майкла Джексона?"
+
+#: key literal translation
+msgid "quiz.question.old_builder"
+msgstr "Как называли строителя в старину?"
+
+#: key literal translation
 msgid "quiz.question.pharaoh_headdress"
 msgstr ""
 "Как назывался особый головной убор, который носили фараоны в Древнем "
 "Египте?"
 
-msgid "quiz.answer.kartuz"
-msgstr "Картуз"
-
-msgid "quiz.answer.nemes"
-msgstr "Немес"
-
-msgid "quiz.answer.crown"
-msgstr "Корона"
-
-msgid "quiz.answer.ubrus"
-msgstr "Убрус"
-
-msgid "quiz.question.detynets"
-msgstr "Детинцем на Руси называли..."
-
-msgid "quiz.answer.kremlin"
-msgstr "Кремль"
-
-msgid "quiz.answer.school"
-msgstr "Школу"
-
-msgid "quiz.answer.princely_palace"
-msgstr "Княжеский терем"
-
-msgid "quiz.answer.monastery"
-msgstr "Монастырь"
-
-msgid "quiz.question.old_builder"
-msgstr "Как называли строителя в старину?"
-
-msgid "quiz.answer.cooper"
-msgstr "Бондарь"
-
-msgid "quiz.answer.beekeeper"
-msgstr "Бортник"
-
-msgid "quiz.answer.architect"
-msgstr "Зодчий"
-
-msgid "quiz.answer.helmsman"
-msgstr "Кормчий"
-
+#: key literal translation
 msgid "quiz.question.proverb_cat"
 msgstr "Продолжите пословицу: «Знает кошка...»"
 
-msgid "quiz.answer.mice_do_not_know"
-msgstr "Да мыши не знают"
-
-msgid "quiz.answer.how_much_trouble_costs"
-msgstr "Почем фунт лиха"
-
-msgid "quiz.answer.where_secret_lies"
-msgstr "Где собака зарыта"
-
-msgid "quiz.answer.whose_meat_it_ate"
-msgstr "Чье мясо съела"
-
-msgid "quiz.question.carnivorous_plant"
-msgstr "Какое из этих растений - плотоядное?"
-
-msgid "quiz.answer.bupleurum"
-msgstr "Володушка"
-
-msgid "quiz.answer.sundew"
-msgstr "Росянка"
-
-msgid "quiz.answer.pedicularis"
-msgstr "Мытник"
-
-msgid "quiz.answer.astragalus"
-msgstr "Астрагал"
-
+#: key literal translation
 msgid "quiz.question.rooftop_climber"
 msgstr "Как называется человек, покоряющий крыши многоэтажных домов?"
 
-msgid "quiz.answer.digger"
-msgstr "Диггер"
-
-msgid "quiz.answer.stalker"
-msgstr "Сталкер"
-
-msgid "quiz.answer.roofer"
-msgstr "Руфер"
-
-msgid "quiz.answer.biker"
-msgstr "Байкер"
-
+#: key literal translation
 msgid "quiz.question.wedding_anniversaries"
 msgstr "Сколько лет проходит между ситцевой и золотой свадьбой?"
 
-msgid "quiz.answer.eleven"
-msgstr "11"
-
-msgid "quiz.answer.nineteen"
-msgstr "19"
-
-msgid "quiz.answer.twenty_five"
-msgstr "25"
-
-msgid "quiz.answer.forty_nine"
-msgstr "49"
-
-msgid "x_o.idle"
-msgstr "Создайте лобби или подключитесь к игре"
-
-msgid "x_o.waiting"
-msgstr "Ожидание подключения игрока"
-
-msgid "x_o.joined"
-msgstr "Игрок подключился"
-
-msgid "x_o.start"
+#: key literal translation
+msgid "quiz.start"
 msgstr "Игра началась"
 
-msgid "x_o.move"
-msgstr "Ход принят"
+#: key literal translation
+msgid "quiz.waiting"
+msgstr "Ожидание подключения игрока"
 
-msgid "x_o.not_your_turn"
-msgstr "Сейчас ход соперника"
+#: key literal translation
+#, fuzzy
+msgid "snake.png"
+msgstr "Левая змейка: WASD. Правая змейка: стрелки. Игра до 5 очков."
 
+#: key literal translation
+#, fuzzy
 msgid "x_o.bad_move"
-msgstr "Некорректная клетка"
-
-msgid "x_o.busy"
-msgstr "Эта клетка уже занята"
-
-msgid "x_o.win"
-msgstr "Партия завершена"
-
-msgid "x_o.draw"
-msgstr "Ничья"
-
-msgid "x_o.leave"
-msgstr "Соперник покинул игру"
-
-msgid "x_o.start_button"
-msgstr "СТАРТ"
-
-msgid "x_o.back"
 msgstr "В МЕНЮ"
 
-msgid "x_o.player"
-msgstr "ИГРОК"
+#: key literal translation
+#, fuzzy
+msgid "x_o.busy"
+msgstr "Лобби: {players}"
 
-msgid "x_o.turn"
-msgstr "ХОД"
-
-msgid "x_o.lobby_id"
-msgstr "ID ЛОББИ"
-
-msgid "x_o.waiting_short"
-msgstr "ожидание"
-
-msgid "x_o.you"
-msgstr "вы"
-
-msgid "x_o.draw_short"
+#: key literal translation
+#, fuzzy
+msgid "x_o.draw"
 msgstr "ничья"
 
-msgid "x_o.winner"
+#: key literal translation
+#, fuzzy
+msgid "x_o.idle"
 msgstr "победил {player}"
 
-msgid "x_o.empty_lobby"
-msgstr "Состав лобби появится после подключения к серверу"
+#: key literal translation
+#, fuzzy
+msgid "x_o.joined"
+msgstr "победил {player}"
 
-msgid "x_o.lobby"
-msgstr "Лобби: {players}"
+#: key literal translation
+#, fuzzy
+msgid "x_o.leave"
+msgstr "ИГРОК"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.move"
+msgstr "вы"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.not_your_turn"
+msgstr "ХОД"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.start"
+msgstr "СТАРТ"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.waiting"
+msgstr "ожидание"
+
+#: key literal translation
+#, fuzzy
+msgid "x_o.win"
+msgstr "победил {player}"
+

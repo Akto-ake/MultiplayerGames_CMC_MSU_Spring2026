@@ -9,6 +9,7 @@ import arcade.gui
 
 try:
     from .frontend import Manager
+    from .localization import tr, tr_error
     from .menu import (
         CYAN,
         PURPLE,
@@ -16,9 +17,9 @@ try:
         build_menu_button_style,
         build_primary_button_style,
     )
-    from .localization import tr, tr_error
 except ImportError:
     from frontend import Manager
+    from localization import tr, tr_error
     from menu import (
         CYAN,
         PURPLE,
@@ -26,7 +27,6 @@ except ImportError:
         build_menu_button_style,
         build_primary_button_style,
     )
-    from localization import tr, tr_error
 
 
 BOARD_SIZE = 474
