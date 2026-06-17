@@ -7,6 +7,7 @@
 
 - Запуск сервера: ``python src/main_server.py``
 - Запуск клиента: ``python src/main_client.py``
-- Линт: ``python scripts/tasks.py lint``
-- Сборка документации: ``python scripts/tasks.py docs``
-- Сборка wheel: ``python scripts/tasks.py build``
+- Список задач: ``python -m doit list``
+- Обновление переводов: ``python -m doit i18n``
+- Тесты и покрытие: ``python -m doit test``
+- Сборка документации: ``python -m doit html``

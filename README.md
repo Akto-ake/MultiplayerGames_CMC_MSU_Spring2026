@@ -58,10 +58,10 @@ main.client
 ## Автоматизация
 
 ```bash
-python scripts/tasks.py lint
-python scripts/tasks.py docs
-python scripts/tasks.py build
-python scripts/tasks.py all
+python -m doit list
+python -m doit i18n
+python -m doit test
+python -m doit html
 ```
 
 ## Сборка wheel

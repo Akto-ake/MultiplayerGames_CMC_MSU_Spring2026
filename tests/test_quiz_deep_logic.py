@@ -212,8 +212,12 @@ class QuizDeepLogicTest(unittest.IsolatedAsyncioTestCase):
                 await wait_until(lambda: lobby.last_message()["status"] == "answered")
 
                 await lobby.send("first", "next")
-                expected_status = "finished" if question_index == total - 1 else "question"
-                await wait_until(lambda: lobby.last_message()["status"] == expected_status)
+                expected_status = (
+                    "finished" if question_index == total - 1 else "question"
+                )
+                await wait_until(
+                    lambda: lobby.last_message()["status"] == expected_status
+                )
 
             final_payload = lobby.last_message()["message"]
             self.assertEqual(lobby.last_message()["status"], "finished")
