@@ -12,6 +12,8 @@ venv/
 .pytest_cache/
 .coverage
 docs/_build/
+build/
+dist/
 *.pot
 *.mo
 
@@ -22,5 +24,6 @@ docs/_build/
 
 .i18n
 .doit.db
+.doit.db-*
 .test
 *.egg-info/

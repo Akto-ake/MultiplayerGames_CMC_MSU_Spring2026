@@ -20,6 +20,8 @@ dev = [
   "doit>=0.36.0",
   "flake8>=7.0.0",
   "pydocstyle>=6.3.0",
+  "setuptools>=68",
+  "wheel",
 ]
 docs = [
   "sphinx>=7.0.0",

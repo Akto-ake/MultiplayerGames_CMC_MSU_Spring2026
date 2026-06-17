@@ -14,6 +14,11 @@ from doit.task import clean_targets
 DOIT_CONFIG = {"default_tasks": ["html"]}
 PYTHON = sys.executable
 POT_FILE = Path("src/lib/locale/messages.pot")
+BUILD_DIRS = [
+    Path("build"),
+    Path("dist"),
+    Path("src/multiplayer_games_cmc2026.egg-info"),
+]
 IGNORED_SOURCE_PARTS = {"venv", ".venv", "new", "new_new", "__pycache__"}
 TRANSLATION_KEY_PREFIXES = (
     "lang.",
@@ -128,6 +133,28 @@ def run_with_src_path(command):
     return subprocess.run(command, env=env).returncode == 0
 
 
+def erase_build_artifacts():
+    """Удалить сгенерированные файлы перед сборкой пакета."""
+
+    for build_dir in BUILD_DIRS:
+        shutil.rmtree(build_dir, ignore_errors=True)
+
+    for pattern in ("**/__pycache__", "src/lib/locale/*/LC_MESSAGES/*.mo"):
+        for path in Path(".").glob(pattern):
+            if path.is_dir():
+                shutil.rmtree(path, ignore_errors=True)
+            else:
+                path.unlink(missing_ok=True)
+
+
+def task_erase():
+    """Очистить сгенерированные файлы."""
+
+    return {
+        "actions": [erase_build_artifacts],
+    }
+
+
 def task_pot():
     """Собрать POT-файл."""
 
@@ -184,6 +211,26 @@ def task_mo():
             "src/lib/locale/en/LC_MESSAGES/messages.mo",
         ],
         "clean": [clean_targets],
+    }
+
+
+def task_dist():
+    """Собрать source distribution."""
+
+    return {
+        "actions": [f"{PYTHON} -m build --no-isolation -s"],
+        "task_dep": ["erase"],
+        "verbosity": 2,
+    }
+
+
+def task_wheel():
+    """Собрать wheel."""
+
+    return {
+        "actions": [f"{PYTHON} -m build --no-isolation -w"],
+        "task_dep": ["erase", "mo"],
+        "verbosity": 2,
     }
 
 
