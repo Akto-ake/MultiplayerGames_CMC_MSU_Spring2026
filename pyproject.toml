@@ -16,6 +16,7 @@ dependencies = [
 dev = [
   "babel>=2.15.0",
   "build>=1.2.2",
+  "coverage>=7.0.0",
   "flake8>=7.0.0",
   "pydocstyle>=6.3.0",
 ]
@@ -37,3 +38,15 @@ include = ["lib*"]
 
 [tool.setuptools.package-data]
 lib = ["locale/*/LC_MESSAGES/*.po", "locale/*/LC_MESSAGES/*.mo"]
+
+[tool.coverage.run]
+source = ["src/lib"]
+omit = [
+  "src/lib/backend.py",
+  "src/lib/frontend.py",
+  "src/lib/menu.py",
+  "src/lib/*_frontend.py",
+]
+
+[tool.coverage.report]
+show_missing = false
